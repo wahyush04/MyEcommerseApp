@@ -62,18 +62,17 @@ class LoginActivity : AppCompatActivity() {
                     if (status == 200){
                         sharedPreferences.put(token, id, name, emailUser, phone, gender)
                         sharedPreferences.putLogin(Constant.IS_LOGIN, true)
-                        Toast.makeText(this,"Login Berhasil",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this,data.success.message,Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this, MainActivity::class.java))
                     }
                 }
                 loginViewModel.getErrorBody().observe(this){
-                    Toast.makeText(this,it.error.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, it.error.message, Toast.LENGTH_SHORT).show()
                 }
             } else {
                 binding.emailedtlayout.error = "Wrong Email Format"
             }
         }
-
 
         binding.btnToSignup.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)

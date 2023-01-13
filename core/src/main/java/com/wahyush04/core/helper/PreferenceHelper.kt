@@ -13,9 +13,10 @@ class PreferenceHelper(context: Context) {
     private val preference: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(appContext)
 
-    fun put(token : String, id : Int, name: String, email: String, phone: String, gender: Int ){
+    fun put(access_token : String,refresh_token : String ,id : Int, name: String, email: String, phone: String, gender: Int ){
         editor.apply{
-            putString(Constant.TOKEN, token)
+            putString(Constant.TOKEN, access_token)
+            putString(Constant.REFRESH_TOKEN, refresh_token)
             putString(Constant.ID, id.toString())
             putString(Constant.NAME, name)
             putString(Constant.EMAIL, email)
@@ -23,6 +24,7 @@ class PreferenceHelper(context: Context) {
             putString(Constant.GENDER, gender.toString())
         }
     }
+
 
     fun putLogin(key: String, isLogin : Boolean){
         editor.putBoolean(key, isLogin)

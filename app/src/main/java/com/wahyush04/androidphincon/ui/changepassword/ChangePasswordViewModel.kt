@@ -1,4 +1,4 @@
-package com.wahyush04.androidphincon.ui.register
+package com.wahyush04.androidphincon.ui.changepassword
 
 import android.app.Application
 import android.util.Log
@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wahyush04.core.api.ApiConfig
 import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.core.data.changepassword.ChangePasswordResponse
 import com.wahyush04.core.data.register.RegisterResponse
 import com.wahyush04.core.helper.Event
 import org.json.JSONObject
@@ -16,22 +17,21 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterViewModel(application: Application) : AndroidViewModel(application) {
-    val registerResponse =  MutableLiveData<RegisterResponse>()
-    val errorMessage = MutableLiveData<ErrorResponse>()
+class ChangePasswordViewModel(application: Application) : AndroidViewModel(application) {
+    val changePasswordResponse = MutableLiveData<ChangePasswordResponse>()
 
     private var _registerError = MutableLiveData<Event<ErrorResponse>>()
     val registerError: LiveData<Event<ErrorResponse>> = _registerError
 
-    fun register(name:String, email: String, password: String, phone : String, gender : Int){
-        val client = ApiConfig.getApiService().userRegister("TuIBt77u7tZHi8n7WqUC", name, email, password, phone, gender)
-        client.enqueue(object  : Callback <RegisterResponse>{
+    fun changePassword(access_token: String, id : String, password: String, new_password : String, confirm_password : String){
+        val client = ApiConfig.getApiService().userChangePassword("TuIBt77u7tZHi8n7WqUC", access_token, id, password, new_password, confirm_password)
+        client.enqueue(object : Callback <ChangePasswordResponse>{
             override fun onResponse(
-                call: Call<RegisterResponse>,
-                response: Response<RegisterResponse>
+                call: Call<ChangePasswordResponse>,
+                response: Response<ChangePasswordResponse>
             ) {
                 if (response.isSuccessful){
-                   registerResponse.postValue(response.body())
+                    changePasswordResponse.postValue(response.body())
                 }else{
                     val jObjError = JSONObject(response.errorBody()!!.string()).toString()
                     val gson = Gson()
@@ -40,14 +40,16 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     _registerError.value = Event(error)
                 }
             }
-            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                Log.d("Retrofit", "Retrofit Gagal")
+
+            override fun onFailure(call: Call<ChangePasswordResponse>, t: Throwable) {
+                Log.d("Failed", "Retrofit Error")
             }
+
         })
     }
 
-    fun getRegisterResponse(): LiveData<RegisterResponse> {
-        return registerResponse
+    fun getChangePasswordResponse(): LiveData<ChangePasswordResponse> {
+        return changePasswordResponse
     }
 
 }

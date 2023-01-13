@@ -21,5 +21,14 @@
         android:id="@+id/navigation_profile"
         android:name="com.wahyush04.androidphincon.ui.profile.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_navigation_profile_to_changePasswordActivity"
+            app:destination="@id/changePasswordActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/changePasswordActivity"
+        android:name="com.wahyush04.androidphincon.ui.changepassword.ChangePasswordActivity"
+        android:label="activity_change_password"
+        tools:layout="@layout/activity_change_password" />
 </navigation>

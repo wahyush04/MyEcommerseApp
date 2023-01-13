@@ -57,14 +57,15 @@ class LoginActivity : AppCompatActivity() {
             loginViewModel.login(email, password)
             loginViewModel.getDetailLogin().observe(this){ data ->
                 val status = data.success.status
-                val token = data.success.access_token
+                val accessToken = data.success.access_token
+                val refreshToken =  data.success.refresh_token
                 val id = data.success.data_user.id
                 val name = data.success.data_user.name
                 val emailUser = data.success.data_user.email
                 val phone = data.success.data_user.phone
                 val gender = data.success.data_user.gender
                 if (status == 200){
-                    sharedPreferences.put(token, id, name, emailUser, phone, gender)
+                    sharedPreferences.put(accessToken, refreshToken, id, name, emailUser, phone, gender)
                     sharedPreferences.putLogin(Constant.IS_LOGIN, true)
                     Toast.makeText(this,data.success.message,Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, MainActivity::class.java))
@@ -77,7 +78,6 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, it.error.message, Toast.LENGTH_SHORT).show()
                 }
             }
-
         }
 
         binding.btnToSignup.setOnClickListener {

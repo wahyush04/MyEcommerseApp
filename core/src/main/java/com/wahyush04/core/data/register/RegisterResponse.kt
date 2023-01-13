@@ -5,6 +5,6 @@ data class RegisterResponse (
 )
 
 data class Success(
-    val status : String,
+    val status : Int,
     val message : String
 )

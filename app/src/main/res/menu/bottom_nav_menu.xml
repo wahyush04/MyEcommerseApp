@@ -13,7 +13,7 @@
         tools:ignore="MenuTitle" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_baseline_person_24"
         tools:ignore="MenuTitle" />
 

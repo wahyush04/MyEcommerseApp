@@ -1,4 +1,4 @@
-package com.wahyush04.androidphincon
+package com.wahyush04.core.data
 
 import com.wahyush04.core.api.ApiService
 import com.wahyush04.core.data.login.LoginResponse

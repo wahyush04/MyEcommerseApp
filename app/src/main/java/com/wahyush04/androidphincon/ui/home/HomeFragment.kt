@@ -2,6 +2,7 @@ package com.wahyush04.androidphincon.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.wahyush04.androidphincon.MainActivity
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
+import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
 
 class HomeFragment : Fragment() {
@@ -31,7 +33,7 @@ class HomeFragment : Fragment() {
         val homeViewModel =
             ViewModelProvider(this)[HomeViewModel::class.java]
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = com.wahyush04.androidphincon.databinding.FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
 //        val context = requireContext()
@@ -39,6 +41,8 @@ class HomeFragment : Fragment() {
         val context = activity.applicationContext
 
         sharedPreferences = PreferenceHelper(context)
+        val token : String? = sharedPreferences.getToken(Constant.PHONE)
+        Log.d("PrefName", token.toString())
 
         return root
     }

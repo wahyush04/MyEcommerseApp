@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidPhincon</string>
+    <string name="app_name" translatable="false">AndroidPhincon</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -16,5 +16,11 @@
     <string name="female">Female</string>
     <string name="register">Register</string>
     <string name="profile">profile</string>
-    <string name="button_photo">button photo</string>
+    <string name="button_photo" translatable="false">button photo</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="new_password">New Password</string>
+    <string name="save">Save</string>
+    <string name="change_language">Change Language</string>
+    <string name="change_password">Change Password</string>
+    <string name="logout">Logout</string>
 </resources>

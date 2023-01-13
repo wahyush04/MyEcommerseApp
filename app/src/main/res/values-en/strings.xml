@@ -13,4 +13,10 @@
     <string name="female">Female</string>
     <string name="register">Register</string>
     <string name="profile">profile</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="new_password">New Password</string>
+    <string name="save">Save</string>
+    <string name="change_language">Change Language</string>
+    <string name="change_password">Change_Password</string>
+    <string name="logout">Logout</string>
 </resources>

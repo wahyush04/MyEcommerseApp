@@ -3,7 +3,6 @@ package com.wahyush04.core.data.login
 
 data class LoginResponse (
     val success : Success
-
 )
 
 data class Success(

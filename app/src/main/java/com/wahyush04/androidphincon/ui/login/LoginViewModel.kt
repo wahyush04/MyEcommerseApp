@@ -13,6 +13,7 @@ import com.wahyush04.core.api.ApiConfig
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.login.LoginRequest
 import com.wahyush04.core.data.login.LoginResponse
+import com.wahyush04.core.helper.Event
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,6 +23,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     val userDetail = MutableLiveData<LoginResponse>()
     val errorMessage = MutableLiveData<ErrorResponse>()
+
+    private var _loginError = MutableLiveData<Event<ErrorResponse>>()
+    val loginError: LiveData<Event<ErrorResponse>> = _loginError
 
     fun login(email: String, password:String) {
         val request = LoginRequest()
@@ -37,7 +41,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     val gson = Gson()
                     val jsonObject = gson.fromJson(jObjError, JsonObject::class.java)
                     val error = gson.fromJson(jsonObject, ErrorResponse::class.java)
-                    errorMessage.postValue(error)
+                    _loginError.value = Event(error)
                 }
             }
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {

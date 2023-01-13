@@ -37,6 +37,10 @@ class PreferenceHelper(context: Context) {
         return  pref.getString(key, null)
     }
 
+    fun getPreference(key: String) : String? {
+        return  pref.getString(key, null)
+    }
+
     fun clear(){
         editor.clear().apply()
     }

@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.wahyush04.core.Constant
 import com.wahyush04.androidphincon.MainActivity
@@ -31,47 +32,52 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
 
-        binding.edtEmail.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+//        binding.edtEmail.addTextChangedListener(object : TextWatcher{
+//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//            }
+//
+//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                setEmailEditText()
+//            }
+//
+//            override fun afterTextChanged(p0: Editable?) {
+//            }
+//
+//        })
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                setEmailEditText()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.edtEmail.doOnTextChanged { _, _, _, _ ->
+            setEmailEditText()
+        }
 
         binding.btnLogin.setOnClickListener {
             showLoading(true)
             val email = binding.edtEmail.text.toString()
             val password = binding.edtPassword.text.toString()
 
-            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-                loginViewModel.login(email, password)
-                loginViewModel.getDetailLogin().observe(this){ data ->
-                    val status = data.success.status
-                    val token = data.success.access_token
-                    val id = data.success.data_user.id
-                    val name = data.success.data_user.name
-                    val emailUser = data.success.data_user.email
-                    val phone = data.success.data_user.phone
-                    val gender = data.success.data_user.gender
-                    if (status == 200){
-                        sharedPreferences.put(token, id, name, emailUser, phone, gender)
-                        sharedPreferences.putLogin(Constant.IS_LOGIN, true)
-                        Toast.makeText(this,data.success.message,Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, MainActivity::class.java))
-                    }
+            loginViewModel.login(email, password)
+            loginViewModel.getDetailLogin().observe(this){ data ->
+                val status = data.success.status
+                val token = data.success.access_token
+                val id = data.success.data_user.id
+                val name = data.success.data_user.name
+                val emailUser = data.success.data_user.email
+                val phone = data.success.data_user.phone
+                val gender = data.success.data_user.gender
+                if (status == 200){
+                    sharedPreferences.put(token, id, name, emailUser, phone, gender)
+                    sharedPreferences.putLogin(Constant.IS_LOGIN, true)
+                    Toast.makeText(this,data.success.message,Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, MainActivity::class.java))
                 }
-                loginViewModel.getErrorBody().observe(this){
-                    Toast.makeText(this, it.error.message, Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                binding.emailedtlayout.error = "Wrong Email Format"
             }
+
+            loginViewModel.loginError.observe(this){
+                it.getContentIfNotHandled()?.let {
+                    showLoading(false)
+                    Toast.makeText(applicationContext, it.error.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+
         }
 
         binding.btnToSignup.setOnClickListener {

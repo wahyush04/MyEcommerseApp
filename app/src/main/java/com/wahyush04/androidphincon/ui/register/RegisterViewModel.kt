@@ -10,6 +10,7 @@ import com.google.gson.JsonObject
 import com.wahyush04.core.api.ApiConfig
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.register.RegisterResponse
+import com.wahyush04.core.helper.Event
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,6 +19,9 @@ import retrofit2.Response
 class RegisterViewModel(application: Application) : AndroidViewModel(application) {
     val registerResponse =  MutableLiveData<RegisterResponse>()
     val errorMessage = MutableLiveData<ErrorResponse>()
+
+    private var _registerError = MutableLiveData<Event<ErrorResponse>>()
+    val registerError: LiveData<Event<ErrorResponse>> = _registerError
 
     fun register(name:String, email: String, password: String, phone : String, gender : Int){
         val client = ApiConfig.getApiService().userRegister("TuIBt77u7tZHi8n7WqUC", name, email, password, phone, gender)
@@ -33,7 +37,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     val gson = Gson()
                     val jsonObject = gson.fromJson(jObjError, JsonObject::class.java)
                     val error = gson.fromJson(jsonObject, ErrorResponse::class.java)
-                    errorMessage.postValue(error)
+                    _registerError.value = Event(error)
                 }
             }
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {

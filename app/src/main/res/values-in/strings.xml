@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="logo">logo</string>
+    <string name="email">Email</string>
+    <string name="password">Kata Sandi</string>
+    <string name="login">Masuk</string>
+    <string name="sign_up">Daftar</string>
+    <string name="confirm_password">Konfirmasi kata sandi</string>
+    <string name="name">Nama</string>
+    <string name="phone">Nomor telepon</string>
+    <string name="gender">Jenis Kelamin</string>
+    <string name="male">Laki-laki</string>
+    <string name="female">Perempuan</string>
+    <string name="register">Daftar</string>
+    <string name="profile">Profil</string>
+    <string name="confirm_new_password">Konfirmasi kata sn=andi baru</string>
+    <string name="new_password">password baru</string>
+    <string name="save">Simpan</string>
+    <string name="change_language">ganti bahasa</string>
+    <string name="change_password">Ganti Kata sandi</string>
+    <string name="logout">keluar</string>
+</resources>

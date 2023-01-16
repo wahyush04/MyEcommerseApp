@@ -1,4 +1,4 @@
-package com.wahyush04.androidphincon.ui.home
+package com.wahyush04.androidphincon.ui.main.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -43,6 +43,8 @@ class HomeFragment : Fragment() {
         sharedPreferences = PreferenceHelper(context)
         val token : String? = sharedPreferences.getToken(Constant.PHONE)
         Log.d("PrefName", token.toString())
+        val image : String? = sharedPreferences.getToken(Constant.IMAGE)
+        Log.d("IMAGE", "image : " + image.toString())
 
         return root
     }

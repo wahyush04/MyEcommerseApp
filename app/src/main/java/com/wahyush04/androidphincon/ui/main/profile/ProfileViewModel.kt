@@ -1,4 +1,4 @@
-package com.wahyush04.androidphincon.ui.profile
+package com.wahyush04.androidphincon.ui.main.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

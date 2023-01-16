@@ -18,6 +18,7 @@ data class DataUser(
     val name : String,
     val email : String,
     val phone : String,
-    val gender : Int
+    val gender : Int,
+    val path : String
 )
 

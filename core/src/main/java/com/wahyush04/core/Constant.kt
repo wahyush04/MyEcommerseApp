@@ -8,6 +8,7 @@ class Constant {
         const val EMAIL = "EMAIL"
         const val PHONE = "PHONE"
         const val GENDER = "GENDER"
+        const val IMAGE = "IMAGE"
         const val TOKEN = "ACCESS_TOKEN"
         const val REFRESH_TOKEN = "REFRESH_TOKEN"
     }

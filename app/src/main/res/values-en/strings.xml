@@ -19,4 +19,8 @@
     <string name="change_language">Change Language</string>
     <string name="change_password">Change_Password</string>
     <string name="logout">Logout</string>
+    <string name="wrong_email_format">Wrong Email Format</string>
+    <string name="camera">Camera</string>
+    <string name="galllery">Gallery</string>
+    <string name="select_image">Select Image</string>
 </resources>

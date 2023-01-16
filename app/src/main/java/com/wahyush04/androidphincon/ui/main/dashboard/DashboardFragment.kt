@@ -1,4 +1,4 @@
-package com.wahyush04.androidphincon.ui.dashboard
+package com.wahyush04.androidphincon.ui.main.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater

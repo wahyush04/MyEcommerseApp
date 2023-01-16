@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">AndroidPhincon</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home" translatable="false">Home</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
+    <string name="title_notifications" translatable="false">Notifications</string>
     <string name="logo">logo</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -23,4 +23,8 @@
     <string name="change_language">Change Language</string>
     <string name="change_password">Change Password</string>
     <string name="logout">Logout</string>
+    <string name="wrong_email_format">Wrong Email Format</string>
+    <string name="camera">Camera</string>
+    <string name="galllery">Gallery</string>
+    <string name="select_image">Select Image</string>
 </resources>

@@ -64,8 +64,9 @@ class LoginActivity : AppCompatActivity() {
                 val emailUser = data.success.data_user.email
                 val phone = data.success.data_user.phone
                 val gender = data.success.data_user.gender
+                val image =  data.success.data_user.path
                 if (status == 200){
-                    sharedPreferences.put(accessToken, refreshToken, id, name, emailUser, phone, gender)
+                    sharedPreferences.put(accessToken, refreshToken, id, name, emailUser, phone, gender, image)
                     sharedPreferences.putLogin(Constant.IS_LOGIN, true)
                     Toast.makeText(this,data.success.message,Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, MainActivity::class.java))

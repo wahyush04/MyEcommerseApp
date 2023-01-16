@@ -11,6 +11,9 @@ import com.wahyush04.core.api.ApiConfig
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.register.RegisterResponse
 import com.wahyush04.core.helper.Event
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,8 +26,9 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     private var _registerError = MutableLiveData<Event<ErrorResponse>>()
     val registerError: LiveData<Event<ErrorResponse>> = _registerError
 
-    fun register(name:String, email: String, password: String, phone : String, gender : Int){
-        val client = ApiConfig.getApiService().userRegister("TuIBt77u7tZHi8n7WqUC", name, email, password, phone, gender)
+    fun register(name:String, email: String, password: String, phone : String, gender : Int, file: MultipartBody.Part?){
+        Log.d("photo", "ViewModel :"+name+" "+ email +" "+password+ " "+ file)
+        val client = ApiConfig.getApiService().userRegister("TuIBt77u7tZHi8n7WqUC", name.toRequestBody("text/plain".toMediaType()), email.toRequestBody("text/plain".toMediaType()), password.toRequestBody("text/plain".toMediaType()), phone.toRequestBody("text/plain".toMediaType()), gender, file)
         client.enqueue(object  : Callback <RegisterResponse>{
             override fun onResponse(
                 call: Call<RegisterResponse>,

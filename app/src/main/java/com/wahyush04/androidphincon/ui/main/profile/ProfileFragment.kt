@@ -1,13 +1,12 @@
 package com.wahyush04.androidphincon.ui.main.profile
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
@@ -27,7 +26,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.wahyush04.androidphincon.MainActivity
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.customview.CustomSpinnerAdapter
 import com.wahyush04.androidphincon.databinding.FragmentProfileBinding
@@ -35,11 +33,14 @@ import com.wahyush04.androidphincon.ui.changepassword.ChangePasswordActivity
 import com.wahyush04.androidphincon.ui.login.LoginActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
+import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile
-import kotlinx.android.synthetic.main.fragment_profile.*
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.util.*
+
 
 class ProfileFragment : Fragment() {
 
@@ -48,22 +49,21 @@ class ProfileFragment : Fragment() {
     private var imageMultipart : MultipartBody.Part? = null
     private lateinit var currentPhotoPath: String
     private lateinit var sharedPreferences: PreferenceHelper
-    companion object {
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val REQUEST_CODE_PERMISSIONS = 10
-    }
-    val arrLanguage = arrayOf("EN","ID")
-    val arrFlag = intArrayOf(R.drawable.united_states, R.drawable.indonesia)
+    private lateinit var profileViewModel: ProfileViewModel
+    private var isUserAction = false
 
+    val arrLanguage = arrayOf("IN","EN","ID")
+    val arrFlag = intArrayOf(R.drawable.united_nations, R.drawable.united_states, R.drawable.indonesia)
 
     private val binding get() = _binding!!
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val profileViewModel =
+        profileViewModel =
             ViewModelProvider(this)[ProfileViewModel::class.java]
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -71,22 +71,25 @@ class ProfileFragment : Fragment() {
         sharedPreferences = PreferenceHelper(requireContext())
 
         val image : String? = sharedPreferences.getToken(Constant.IMAGE)
-        Log.d("IMAGE", "image : " + image.toString())
+        val name : String? = sharedPreferences.getToken(Constant.NAME)
+        val email : String? = sharedPreferences.getToken(Constant.EMAIL)
+        val localeID : String? = sharedPreferences.getToken(Constant.LOCALE)
+        binding.tvName.text = name
+        binding.tvEmail.text = email
+
 
         Glide.with(this)
             .load(image)
             .into(binding.ivPhotoProfile)
-
-//        val pref = context?.getSharedPreferences("loginData", Context.MODE_PRIVATE)
-//        val editor : SharedPreferences.Editor = pref!!.edit()
 
         binding.cvChangePassword.setOnClickListener {
             val intent = Intent(requireContext(), ChangePasswordActivity::class.java)
             startActivity(intent)
         }
 
-        binding.btnAddImage.setOnClickListener {
+        binding.btnChangeImage.setOnClickListener {
             selectImageFrom()
+
         }
 
         binding.cvLogout.setOnClickListener {
@@ -102,44 +105,43 @@ class ProfileFragment : Fragment() {
         }
 
 
-        binding.languageSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (position == 0) {
-                    setLocate("en")
-//                    activity!!.recreate()
-                    Log.d("language", "setlocale")
-
-                } else if (position == 1) {
-                    setLocate("in")
-//                    activity!!.recreate()
-                    Log.d("language", "setlocale")
-                }
-                Toast.makeText(requireContext(),"you select: $position \n${arrLanguage[position]}", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-        }
         val customSpinnerAdapter = CustomSpinnerAdapter(requireContext(), arrFlag, arrLanguage)
         binding.languageSpinner.adapter = customSpinnerAdapter
-        return binding.root
-    }
 
-    private fun logout(){
-        sharedPreferences.clear()
-        startActivity(Intent(requireContext(), LoginActivity::class.java))
-        Toast.makeText(
-            requireContext(),
-            "Log out Berhasil",
-            Toast.LENGTH_LONG
-        ).show()
-        activity?.finish()
+        val spinner = binding.languageSpinner
+
+        spinner.setOnTouchListener { view, motionEvent ->
+            isUserAction = true
+            false
+        }
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (isUserAction) {
+                    if (position == 2) {
+                        setLocate("in")
+                        Log.d("language", position.toString())
+                        sharedPreferences.putLocale(position.toString())
+                        activity!!.recreate()
+                    } else if (position == 1){
+                        setLocate("en")
+                        Log.d("language", position.toString())
+                        sharedPreferences.putLocale(position.toString())
+                        activity!!.recreate()
+                    }
+                } else {
+                    isUserAction = false
+                }
+
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        if (localeID != null) {
+            binding.languageSpinner.setSelection(localeID.toInt())
+        }
+
+        return binding.root
     }
 
     private fun startGallery() {
@@ -148,6 +150,21 @@ class ProfileFragment : Fragment() {
         intent.type = "image/*"
         val chooser = Intent.createChooser(intent, "Choose a Picture")
         launcherIntentGallery.launch(chooser)
+    }
+
+    private val launcherIntentGallery = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            val selectedImg: Uri = result.data?.data as Uri
+
+            val myFile = uriToFile(selectedImg, requireActivity())
+
+            getFile = myFile
+
+            changeImage()
+
+        }
     }
 
     private fun startTakePhoto() {
@@ -174,29 +191,21 @@ class ProfileFragment : Fragment() {
 
             getFile = myFile
 
+            changeImage()
 
-            val result = BitmapFactory.decodeFile(myFile.path)
-
-            val rotatedImage = rotateBitmap(result)
-
-            binding.ivPhotoProfile.setImageBitmap(rotatedImage)
         }
     }
 
-    private val launcherIntentGallery = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == AppCompatActivity.RESULT_OK) {
-            val selectedImg: Uri = result.data?.data as Uri
-
-            val myFile = uriToFile(selectedImg, requireContext())
-
-            getFile = myFile
-
-            binding.ivPhotoProfile.setImageURI(selectedImg)
-        }
+    private fun logout(){
+        sharedPreferences.clear()
+        startActivity(Intent(requireContext(), LoginActivity::class.java))
+        Toast.makeText(
+            requireContext(),
+            "Log out Berhasil",
+            Toast.LENGTH_LONG
+        ).show()
+        activity?.finish()
     }
-
     fun rotateBitmap(bitmap: Bitmap, isBackCamera: Boolean = false): Bitmap {
         val matrix = Matrix()
         return if (isBackCamera) {
@@ -225,10 +234,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
-    }
-
     private fun checkPermission(permission: String): Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
@@ -236,15 +241,8 @@ class ProfileFragment : Fragment() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     private fun selectImageFrom() {
         val items = arrayOf(getString(R.string.camera), getString(R.string.galllery))
-//        val builder = AlertDialog.Builder(this)
-
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.select_image))
             .setItems(items){ _, which ->
@@ -254,24 +252,7 @@ class ProfileFragment : Fragment() {
                 }
             }
             .show()
-//        builder.setTitle(getString(R.string.select_image))
-//        builder.setItems(items) { _, which ->
-//            if (items[which] == "Camera"){
-//                startTakePhoto()
-//            }else{
-//                startGallery()
-//            }
-//            Toast.makeText(applicationContext, items[which], Toast.LENGTH_SHORT).show()
-//        }
-
-//        val dialog = builder.create()
-//        dialog.show()
     }
-
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        setLanguage()
-//    }
 
     private fun setLocate(lang: String) {
         val locale = Locale(lang)
@@ -281,17 +262,46 @@ class ProfileFragment : Fragment() {
         requireActivity().resources.updateConfiguration(config, requireActivity().resources.displayMetrics)
     }
 
-    fun setLanguage(){
-        Log.d("language", "setLanguage")
-
-//        binding.apply {
-//            language_spinner.post(Runnable {
-//
-//            })
-//            val customSpinnerAdapter = CustomSpinnerAdapter(requireContext(), arrFlag, arrLanguage)
-//            language_spinner.adapter = customSpinnerAdapter
-//        }
-
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
+
+    private fun changeImage(){
+        val file = reduceFileImage(getFile as File)
+        val requestImageFIle =  file.asRequestBody("image/jpg".toMediaType())
+        imageMultipart = MultipartBody.Part.createFormData(
+            "image",
+            file.name,
+            requestImageFIle
+        )
+        Log.d("changeimage","file : " + file.toString())
+
+        val id = sharedPreferences.getToken(Constant.ID)!!
+        val token = sharedPreferences.getToken(Constant.TOKEN)
+
+        val activity = requireActivity()
+        val context = activity.applicationContext
+        val pref : SharedPreferences = context.getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
+
+        profileViewModel.changeImage(token.toString(), id, imageMultipart!!, sharedPreferences)
+        profileViewModel.getChangeImageResponse().observe(this){ data ->
+            val status = data.success.status
+            if (status == 200){
+                kotlin.run {
+                    sharedPreferences.changeImage(data.success.path)
+                }
+                Log.d("newimage : ", "preference"+sharedPreferences.getPreference(Constant.IMAGE).toString())
+                Log.d("newimage : ", "newimage"+data.success.path)
+
+                Glide.with(this)
+                    .load(data.success.path)
+                    .into(binding.ivPhotoProfile)
+
+
+            }
+
+        }
+    }
+
 }

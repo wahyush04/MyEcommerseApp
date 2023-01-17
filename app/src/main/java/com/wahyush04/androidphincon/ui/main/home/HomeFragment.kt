@@ -40,11 +40,14 @@ class HomeFragment : Fragment() {
         val activity = requireActivity()
         val context = activity.applicationContext
 
+
         sharedPreferences = PreferenceHelper(context)
         val token : String? = sharedPreferences.getToken(Constant.PHONE)
         Log.d("PrefName", token.toString())
         val image : String? = sharedPreferences.getToken(Constant.IMAGE)
         Log.d("IMAGE", "image : " + image.toString())
+
+
 
         return root
     }

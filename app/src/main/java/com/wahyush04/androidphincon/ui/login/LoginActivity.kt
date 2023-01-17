@@ -1,13 +1,20 @@
 package com.wahyush04.androidphincon.ui.login
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.wahyush04.core.Constant
@@ -21,6 +28,32 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var sharedPreferences: PreferenceHelper
 
+    companion object {
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private const val REQUEST_CODE_PERMISSIONS = 10
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (!allPermissionsGranted()) {
+                Toast.makeText(
+                    this,
+                    "Tidak mendapatkan permission.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }
+        }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,20 +63,16 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.hide()
         sharedPreferences = PreferenceHelper(this)
 
-        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+        if (!allPermissionsGranted()) {
+            ActivityCompat.requestPermissions(
+                this,
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
 
-//        binding.edtEmail.addTextChangedListener(object : TextWatcher{
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//            }
-//
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                setEmailEditText()
-//            }
-//
-//            override fun afterTextChanged(p0: Editable?) {
-//            }
-//
-//        })
+
+        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
 
         binding.edtEmail.doOnTextChanged { _, _, _, _ ->
             setEmailEditText()
@@ -89,9 +118,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showLoading(state: Boolean){
         if (state){
-            binding.progressBar.visibility = View.VISIBLE
+            binding.loadingDialog.loadingLayout.visibility = View.VISIBLE
         }else{
-            binding.progressBar.visibility = View.GONE
+            binding.loadingDialog.loadingLayout.visibility = View.GONE
         }
     }
 

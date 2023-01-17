@@ -3,6 +3,7 @@ package com.wahyush04.androidphincon
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -23,19 +24,17 @@ import com.wahyush04.androidphincon.ui.login.LoginActivity
 import com.wahyush04.androidphincon.ui.register.RegisterActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: PreferenceHelper
+    private var idLocale: String = "en"
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
@@ -56,6 +55,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun checkPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,6 +73,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         sharedPreferences = PreferenceHelper(this)
+        Log.d("tokenLogin", sharedPreferences.getPreference(Constant.TOKEN).toString())
+        Log.d("tokenLogin", sharedPreferences.getPreference(Constant.ID).toString())
+        setLocate()
+        Log.d("localPref", sharedPreferences.getPreference(Constant.LOCALE).toString())
 
         setAppBar()
 
@@ -98,5 +112,20 @@ class MainActivity : AppCompatActivity() {
         val colorDrawable = ColorDrawable(Color.parseColor("#FFC7CD"))
         actionBar?.elevation = 0F
         actionBar!!.setBackgroundDrawable(colorDrawable)
+    }
+
+    private fun setLocate() {
+        val localeID : String? = sharedPreferences.getPreference(Constant.LOCALE).toString()
+        if (localeID == null){
+            idLocale = "en"
+        }else if (localeID == "2"){
+            idLocale = "in"
+        }
+
+        val locale = Locale(idLocale)
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.locale = locale
+        resources.updateConfiguration(config, this.resources.displayMetrics)
     }
 }

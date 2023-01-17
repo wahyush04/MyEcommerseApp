@@ -1,7 +1,9 @@
 package com.wahyush04.androidphincon.ui.register
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -27,6 +29,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityRegisterBinding
 import com.wahyush04.androidphincon.ui.login.LoginActivity
+import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile
@@ -81,6 +84,8 @@ class RegisterActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         }
+
+        val pref : SharedPreferences = this.getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
 
         binding.edtEmail.doOnTextChanged { _, _, _, _ ->
             setEmailEditText()
@@ -233,6 +238,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun register(){
+        val pref : SharedPreferences = this.getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
 
 //        if (getFile != null){
             val file = reduceFileImage(getFile as File)

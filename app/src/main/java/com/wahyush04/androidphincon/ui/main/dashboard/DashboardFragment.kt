@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.FragmentDashboardBinding
 
 class DashboardFragment : Fragment() {
@@ -29,9 +30,7 @@ class DashboardFragment : Fragment() {
         val root: View = binding.root
 
         val textView: TextView = binding.textDashboard
-        dashboardViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        textView.text = getString(R.string.dashboard_fragment)
         return root
     }
 

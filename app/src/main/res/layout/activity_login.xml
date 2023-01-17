@@ -7,17 +7,27 @@
     android:background="@color/primaryLightColor"
     tools:context=".ui.login.LoginActivity">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="100dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <include
+        android:id="@+id/loading_dialog"
+        layout="@layout/loading_layout"
+        android:layout_width="186dp"
+        android:layout_height="160dp"
+        app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+<!--    <ProgressBar-->
+<!--        android:id="@+id/progressBar"-->
+<!--        style="?android:attr/progressBarStyle"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:elevation="100dp"-->
+<!--        android:visibility="invisible"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <ImageView
         android:id="@+id/iv_logo"
@@ -33,6 +43,7 @@
 
 
     <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="21dp"
@@ -48,14 +59,14 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:gravity="center"
                 android:id="@+id/emailedtlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@color/white"
                 android:layout_marginStart="40dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="32dp"
+                android:background="@color/white"
+                android:gravity="center"
                 app:boxBackgroundColor="@color/white"
                 app:layout_constraintTop_toBottomOf="@+id/emailedtlayout"
                 app:startIconDrawable="@drawable/ic_baseline_person_24">
@@ -64,26 +75,26 @@
                     android:id="@+id/edt_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints=""
                     android:ems="10"
                     android:hint="@string/email"
-                    android:inputType="textEmailAddress"
-                    android:autofillHints="" />
+                    android:inputType="textEmailAddress" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:gravity="center"
                 android:id="@+id/passwordedtlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@color/white"
                 android:layout_marginStart="40dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="32dp"
+                android:background="@color/white"
+                android:gravity="center"
                 app:boxBackgroundColor="@color/white"
                 app:layout_constraintTop_toBottomOf="@+id/emailedtlayout"
-                app:startIconDrawable="@drawable/ic_baseline_lock_24"
-                app:passwordToggleEnabled="true">
+                app:passwordToggleEnabled="true"
+                app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_password"
@@ -115,14 +126,14 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_to_signup"
                     style="@style/Widget.MaterialComponents.Button"
-                    android:translationY="50dp"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
-                    android:paddingTop="10dp"
-                    android:gravity="top|center"
                     android:layout_gravity="center|bottom"
                     android:layout_marginTop="40dp"
+                    android:gravity="top|center"
+                    android:paddingTop="10dp"
                     android:text="@string/sign_up"
+                    android:translationY="50dp"
                     app:cornerRadius="30dp" />
             </FrameLayout>
         </LinearLayout>

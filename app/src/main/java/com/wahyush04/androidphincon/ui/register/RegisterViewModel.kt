@@ -1,6 +1,7 @@
 package com.wahyush04.androidphincon.ui.register
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -8,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wahyush04.core.api.ApiConfig
+import com.wahyush04.core.api.AuthApiConfig
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.register.RegisterResponse
 import com.wahyush04.core.helper.Event
@@ -28,7 +30,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
 
     fun register(name:String, email: String, password: String, phone : String, gender : Int, file: MultipartBody.Part?){
         Log.d("photo", "ViewModel :"+name+" "+ email +" "+password+ " "+ file)
-        val client = ApiConfig.getApiService().userRegister("TuIBt77u7tZHi8n7WqUC", name.toRequestBody("text/plain".toMediaType()), email.toRequestBody("text/plain".toMediaType()), password.toRequestBody("text/plain".toMediaType()), phone.toRequestBody("text/plain".toMediaType()), gender, file)
+        val client = AuthApiConfig.getApiService().userRegister("TuIBt77u7tZHi8n7WqUC", name.toRequestBody("text/plain".toMediaType()), email.toRequestBody("text/plain".toMediaType()), password.toRequestBody("text/plain".toMediaType()), phone.toRequestBody("text/plain".toMediaType()), gender, file)
         client.enqueue(object  : Callback <RegisterResponse>{
             override fun onResponse(
                 call: Call<RegisterResponse>,

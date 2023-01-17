@@ -1,6 +1,8 @@
 package com.wahyush04.androidphincon.ui.changepassword
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -25,6 +27,12 @@ class ChangePasswordActivity : AppCompatActivity() {
         changePasswordViewModel = ViewModelProvider(this)[ChangePasswordViewModel::class.java]
         sharedPreferences = PreferenceHelper(this)
 
+//        val pref : SharedPreferences = this.getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
+
+        val pref = getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
+
+        Log.d("tokenChangePassword", sharedPreferences.getPreference(Constant.TOKEN).toString())
+
         binding.btnSaveNewPassword.setOnClickListener {
             val id = sharedPreferences.getPreference(Constant.ID).toString()
             val accessToken = sharedPreferences.getPreference(Constant.TOKEN).toString()
@@ -32,7 +40,7 @@ class ChangePasswordActivity : AppCompatActivity() {
             val password = binding.edtOldPassword.text.toString()
             val newPassword = binding.edtNewPassword.text.toString()
             val confirmPassword = binding.edtConfirmNewPassword.text.toString()
-            changePasswordViewModel.changePassword(accessToken, id, password, newPassword, confirmPassword)
+            changePasswordViewModel.changePassword(accessToken, id, password, newPassword, confirmPassword, sharedPreferences)
 
             changePasswordViewModel.getChangePasswordResponse().observe(this){ data ->
                 val status = data.success.status

@@ -19,4 +19,5 @@
     <string name="change_language">ganti bahasa</string>
     <string name="change_password">Ganti Kata sandi</string>
     <string name="logout">keluar</string>
+    <string name="dashboard_fragment">Ini adalah Fragment Dashboard</string>
 </resources>

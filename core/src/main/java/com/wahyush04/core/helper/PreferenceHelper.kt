@@ -45,6 +45,29 @@ class PreferenceHelper(context: Context) {
         return  pref.getString(key, null)
     }
 
+    fun getLocalId(key: String) : Int {
+        return  pref.getInt(key, 1)
+    }
+
+    fun changeImage(value: String){
+        editor.putString(Constant.IMAGE, value)
+        editor.apply()
+    }
+
+    fun putLocale(value: String){
+        editor.putString(Constant.LOCALE, value)
+        editor.apply()
+    }
+
+    fun putNewToken(access_token : String, refresh_token : String ){
+        editor.apply{
+            putString(Constant.TOKEN, access_token)
+            putString(Constant.REFRESH_TOKEN, refresh_token)
+        }
+    }
+
+
+
     fun clear(){
         editor.clear().apply()
     }

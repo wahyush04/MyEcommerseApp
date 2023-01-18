@@ -14,6 +14,7 @@ class Constant {
         const val LOCALE = "LOCALE"
         const val APIKEY = "TuIBt77u7tZHi8n7WqUC"
         const val PREFKEY = "TuIBt77u7tZHi8n7WqUC"
+        const val BASE_URL = "http://172.17.20.201/"
 
     }
 }

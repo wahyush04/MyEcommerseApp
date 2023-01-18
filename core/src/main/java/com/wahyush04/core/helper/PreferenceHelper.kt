@@ -66,6 +66,12 @@ class PreferenceHelper(context: Context) {
         }
     }
 
+    fun clearToken(){
+        editor.remove(Constant.TOKEN)
+        editor.remove(Constant.REFRESH_TOKEN)
+        editor.apply()
+    }
+
 
 
     fun clear(){

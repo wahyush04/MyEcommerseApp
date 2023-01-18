@@ -1,15 +1,13 @@
 package com.wahyush04.androidphincon.ui.register
 
 import android.app.Application
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.wahyush04.core.api.ApiConfig
-import com.wahyush04.core.api.AuthApiConfig
+import com.wahyush04.androidphincon.api.AuthApiConfig
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.register.RegisterResponse
 import com.wahyush04.core.helper.Event

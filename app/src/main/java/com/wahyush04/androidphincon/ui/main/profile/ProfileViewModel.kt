@@ -1,11 +1,11 @@
 package com.wahyush04.androidphincon.ui.main.profile
 
-import android.content.SharedPreferences
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.wahyush04.core.api.ApiConfig
+import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.core.data.changeimage.ChangeImageResponse
 import com.wahyush04.core.helper.PreferenceHelper
 import okhttp3.MediaType.Companion.toMediaType
@@ -20,8 +20,8 @@ class ProfileViewModel : ViewModel() {
 
     val changeImageResponse = MutableLiveData<ChangeImageResponse>()
 
-    fun changeImage(token : String, id : String, image : MultipartBody.Part, pref : PreferenceHelper){
-        val client = ApiConfig.getApiService(pref).changeImage(token, id.toRequestBody("text/plain".toMediaType()), image)
+    fun changeImage(token : String, id : String, image : MultipartBody.Part, pref : PreferenceHelper, context : Context){
+        val client = ApiConfig.getApiService(pref, context).changeImage(token, id.toRequestBody("text/plain".toMediaType()), image)
         client.enqueue(object : Callback<ChangeImageResponse>{
             override fun onResponse(
                 call: Call<ChangeImageResponse>,

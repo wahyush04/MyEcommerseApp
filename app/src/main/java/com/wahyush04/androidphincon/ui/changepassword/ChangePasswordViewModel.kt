@@ -1,17 +1,16 @@
 package com.wahyush04.androidphincon.ui.changepassword
 
 import android.app.Application
-import android.content.SharedPreferences
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.wahyush04.core.api.ApiConfig
+import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.changepassword.ChangePasswordResponse
-import com.wahyush04.core.data.register.RegisterResponse
 import com.wahyush04.core.helper.Event
 import com.wahyush04.core.helper.PreferenceHelper
 import org.json.JSONObject
@@ -25,8 +24,8 @@ class ChangePasswordViewModel(application: Application) : AndroidViewModel(appli
     private var _registerError = MutableLiveData<Event<ErrorResponse>>()
     val registerError: LiveData<Event<ErrorResponse>> = _registerError
 
-    fun changePassword(access_token: String, id : String, password: String, new_password : String, confirm_password : String, pref : PreferenceHelper){
-        val client = ApiConfig.getApiService(pref).userChangePassword(id, password, new_password, confirm_password)
+    fun changePassword(id : String, password: String, new_password : String, confirm_password : String, pref : PreferenceHelper, context : Context){
+        val client = ApiConfig.getApiService(pref, context).userChangePassword(id, password, new_password, confirm_password)
         client.enqueue(object : Callback <ChangePasswordResponse>{
             override fun onResponse(
                 call: Call<ChangePasswordResponse>,

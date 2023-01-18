@@ -1,33 +1,32 @@
-package com.wahyush04.core.api
+package com.wahyush04.androidphincon.api
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.util.Log
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
-import com.wahyush04.core.refreshtoken.RefreshTokenInterceptor
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+
 
 class ApiConfig {
     companion object{
-        fun getApiService(pref : PreferenceHelper): ApiService {
+        fun getApiService(
+            pref : PreferenceHelper,
+            context : Context): ApiService {
             val loggingInterceptor =
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder()
-                .addInterceptor { chain: Interceptor.Chain ->
-                    val newRequest = chain.request().newBuilder()
-                        .addHeader("apikey", Constant.APIKEY)
-                        .addHeader("Authorization", pref.getPreference(Constant.TOKEN).toString())
-                        .build()
-
-                    // Proceed with the new request
-                    chain.proceed(newRequest)
-                }
                 .addInterceptor(loggingInterceptor)
-                .addInterceptor(RefreshTokenInterceptor(pref))
+                .addInterceptor(HeaderInterceptor(pref)) //header
+                .addInterceptor(AuthBadResponse(pref, context)) // 401 bad response
+                .authenticator(AuthAuthenticator(pref)) // get refresh token
+                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
                 .build()
             val retrofit = Retrofit.Builder()
                 .baseUrl("http://172.17.20.201/")

@@ -31,16 +31,15 @@ class ChangePasswordActivity : AppCompatActivity() {
 
         val pref = getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
 
-        Log.d("tokenChangePassword", sharedPreferences.getPreference(Constant.TOKEN).toString())
-
         binding.btnSaveNewPassword.setOnClickListener {
             val id = sharedPreferences.getPreference(Constant.ID).toString()
             val accessToken = sharedPreferences.getPreference(Constant.TOKEN).toString()
-            Log.d("AKSESTOKEN", accessToken)
+            Log.d("cekToken", "tokencpwactivity : $accessToken")
+
             val password = binding.edtOldPassword.text.toString()
             val newPassword = binding.edtNewPassword.text.toString()
             val confirmPassword = binding.edtConfirmNewPassword.text.toString()
-            changePasswordViewModel.changePassword(accessToken, id, password, newPassword, confirmPassword, sharedPreferences)
+            changePasswordViewModel.changePassword(id, password, newPassword, confirmPassword, sharedPreferences, this)
 
             changePasswordViewModel.getChangePasswordResponse().observe(this){ data ->
                 val status = data.success.status

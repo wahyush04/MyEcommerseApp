@@ -1,4 +1,4 @@
-package com.wahyush04.core.api
+package com.wahyush04.androidphincon.api
 
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.changeimage.ChangeImageResponse
@@ -10,6 +10,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
@@ -67,13 +68,12 @@ interface ApiService {
     ) : Call<ChangeImageResponse>
 
     //Refresh Token
-//    @Headers(*["apikey:TuIBt77u7tZHi8n7WqUC"])
     @FormUrlEncoded
+    @Headers(*["apikey:TuIBt77u7tZHi8n7WqUC"])
     @POST("training_android/public/api/ecommerce/refresh-token")
-    fun refreshToken(
-//        @Header("apikey") apikey : String,
-        @Field("id_user") id_user : Int,
-        @Field("access_token") access_token : String,
-        @Field("refresh_token") refresh_token : String
-    ) : Call<RefreshTokenResponse>
+    suspend fun refreshToken(
+        @Field("id_user") id_user : Int?,
+        @Field("access_token") access_token : String?,
+        @Field("refresh_token") refresh_token : String?
+    ) : Response<RefreshTokenResponse>
 }

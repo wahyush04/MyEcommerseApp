@@ -1,6 +1,5 @@
-package com.wahyush04.core.api
+package com.wahyush04.androidphincon.api
 
-import androidx.constraintlayout.solver.state.State.Chain
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

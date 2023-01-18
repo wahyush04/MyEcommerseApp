@@ -284,7 +284,7 @@ class ProfileFragment : Fragment() {
         val context = activity.applicationContext
         val pref : SharedPreferences = context.getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
 
-        profileViewModel.changeImage(token.toString(), id, imageMultipart!!, sharedPreferences)
+        profileViewModel.changeImage(token.toString(), id, imageMultipart!!, sharedPreferences, requireContext().applicationContext)
         profileViewModel.getChangeImageResponse().observe(this){ data ->
             val status = data.success.status
             if (status == 200){

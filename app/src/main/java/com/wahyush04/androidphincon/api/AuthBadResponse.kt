@@ -2,7 +2,6 @@ package com.wahyush04.androidphincon.api
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import com.wahyush04.androidphincon.ui.login.LoginActivity
 import com.wahyush04.core.helper.PreferenceHelper
 import kotlinx.coroutines.runBlocking

@@ -17,15 +17,12 @@ class CustomSpinnerAdapter(internal var context: Context, internal var images: I
     override fun getCount(): Int {
         return images.size
     }
-
     override fun getItem(p0: Int): Any? {
         return null
     }
-
     override fun getItemId(p0: Int): Long {
         return 0
     }
-
     @SuppressLint("ViewHolder")
     override fun getView(i: Int, p1: View?, p2: ViewGroup?): View {
         val view = inflater.inflate(R.layout.language_spinner,null)

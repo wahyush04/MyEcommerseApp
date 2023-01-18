@@ -26,7 +26,6 @@ class AuthAuthenticator(
             println("token $newToken")
 
             if (!newToken.isSuccessful || newToken.body() == null || newToken.code() == 401) {
-                //response.close()
                 preferences.clearToken()
             }
 

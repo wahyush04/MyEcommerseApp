@@ -229,31 +229,35 @@
                     </RadioGroup>
 
                     <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.MaterialComponents.Button"
-                        android:layout_gravity="center"
-                        app:cornerRadius="7dp"
                         android:id="@+id/btn_register"
-                        android:layout_marginTop="40dp"
-                        android:layout_marginStart="40dp"
-                        android:layout_marginEnd="38dp"
+                        style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="279dp"
                         android:layout_height="60dp"
-                        android:text="@string/register"/>
+                        android:layout_gravity="center"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginEnd="38dp"
+                        android:text="@string/register"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:cornerRadius="7dp" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
                         <com.google.android.material.button.MaterialButton
-                            android:background="@drawable/rounded_frame_layout"
-                            style="@style/Widget.MaterialComponents.Button"
-                            android:layout_gravity="center"
-                            app:cornerRadius="30dp"
                             android:id="@+id/btn_to_login"
-                            android:layout_marginTop="40dp"
+                            style="@style/Widget.MaterialComponents.Button"
                             android:layout_width="match_parent"
                             android:layout_height="65dp"
-                            android:text="@string/login"/>
-
+                            android:layout_gravity="center"
+                            android:layout_marginTop="20dp"
+                            android:background="@drawable/rounded_frame_layout"
+                            android:text="@string/login"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            app:cornerRadius="30dp" />
                     </FrameLayout>
                 </LinearLayout>
             </FrameLayout>

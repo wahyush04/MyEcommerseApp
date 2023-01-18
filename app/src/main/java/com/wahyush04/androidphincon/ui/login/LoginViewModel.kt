@@ -49,9 +49,4 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     fun getDetailLogin(): LiveData<LoginResponse>{
         return userDetail
     }
-
-//    fun getErrorBody(): LiveData<ErrorResponse> {
-//        return _errorMessage
-//    }
-
 }

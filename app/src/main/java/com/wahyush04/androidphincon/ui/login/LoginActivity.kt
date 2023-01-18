@@ -14,6 +14,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
@@ -99,7 +100,9 @@ class LoginActivity : AppCompatActivity() {
                     sharedPreferences.put(accessToken, refreshToken, id, name, emailUser, phone, gender, image)
                     sharedPreferences.putLogin(Constant.IS_LOGIN, true)
                     Toast.makeText(this,data.success.message,Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, MainActivity::class.java))
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
                 }
             }
 

@@ -3,13 +3,17 @@ package com.wahyush04.androidphincon.ui.changepassword
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.wahyush04.androidphincon.MainActivity
+import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityChangePasswordBinding
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
@@ -27,9 +31,10 @@ class ChangePasswordActivity : AppCompatActivity() {
         changePasswordViewModel = ViewModelProvider(this)[ChangePasswordViewModel::class.java]
         sharedPreferences = PreferenceHelper(this)
 
-//        val pref : SharedPreferences = this.getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
-
-        val pref = getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
+        setAppBar()
+        binding.ivBack.setOnClickListener {
+            this@ChangePasswordActivity.onBackPressed()
+        }
 
         binding.btnSaveNewPassword.setOnClickListener {
             val id = sharedPreferences.getPreference(Constant.ID).toString()
@@ -55,5 +60,9 @@ class ChangePasswordActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun setAppBar(){
+        supportActionBar?.hide()
     }
 }

@@ -20,8 +20,8 @@ class ProfileViewModel : ViewModel() {
 
     val changeImageResponse = MutableLiveData<ChangeImageResponse>()
 
-    fun changeImage(token : String, id : String, image : MultipartBody.Part, pref : PreferenceHelper, context : Context){
-        val client = ApiConfig.getApiService(pref, context).changeImage(token, id.toRequestBody("text/plain".toMediaType()), image)
+    fun changeImage( id : String, image : MultipartBody.Part, pref : PreferenceHelper, context : Context){
+        val client = ApiConfig.getApiService(pref, context).changeImage(id.toRequestBody("text/plain".toMediaType()), image)
         client.enqueue(object : Callback<ChangeImageResponse>{
             override fun onResponse(
                 call: Call<ChangeImageResponse>,

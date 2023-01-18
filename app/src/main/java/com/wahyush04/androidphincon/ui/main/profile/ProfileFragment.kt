@@ -7,7 +7,9 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -51,7 +53,6 @@ class ProfileFragment : Fragment() {
     private lateinit var sharedPreferences: PreferenceHelper
     private lateinit var profileViewModel: ProfileViewModel
     private var isUserAction = false
-
     val arrLanguage = arrayOf("IN","EN","ID")
     val arrFlag = intArrayOf(R.drawable.united_nations, R.drawable.united_states, R.drawable.indonesia)
 
@@ -76,7 +77,6 @@ class ProfileFragment : Fragment() {
         val localeID : String? = sharedPreferences.getToken(Constant.LOCALE)
         binding.tvName.text = name
         binding.tvEmail.text = email
-
 
         Glide.with(this)
             .load(image)
@@ -139,6 +139,8 @@ class ProfileFragment : Fragment() {
 
         if (localeID != null) {
             binding.languageSpinner.setSelection(localeID.toInt())
+        } else {
+            binding.languageSpinner.setSelection(1)
         }
 
         return binding.root
@@ -192,13 +194,14 @@ class ProfileFragment : Fragment() {
             getFile = myFile
 
             changeImage()
-
         }
     }
 
     private fun logout(){
         sharedPreferences.clear()
-        startActivity(Intent(requireContext(), LoginActivity::class.java))
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
         Toast.makeText(
             requireContext(),
             "Log out Berhasil",
@@ -275,16 +278,10 @@ class ProfileFragment : Fragment() {
             file.name,
             requestImageFIle
         )
-        Log.d("changeimage","file : " + file.toString())
 
         val id = sharedPreferences.getToken(Constant.ID)!!
-        val token = sharedPreferences.getToken(Constant.TOKEN)
 
-        val activity = requireActivity()
-        val context = activity.applicationContext
-        val pref : SharedPreferences = context.getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
-
-        profileViewModel.changeImage(token.toString(), id, imageMultipart!!, sharedPreferences, requireContext().applicationContext)
+        profileViewModel.changeImage( id, imageMultipart!!, sharedPreferences, requireContext().applicationContext)
         profileViewModel.getChangeImageResponse().observe(this){ data ->
             val status = data.success.status
             if (status == 200){
@@ -297,11 +294,9 @@ class ProfileFragment : Fragment() {
                 Glide.with(this)
                     .load(data.success.path)
                     .into(binding.ivPhotoProfile)
-
-
             }
-
         }
     }
+
 
 }

@@ -22,18 +22,6 @@ interface ApiService {
         @Field("password") password : String
     ): Call<LoginResponse>
 
-////    @Multipart
-//    @FormUrlEncoded
-//    @POST("training_android/public/api/ecommerce/registration")
-//    fun userRegister(
-//        @Header("apikey") apikey : String,
-//        @Field("name") name : String,
-//        @Field("email") email : String,
-//        @Field("password") password: String,
-//        @Field("phone") phone : String,
-//        @Field("gender") gender : Int
-//    ): Call<RegisterResponse>
-
     @Multipart
     @POST("training_android/public/api/ecommerce/registration")
     fun userRegister(
@@ -50,7 +38,6 @@ interface ApiService {
     @FormUrlEncoded
     @PUT("training_android/public/api/ecommerce/change-password/{id}")
     fun userChangePassword(
-//        @Header("Authorization") Authorization : String,
         @Path("id") id : String,
         @Field("password") password : String,
         @Field("new_password") new_Password : String,
@@ -61,8 +48,6 @@ interface ApiService {
     @Multipart
     @POST("training_android/public/api/ecommerce/change-image")
     fun changeImage(
-//        @Header("apikey") apikey : String,
-        @Header("Authorization") Authorization : String,
         @Part("id") id : RequestBody,
         @Part image : MultipartBody.Part
     ) : Call<ChangeImageResponse>

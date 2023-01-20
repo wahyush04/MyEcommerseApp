@@ -11,6 +11,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
 import com.wahyush04.androidphincon.ui.main.adapter.ProductListAdapter
@@ -31,6 +32,7 @@ class HomeFragment : Fragment() {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
     private var searchJob: Job? = null
+    private var febJob: Job? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -59,7 +61,29 @@ class HomeFragment : Fragment() {
             selectSorting()
         }
 
+        binding.febSort.hide()
+
         setData(null)
+
+        binding.rvProductList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                binding.febSort.hide()
+                if (dy >= 0) {
+                    febJob?.cancel()
+                    febJob = coroutineScope.launch {
+                        delay(3000)
+                        binding.febSort.show()
+                    }
+                } else if (dy <= 0) {
+                    febJob?.cancel()
+                    febJob = coroutineScope.launch {
+                        delay(3000)
+                        binding.febSort.show()
+                    }
+                }
+            }
+        })
 
         binding.svSearch.doOnTextChanged { text, start, before, count ->
             searchJob?.cancel()
@@ -83,6 +107,7 @@ class HomeFragment : Fragment() {
 
         return root
     }
+
 
 
     private fun setData(sort : String?){
@@ -146,7 +171,6 @@ class HomeFragment : Fragment() {
                     "From A to Z" -> setData("From A to Z")
                     "From Z to A" -> setData("From Z to A")
                 }
-
             }
             .setNegativeButton("Cancel"){ dialog, _ ->
                 dialog.dismiss()
@@ -184,4 +208,5 @@ class HomeFragment : Fragment() {
         homeViewModel.getProduct(null, requireContext().applicationContext , sharedPreferences)
         setData(null)
     }
+
 }

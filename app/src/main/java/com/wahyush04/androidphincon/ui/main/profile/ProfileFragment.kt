@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wahyush04.androidphincon.R
@@ -37,6 +38,8 @@ import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -90,6 +93,7 @@ class ProfileFragment : Fragment() {
         binding.btnChangeImage.setOnClickListener {
             selectImageFrom()
         }
+
 
         binding.cvLogout.setOnClickListener {
             AlertDialog.Builder(requireContext())

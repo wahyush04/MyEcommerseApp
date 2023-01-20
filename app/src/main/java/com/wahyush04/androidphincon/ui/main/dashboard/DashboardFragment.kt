@@ -8,17 +8,21 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.androidphincon.databinding.FragmentDashboardBinding
 import com.wahyush04.androidphincon.ui.main.adapter.ProductListAdapter
 import com.wahyush04.androidphincon.ui.main.home.HomeViewModel
 import com.wahyush04.core.Constant
+import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.data.product.ProductResponse
 import com.wahyush04.core.helper.PreferenceHelper
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,6 +37,9 @@ class DashboardFragment : Fragment() {
     private lateinit var dashboardViewModel: DashboardViewModel
     private lateinit var sharedPreferences: PreferenceHelper
     private lateinit var adapter: ProductListAdapter
+
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
+    private var searchJob: Job? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -57,27 +64,33 @@ class DashboardFragment : Fragment() {
         binding.rvProductList.setHasFixedSize(true)
         binding.rvProductList.adapter = adapter
 
-        val idUser : String? = sharedPreferences.getPreference(Constant.ID)
+        val id = sharedPreferences.getPreference(Constant.ID)
 
-        binding.svSearch.doAfterTextChanged {
-            val search : String?  = binding.svSearch.text.toString()
-            getFavoriteProduct(search, idUser!!.toInt(), sharedPreferences)
+        binding.febSort.setOnClickListener {
+            selectSorting()
         }
 
-        dashboardViewModel.getFavoriteProductData().observe(viewLifecycleOwner){
-            if (it != null) {
-                adapter.setList(it)
-                binding.rvProductList.visibility = View.VISIBLE
-            }
+        setData(null)
 
-            if (it != null) {
-                if (it.isEmpty()){
-                    Toast.makeText(requireContext().applicationContext, "No Data", Toast.LENGTH_SHORT).show()
+        binding.svSearch.doOnTextChanged { text, start, before, count ->
+            searchJob?.cancel()
+            searchJob = coroutineScope.launch {
+                text?.let {
+                    delay(2000)
+                    if (it.isEmpty()) {
+                        getFavoriteProduct(null, id!!.toInt(), sharedPreferences)
+                    } else {
+                        getFavoriteProduct(text.toString(), id!!.toInt(), sharedPreferences)
+                    }
                 }
             }
-            showShimmer(false)
         }
 
+        adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback{
+            override fun onItemClicked(data: DataListProduct) {
+                Toast.makeText(requireContext().applicationContext, data.name_product, Toast.LENGTH_SHORT).show()
+            }
+        })
 
         return root
     }
@@ -87,19 +100,90 @@ class DashboardFragment : Fragment() {
         dashboardViewModel.getFavoriteProduct(search, id, requireContext().applicationContext, preferences)
     }
 
+    fun setData(sort : String?){
+        showShimmer(true)
+        dashboardViewModel.getFavoriteProductData().observe(viewLifecycleOwner){ data ->
+            if (data != null) {
+                if (sort == "From A to Z"){
+                    adapter.setList(data.sortedBy { it.name_product }.toList())
+                    binding.rvProductList.visibility = View.VISIBLE
+                } else if (sort == "From Z to A") {
+                    adapter.setList(data.sortedByDescending { it.name_product }.toList())
+                    binding.rvProductList.visibility = View.VISIBLE
+                } else{
+                    adapter.setList(data)
+                    binding.rvProductList.visibility = View.VISIBLE
+                }
+                showEmpty(false)
+            }else{
+                showEmpty(true)
+                Toast.makeText(requireContext().applicationContext, "No Data", Toast.LENGTH_SHORT).show()
+            }
+
+            if (data != null) {
+                if (data.isEmpty()){
+                    showEmpty(true)
+                    Toast.makeText(requireContext().applicationContext, "No Data", Toast.LENGTH_SHORT).show()
+                }
+            }
+            showShimmer(false)
+        }
+    }
+
     fun showShimmer(state : Boolean){
         if (state){
+            binding.rvProductList.visibility = View.GONE
             binding.shimmerList.visibility = View.VISIBLE
             binding.shimmerList.startShimmer()
         }else{
+            binding.rvProductList.visibility = View.VISIBLE
             binding.shimmerList.visibility = View.GONE
             binding.shimmerList.stopShimmer()
         }
     }
 
+    private fun selectSorting() {
+        val items = arrayOf("From A to Z", "From Z to A")
+        var selectedOption = ""
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Sort By")
+            .setSingleChoiceItems(items, -1){_, which ->
+                selectedOption = items[which]
+            }
+            .setPositiveButton("OK"){_,_ ->
+                when (selectedOption){
+                    "From A to Z" -> setData("From A to Z")
+                    "From Z to A" -> setData("From Z to A")
+                }
+
+            }
+            .setNegativeButton("Cancel"){ dialog, _ ->
+                dialog.dismiss()
+
+            }
+            .show()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun showEmpty(state : Boolean){
+        if (state){
+            binding.emptyLayout.emptyLayout.visibility = View.VISIBLE
+        } else {
+            binding.emptyLayout.emptyLayout.visibility = View.GONE
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val activity = requireActivity()
+        val context = activity.applicationContext
+        sharedPreferences = PreferenceHelper(context)
+        dashboardViewModel.getFavoriteProduct(null, sharedPreferences.getPreference(Constant.ID)!!.toInt(),requireContext().applicationContext, sharedPreferences)
+        setData(null)
     }
 
 }

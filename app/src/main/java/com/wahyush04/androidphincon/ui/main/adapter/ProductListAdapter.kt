@@ -22,7 +22,7 @@ class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.ListViewHolde
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setList(users: ArrayList<DataListProduct>){
+    fun setList(users: List<DataListProduct>){
         listProduct.clear()
         listProduct.addAll(users)
         notifyDataSetChanged()

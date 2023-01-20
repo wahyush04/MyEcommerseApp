@@ -1,31 +1,19 @@
 package com.wahyush04.androidphincon.ui.main.home
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.SearchView
-import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.internal.ViewUtils.hideKeyboard
-import com.wahyush04.androidphincon.MainActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
 import com.wahyush04.androidphincon.ui.main.adapter.ProductListAdapter
-import com.wahyush04.androidphincon.ui.main.profile.ProfileViewModel
-import com.wahyush04.core.Constant
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.helper.PreferenceHelper
 import kotlinx.coroutines.*
@@ -67,6 +55,12 @@ class HomeFragment : Fragment() {
         binding.rvProductList.setHasFixedSize(true)
         binding.rvProductList.adapter = adapter
 
+        binding.febSort.setOnClickListener {
+            selectSorting()
+        }
+
+        setData(null)
+
         binding.svSearch.doOnTextChanged { text, start, before, count ->
             searchJob?.cancel()
             searchJob = coroutineScope.launch {
@@ -79,10 +73,8 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
-
         }
 
-        setData()
         adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback{
             override fun onItemClicked(data: DataListProduct) {
                 Toast.makeText(requireContext().applicationContext, data.name_product, Toast.LENGTH_SHORT).show()
@@ -92,20 +84,30 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    fun hideKeyboard(activity: Activity) {
-        val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
-    }
 
-    fun setData(){
-        homeViewModel.getProductData().observe(viewLifecycleOwner){
-            if (it != null) {
-                adapter.setList(it)
-                binding.rvProductList.visibility = View.VISIBLE
+    private fun setData(sort : String?){
+        showShimmer(true)
+        homeViewModel.getProductData().observe(viewLifecycleOwner){ data ->
+            if (data != null) {
+                if (sort == "From A to Z"){
+                    adapter.setList(data.sortedBy { it.name_product }.toList())
+                    binding.rvProductList.visibility = View.VISIBLE
+                } else if (sort == "From Z to A") {
+                    adapter.setList(data.sortedByDescending { it.name_product }.toList())
+                    binding.rvProductList.visibility = View.VISIBLE
+                } else{
+                    adapter.setList(data)
+                    binding.rvProductList.visibility = View.VISIBLE
+                }
+                showEmpty(false)
+            } else {
+                showEmpty(true)
+                Toast.makeText(requireContext().applicationContext, "No Data", Toast.LENGTH_SHORT).show()
             }
 
-            if (it != null) {
-                if (it.isEmpty()){
+            if (data != null) {
+                if (data.isEmpty()){
+                    showEmpty(true)
                     Toast.makeText(requireContext().applicationContext, "No Data", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -119,14 +121,54 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun showShimmer(state : Boolean){
+    fun showShimmer(state : Boolean){
         if (state){
+            binding.rvProductList.visibility = View.GONE
             binding.shimmerList.visibility = View.VISIBLE
             binding.shimmerList.startShimmer()
         }else{
+            binding.rvProductList.visibility = View.VISIBLE
             binding.shimmerList.visibility = View.GONE
             binding.shimmerList.stopShimmer()
         }
+    }
+
+    private fun selectSorting() {
+        val items = arrayOf("From A to Z", "From Z to A")
+        var selectedOption = ""
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Sort By")
+            .setSingleChoiceItems(items, -1){_, which ->
+                selectedOption = items[which]
+            }
+            .setPositiveButton("OK"){_,_ ->
+                when (selectedOption){
+                    "From A to Z" -> setData("From A to Z")
+                    "From Z to A" -> setData("From Z to A")
+                }
+
+            }
+            .setNegativeButton("Cancel"){ dialog, _ ->
+                dialog.dismiss()
+
+            }
+            .show()
+    }
+
+    fun showEmpty(state : Boolean){
+        if (state){
+            binding.emptyLayout.emptyLayout.visibility = View.VISIBLE
+        } else {
+            binding.emptyLayout.emptyLayout.visibility = View.GONE
+        }
+    }
+
+    private fun sortAsc(){
+        Toast.makeText(requireContext().applicationContext, "Sort Ascending", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun sortDesc(){
+
     }
 
     override fun onDestroyView() {
@@ -140,6 +182,6 @@ class HomeFragment : Fragment() {
         val context = activity.applicationContext
         sharedPreferences = PreferenceHelper(context)
         homeViewModel.getProduct(null, requireContext().applicationContext , sharedPreferences)
-        setData()
+        setData(null)
     }
 }

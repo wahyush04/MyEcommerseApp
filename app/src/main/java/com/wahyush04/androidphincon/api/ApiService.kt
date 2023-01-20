@@ -1,15 +1,14 @@
 package com.wahyush04.androidphincon.api
 
-import com.wahyush04.core.Constant
 import com.wahyush04.core.data.changeimage.ChangeImageResponse
 import com.wahyush04.core.data.changepassword.ChangePasswordResponse
 import com.wahyush04.core.data.login.LoginResponse
+import com.wahyush04.core.data.product.ProductResponse
 import com.wahyush04.core.data.refreshtoken.RefreshTokenResponse
 import com.wahyush04.core.data.register.RegisterResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -61,4 +60,22 @@ interface ApiService {
         @Field("access_token") access_token : String?,
         @Field("refresh_token") refresh_token : String?
     ) : Response<RefreshTokenResponse>
+
+    @FormUrlEncoded
+    @GET("training_android/public/api/ecommerce/get_list_product")
+    suspend fun getProductRepo(
+        @Query("search") search : String?
+    ) : ProductResponse
+
+    @GET("training_android/public/api/ecommerce/get_list_product")
+    fun getProduct(
+        @Query("search") search : String?
+    ) : Call<ProductResponse>
+
+
+    @GET("training_android/public/api/ecommerce/get_list_product_favorite")
+    fun getFavorite(
+        @Query("search") search : String?,
+        @Query("id_user") id_user : Int
+    ) : Call<ProductResponse>
 }

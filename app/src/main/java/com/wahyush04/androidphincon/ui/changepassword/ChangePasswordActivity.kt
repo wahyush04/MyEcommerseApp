@@ -50,7 +50,8 @@ class ChangePasswordActivity : AppCompatActivity() {
                 val status = data.success.status
                 if (status == 200){
                     Toast.makeText(applicationContext, data.success.message, Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, MainActivity::class.java))
+//                    startActivity(Intent(this, MainActivity::class.java))
+                    this@ChangePasswordActivity.onBackPressed()
                 }
 
                 changePasswordViewModel.registerError.observe(this){ error ->

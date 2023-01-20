@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity() {
         val localeID : String? = sharedPreferences.getPreference(Constant.LOCALE).toString()
         if (localeID == null){
             idLocale = "en"
+            sharedPreferences.putLocale("1")
         }else if (localeID == "2"){
             idLocale = "in"
         }

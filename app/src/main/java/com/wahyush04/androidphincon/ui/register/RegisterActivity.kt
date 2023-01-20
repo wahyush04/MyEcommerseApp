@@ -45,7 +45,6 @@ class RegisterActivity : AppCompatActivity() {
     private var getFile: File? = null
     private var imageMultipart : MultipartBody.Part? = null
     private lateinit var currentPhotoPath: String
-    private lateinit var sharedPreferences: PreferenceHelper
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -85,8 +84,6 @@ class RegisterActivity : AppCompatActivity() {
             )
         }
 
-        val pref : SharedPreferences = this.getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
-
         binding.edtEmail.doOnTextChanged { _, _, _, _ ->
             setEmailEditText()
         }
@@ -96,9 +93,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnRegister.setOnClickListener {
-            showLoading(true)
             register()
-            showLoading(false)
         }
 
         binding.btnToLogin.setOnClickListener {
@@ -109,9 +104,9 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun showLoading(state: Boolean){
         if (state){
-            binding.progressBar.visibility = View.VISIBLE
+            binding.loadingDialog.loadingLayout.visibility = View.VISIBLE
         }else{
-            binding.progressBar.visibility = View.GONE
+            binding.loadingDialog.loadingLayout.visibility = View.GONE
         }
     }
 
@@ -126,8 +121,6 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun selectImageFrom() {
         val items = arrayOf(getString(R.string.camera), getString(R.string.galllery))
-//        val builder = AlertDialog.Builder(this)
-
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.select_image))
             .setItems(items){ _, which ->
@@ -143,7 +136,7 @@ class RegisterActivity : AppCompatActivity() {
         val intent = Intent()
         intent.action = Intent.ACTION_GET_CONTENT
         intent.type = "image/*"
-        val chooser = Intent.createChooser(intent, "Choose a Picture")
+        val chooser = Intent.createChooser(intent, getString(R.string.choose_picture))
         launcherIntentGallery.launch(chooser)
     }
 
@@ -238,9 +231,8 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun register(){
-        val pref : SharedPreferences = this.getSharedPreferences(Constant.PREFKEY, Context.MODE_PRIVATE)
-
-//        if (getFile != null){
+        showLoading(true)
+        if (getFile != null) {
             val file = reduceFileImage(getFile as File)
             val requestImageFile = file.asRequestBody("image/jpg".toMediaTypeOrNull())
             imageMultipart = MultipartBody.Part.createFormData(
@@ -248,9 +240,7 @@ class RegisterActivity : AppCompatActivity() {
                 file.name,
                 requestImageFile
             )
-        Log.d("photo","file : " + file.toString())
-//        }
-
+        }
         val name = binding.edtName.text.toString()
         val email = binding.edtEmail.text.toString()
         val password = binding.edtPassword.text.toString()
@@ -258,18 +248,18 @@ class RegisterActivity : AppCompatActivity() {
         val phone = binding.edtPhone.text.toString()
         val genderId = if (binding.rbMale.isChecked){ 0 }else{ 1 }
 
-        Log.d("photo", "imageMultiPart : " + name+" "+ email +" "+password+" " + imageMultipart.toString() )
 
         if (password == confirmPassword){
             registerViewModel.register(name, email, password, phone, genderId, imageMultipart)
             registerViewModel.getRegisterResponse().observe(this){ data ->
                 val status = data.success.status
                 if (status == 201){
+                    showLoading(false)
                     AlertDialog.Builder(this)
-                        .setTitle("Register Success")
+                        .setTitle(R.string.register_success)
                         .setMessage("Register is successfully")
-                        .setPositiveButton("Login") { _, _ ->
-                            Toast.makeText(this,"Register Berhasil",Toast.LENGTH_SHORT).show()
+                        .setPositiveButton(R.string.login) { _, _ ->
+                            Toast.makeText(this,getString(R.string.register_success),Toast.LENGTH_SHORT).show()
                             startActivity(Intent(this, LoginActivity::class.java))
                         }
                         .show()
@@ -282,9 +272,9 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
         }else{
-            binding.passwordedtlayout.error = "Password not match"
-            binding.passwordconfirmedtlayout.error = "Password not match"
-            Toast.makeText(applicationContext, "Password not match", Toast.LENGTH_SHORT).show()
+            binding.passwordedtlayout.error = getString(R.string.password_not_match)
+            binding.passwordconfirmedtlayout.error = getString(R.string.password_not_match)
+            Toast.makeText(applicationContext, getString(R.string.password_not_match), Toast.LENGTH_SHORT).show()
         }
     }
 

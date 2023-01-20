@@ -89,7 +89,6 @@ class ProfileFragment : Fragment() {
 
         binding.btnChangeImage.setOnClickListener {
             selectImageFrom()
-
         }
 
         binding.cvLogout.setOnClickListener {

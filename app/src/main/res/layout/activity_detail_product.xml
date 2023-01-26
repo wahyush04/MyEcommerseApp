@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout">
@@ -93,7 +93,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -171,9 +171,12 @@
 
                     <TextView
                         android:id="@+id/tv_product_name"
-                        android:layout_width="210dp"
+                        android:layout_width="200dp"
                         android:layout_height="wrap_content"
                         android:maxLines="2"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
+                        android:scrollHorizontally="true"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         tools:text="Jam Tangan" />
@@ -201,7 +204,7 @@
                         android:layout_width="141dp"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:textSize="22sp"
+                        android:textSize="20sp"
                         android:gravity="end"
                         android:textStyle="bold"
                         tools:text="Rp. 10.000" />

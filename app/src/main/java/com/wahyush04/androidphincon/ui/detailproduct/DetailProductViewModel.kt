@@ -7,8 +7,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.wahyush04.androidphincon.api.ApiConfig
+import com.wahyush04.androidphincon.ui.cart.CartRepository
 import com.wahyush04.core.data.detailproduct.DetailProductResponse
 import com.wahyush04.core.data.favorite.FavoriteResponse
+import com.wahyush04.core.database.ProductDao
+import com.wahyush04.core.database.ProductDatabase
+import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,6 +22,9 @@ class DetailProductViewModel(application: Application) : AndroidViewModel(applic
     val detailProduct = MutableLiveData<DetailProductResponse>()
     val addFavoriteResponse = MutableLiveData<FavoriteResponse>()
     val removeFavoriteResponse = MutableLiveData<FavoriteResponse>()
+    private var db: ProductDatabase? = ProductDatabase.getDatabase(application)
+    private var favDao: ProductDao? = db?.favoriteDao()
+    private val cartRepository : CartRepository = CartRepository(application)
 
     fun setDetailProduct(pref : PreferenceHelper, context : Context, id : Int, id_user : Int){
         val client = ApiConfig.getApiService(pref, context).getDetailProduct(id, id_user)
@@ -84,6 +91,14 @@ class DetailProductViewModel(application: Application) : AndroidViewModel(applic
 
     fun getremoveFavResponse(): LiveData<FavoriteResponse>{
         return removeFavoriteResponse
+    }
+
+    fun insertTrolley(data: ProductEntity){
+        cartRepository.addTrolley(data)
+    }
+
+    fun deleteTrolley(data : ProductEntity){
+        cartRepository.deleteTrolley(data)
     }
 
 }

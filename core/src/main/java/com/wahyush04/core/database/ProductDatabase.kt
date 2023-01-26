@@ -25,7 +25,7 @@ abstract class ProductDatabase: RoomDatabase() {
         fun getDatabase(context: Application): ProductDatabase{
             if (INSTANCE==null){
                 synchronized(ProductDatabase::class){
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, ProductDatabase::class.java, "db_github")
+                    INSTANCE = Room.databaseBuilder(context.applicationContext, ProductDatabase::class.java, "db_product")
                         .build()
                 }
             }
@@ -34,7 +34,7 @@ abstract class ProductDatabase: RoomDatabase() {
         fun getDatabaseOnFragment(appContext: Context): ProductDatabase{
             if (INSTANCE==null){
                 synchronized(ProductDatabase::class){
-                    INSTANCE = Room.databaseBuilder(appContext, ProductDatabase::class.java, "db_github")
+                    INSTANCE = Room.databaseBuilder(appContext, ProductDatabase::class.java, "db_product")
                         .build()
                 }
             }

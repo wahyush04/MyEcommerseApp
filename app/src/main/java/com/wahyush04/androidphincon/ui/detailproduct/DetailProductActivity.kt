@@ -1,5 +1,6 @@
 package com.wahyush04.androidphincon.ui.detailproduct
 
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,7 +15,9 @@ import com.denzcoskun.imageslider.models.SlideModel
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
 import com.wahyush04.core.Constant
+import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
+import com.wahyush04.core.helper.formatRupiah
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,8 +28,11 @@ class DetailProductActivity : AppCompatActivity() {
     private lateinit var binding : ActivityDetailProductBinding
     private lateinit var detailProductViewModel : DetailProductViewModel
     private lateinit var preferences: PreferenceHelper
-    private val args: DetailProductActivityArgs by navArgs()
+    private val args: DetailProductActivityArgs? by navArgs()
+    private var product: ProductEntity? = null
     private var isChecked = true
+    private var idProduct : Int? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,20 +40,32 @@ class DetailProductActivity : AppCompatActivity() {
         setContentView(binding.root)
         showShimmer(true)
 
-        val data = intent.data
-        if (data != null) {
-            val param1 = data.getQueryParameter("idproduct")
-            Log.d("datadeeplink", param1.toString())
-        }
-
         supportActionBar?.hide()
         detailProductViewModel = ViewModelProvider(this)[DetailProductViewModel::class.java]
         preferences = PreferenceHelper(this)
 
-        val idProduct = args.id
+        val intentID = intent.getIntExtra("id", 0)
+
+        idProduct = intentID
+        Log.d("idDetail", idProduct.toString())
+
+        if (idProduct == 0){
+            val data: Uri? = intent?.data
+            val id = data?.getQueryParameter("id")
+            if (id != null) {
+                idProduct = id.toInt()
+            }
+        }
+
         val idUser : Int = preferences.getPreference(Constant.ID)!!.toInt()
-        detailProductViewModel.setDetailProduct(preferences, this@DetailProductActivity, idProduct, idUser)
+        detailProductViewModel.setDetailProduct(preferences, this@DetailProductActivity, idProduct!!.toInt(), idUser)
         detailProductViewModel.getDetailProduct().observe(this){ data ->
+            val id = data.success!!.data!!.id!!.toInt()
+            val productName =  data.success!!.data!!.name_product.toString()
+            val stock =  data.success!!.data!!.stock!!.toInt()
+            val price = data.success!!.data!!.harga!!.toInt()
+            val image = data.success!!.data!!.image.toString()
+
             binding.tvProductTitle.text = data.success?.data?.name_product
             binding.tvProductName.text = data.success?.data?.name_product
             binding.tvProductPrice.text = data.success?.data?.harga?.let { formatRupiah(it.toInt()) }
@@ -74,27 +92,39 @@ class DetailProductActivity : AppCompatActivity() {
             }
 
             binding.btnBuy.setOnClickListener {
-                val bottomSheet = BottomSheet(data)
+                val bottomSheet = BottomSheet(data, "buy")
                 bottomSheet.show(supportFragmentManager, "bottomSheet")
             }
 
             showShimmer(false)
+
+            binding.btnTrolley.setOnClickListener {
+                val bottomSheet = BottomSheet(data, "trolley")
+                bottomSheet.show(supportFragmentManager, "bottomSheet")
+//                product = ProductEntity(id, productName, price, price, stock, 1, image)
+//                detailProductViewModel.insertTrolley(product as ProductEntity)
+//                Toast.makeText(this, "User Berhasil Ditambah ke Trolley", Toast.LENGTH_SHORT).show()
+            }
+
+            binding.btnShare.setOnClickListener {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://wahyush04.com/deeplink?id=$id")
+                startActivity(Intent.createChooser(shareIntent, "Share link using"))
+            }
         }
 
         binding.tbFav.setOnClickListener {
-            showShimmer(true)
             isChecked = !isChecked
             if (isChecked){
-                detailProductViewModel.addFavorite(preferences, this, idProduct, idUser)
+                detailProductViewModel.addFavorite(preferences, this, idProduct!!.toInt(), idUser)
                 Toast.makeText(this, "Produk Berhasil Ditambah ke Favorite", Toast.LENGTH_SHORT).show()
             }else{
-                detailProductViewModel.removeFavorite(preferences, this, idProduct, idUser)
+                detailProductViewModel.removeFavorite(preferences, this, idProduct!!.toInt(), idUser)
                 Toast.makeText(this, "Produk berhasil dihapus dari Favorite", Toast.LENGTH_SHORT).show()
             }
             binding.tbFav.isChecked = isChecked
-            showShimmer(true)
         }
-
     }
 
     private fun formatRupiah(angka: Int): String {

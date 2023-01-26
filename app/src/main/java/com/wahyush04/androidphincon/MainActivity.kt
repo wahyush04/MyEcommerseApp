@@ -20,6 +20,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wahyush04.androidphincon.databinding.ActivityMainBinding
+import com.wahyush04.androidphincon.ui.cart.CartActivity
 import com.wahyush04.androidphincon.ui.login.LoginActivity
 import com.wahyush04.androidphincon.ui.register.RegisterActivity
 import com.wahyush04.core.Constant
@@ -134,6 +135,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.cart -> {
+                startActivity(Intent(this, CartActivity::class.java))
                 Toast.makeText(applicationContext, "Cart", Toast.LENGTH_SHORT).show()
             }
         }

@@ -2,7 +2,9 @@ package com.wahyush04.androidphincon.ui.main.home
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +13,16 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.navArgs
-import androidx.navigation.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
+import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.androidphincon.ui.main.adapter.ProductListAdapter
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.helper.PreferenceHelper
 import kotlinx.coroutines.*
+
 
 class HomeFragment : Fragment() {
 
@@ -99,9 +101,14 @@ class HomeFragment : Fragment() {
 
         adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback{
             override fun onItemClicked(data: DataListProduct) {
-                val view = view
-                val toDetail = HomeFragmentDirections.actionNavigationHomeToDetailProductActivity(data.id)
-                view?.findNavController()?.navigate(toDetail)
+//                val view = view
+//                val toDetail = HomeFragmentDirections.actionNavigationHomeToDetailProductActivity(data.id.toString())
+//                view?.findNavController()?.navigate(toDetail)
+
+                val intent = Intent(getActivity(), DetailProductActivity::class.java)
+                intent.putExtra("id", data.id)
+                Log.d("idHome", data.id.toString())
+                startActivity(intent)
             }
         })
 

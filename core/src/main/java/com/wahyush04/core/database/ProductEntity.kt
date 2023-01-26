@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 
-@Entity(tableName = "tbl_favorite")
+@Entity(tableName = "tbl_product")
 @Parcelize
 data class ProductEntity (
         @PrimaryKey
@@ -17,4 +17,12 @@ data class ProductEntity (
         val name_product : String,
         @ColumnInfo(name = "harga")
         val harga : Int,
+        @ColumnInfo(name = "total_harga")
+        val total_harga : Int,
+        @ColumnInfo(name = "stock")
+        val stock : Int,
+        @ColumnInfo(name = "stock_buy")
+        val stockbuy : Int,
+        @ColumnInfo(name = "image")
+        val image : String
 ) : Parcelable

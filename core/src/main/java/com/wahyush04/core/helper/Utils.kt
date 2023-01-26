@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import java.io.*
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -54,5 +56,18 @@ fun reduceFileImage(file: File): File {
     bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
 
     return file
+}
+
+fun String.formatterIdr() : String {
+    val localeID = Locale("in", "ID")
+    val doubleValue = this.toDoubleOrNull() ?: return this
+    val numberFormat = NumberFormat.getCurrencyInstance(localeID)
+    numberFormat.minimumFractionDigits = 0
+    return numberFormat.format(doubleValue)
+}
+
+fun formatRupiah(angka: Int): String {
+    val formatRupiah = DecimalFormat("Rp #,###")
+    return formatRupiah.format(angka)
 }
 

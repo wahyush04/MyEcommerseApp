@@ -44,7 +44,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https"
-                    android:host="www.wahyush04.com"
+                    android:host="wahyush04.com"
                     android:pathPrefix="/deeplink" />
                 <data android:scheme="app" android:host="www.wahyush04.com" />
             </intent-filter>

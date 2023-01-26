@@ -1,14 +1,12 @@
 package com.wahyush04.androidphincon.ui.main.dashboard
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,20 +14,14 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.androidphincon.databinding.FragmentDashboardBinding
+import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.androidphincon.ui.main.adapter.ProductFavoriteListAdapter
-import com.wahyush04.androidphincon.ui.main.home.HomeFragmentDirections
-import com.wahyush04.androidphincon.ui.main.home.HomeViewModel
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.product.DataListProduct
-import com.wahyush04.core.data.product.ProductResponse
 import com.wahyush04.core.helper.PreferenceHelper
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 
 class DashboardFragment : Fragment() {
 
@@ -103,9 +95,13 @@ class DashboardFragment : Fragment() {
 
         adapter.setOnItemClickCallback(object : ProductFavoriteListAdapter.OnItemClickCallback{
             override fun onItemClicked(data: DataListProduct) {
-                val view = view
-                val toDetail = DashboardFragmentDirections.actionNavigationDashboardToDetailProductActivity(data.id)
-                view?.findNavController()?.navigate(toDetail)
+//                val view = view
+//                val toDetail = DashboardFragmentDirections.actionNavigationDashboardToDetailProductActivity(data.id.toString())
+//                view?.findNavController()?.navigate(toDetail)
+
+                val intent = Intent(getActivity(), DetailProductActivity::class.java)
+                intent.putExtra("id", data.id)
+                startActivity(intent)
             }
         })
 

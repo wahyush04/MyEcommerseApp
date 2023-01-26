@@ -46,6 +46,9 @@
         tools:layout="@layout/activity_detail_product" >
         <argument
             android:name="id"
-            app:argType="integer" />
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true"
+             />
     </activity>
 </navigation>

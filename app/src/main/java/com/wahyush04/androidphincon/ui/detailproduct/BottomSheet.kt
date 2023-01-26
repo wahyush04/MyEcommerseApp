@@ -8,17 +8,20 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.BottomSheetBuyBinding
+import com.wahyush04.androidphincon.ui.main.dashboard.DashboardViewModel
 import com.wahyush04.androidphincon.ui.successpage.SuccessPageActivity
 import com.wahyush04.core.data.detailproduct.DetailProductResponse
+import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
 import java.text.DecimalFormat
 
 
-class BottomSheet(private val data: DetailProductResponse): BottomSheetDialogFragment() {
+class BottomSheet(private val data: DetailProductResponse,private val from : String): BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetBuyBinding? = null
     private val binding get() =  _binding
@@ -26,6 +29,7 @@ class BottomSheet(private val data: DetailProductResponse): BottomSheetDialogFra
     private var totalHarga : Int? = 0
     private val formatRupiah = DecimalFormat("Rp #,###")
     private lateinit var sharedPreferences: PreferenceHelper
+    private lateinit var detailProductViewModel : DetailProductViewModel
 
     private val bottomSheetViewModel: BuyBottomSheetViewModel by viewModels()
 
@@ -45,8 +49,10 @@ class BottomSheet(private val data: DetailProductResponse): BottomSheetDialogFra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedPreferences = PreferenceHelper(requireContext())
+        detailProductViewModel =
+            ViewModelProvider(this)[DetailProductViewModel::class.java]
 
+        sharedPreferences = PreferenceHelper(requireContext())
         initiateHarga = data.success?.data?.harga?.toInt()
 
         with(binding) {
@@ -79,7 +85,12 @@ class BottomSheet(private val data: DetailProductResponse): BottomSheetDialogFra
         }
 
         binding?.cvBuyButton?.setOnClickListener {
-            buyProduct()
+            if (from == "buy") {
+                buyProduct()
+            }else if (from == "trolley"){
+                addToTrolley()
+            }
+
         }
     }
 
@@ -113,7 +124,19 @@ class BottomSheet(private val data: DetailProductResponse): BottomSheetDialogFra
                 }
             }
         }
+    }
 
+    private fun addToTrolley(){
+        val id = data.success?.data?.id
+        val productName = data.success?.data?.name_product
+        val price = data.success?.data?.harga?.toInt()
+        val stock = binding?.tvCount?.text.toString().toInt()
+        val stockbuy = binding?.tvCount?.text.toString().toInt()
+        val totalHarga = totalHarga
+        val image = data.success?.data?.image
+                val product = ProductEntity(id!!.toInt(), productName!!, price!!, totalHarga!!.toInt(), stock, stockbuy, image.toString())
+                detailProductViewModel.insertTrolley(product as ProductEntity)
+                Toast.makeText(requireContext(), "Data Berhasil Ditambah ke Trolley", Toast.LENGTH_SHORT).show()
     }
 
 

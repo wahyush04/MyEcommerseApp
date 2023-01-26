@@ -1,4 +1,4 @@
-package com.wahyush04.androidphincon.di
+package com.wahyush04.androidphincon.ui.di
 
 import android.content.Context
 import com.wahyush04.androidphincon.api.ApiConfig

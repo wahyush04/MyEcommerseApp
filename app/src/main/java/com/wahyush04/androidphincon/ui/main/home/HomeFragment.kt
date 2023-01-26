@@ -10,6 +10,9 @@ import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -63,25 +66,20 @@ class HomeFragment : Fragment() {
 
         binding.febSort.hide()
 
-        setData(null)
+//        getProduct(null, requireContext().applicationContext, sharedPreferences)
+//        setData(null)
 
         binding.rvProductList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 binding.febSort.hide()
-                if (dy >= 0) {
+//                if (dy >= 0) {
                     febJob?.cancel()
                     febJob = coroutineScope.launch {
-                        delay(3000)
+                        delay(2500)
                         binding.febSort.show()
                     }
-                } else if (dy <= 0) {
-                    febJob?.cancel()
-                    febJob = coroutineScope.launch {
-                        delay(3000)
-                        binding.febSort.show()
-                    }
-                }
+//                }
             }
         })
 
@@ -101,14 +99,14 @@ class HomeFragment : Fragment() {
 
         adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback{
             override fun onItemClicked(data: DataListProduct) {
-                Toast.makeText(requireContext().applicationContext, data.name_product, Toast.LENGTH_SHORT).show()
+                val view = view
+                val toDetail = HomeFragmentDirections.actionNavigationHomeToDetailProductActivity(data.id)
+                view?.findNavController()?.navigate(toDetail)
             }
         })
 
         return root
     }
-
-
 
     private fun setData(sort : String?){
         showShimmer(true)
@@ -146,7 +144,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    fun showShimmer(state : Boolean){
+    private fun showShimmer(state : Boolean){
         if (state){
             binding.rvProductList.visibility = View.GONE
             binding.shimmerList.visibility = View.VISIBLE
@@ -187,25 +185,42 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun sortAsc(){
-        Toast.makeText(requireContext().applicationContext, "Sort Ascending", Toast.LENGTH_SHORT).show()
+    override fun onDetach() {
+        super.onDetach()
+        febJob?.cancel()
+        searchJob?.cancel()
     }
 
-    private fun sortDesc(){
-
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        febJob?.cancel()
+        searchJob?.cancel()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        febJob?.cancel()
+        searchJob?.cancel()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        febJob?.cancel()
+        searchJob?.cancel()
     }
 
     override fun onStart() {
         super.onStart()
+        febJob?.cancel()
+        searchJob?.cancel()
         val activity = requireActivity()
         val context = activity.applicationContext
         sharedPreferences = PreferenceHelper(context)
-        homeViewModel.getProduct(null, requireContext().applicationContext , sharedPreferences)
+        coroutineScope.launch {
+            homeViewModel.getProduct(null, requireContext().applicationContext , sharedPreferences)
+        }
         setData(null)
     }
 

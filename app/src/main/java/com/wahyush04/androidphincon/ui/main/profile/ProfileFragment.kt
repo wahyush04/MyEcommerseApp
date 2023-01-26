@@ -56,8 +56,8 @@ class ProfileFragment : Fragment() {
     private lateinit var sharedPreferences: PreferenceHelper
     private lateinit var profileViewModel: ProfileViewModel
     private var isUserAction = false
-    val arrLanguage = arrayOf("IN","EN","ID")
-    val arrFlag = intArrayOf(R.drawable.united_nations, R.drawable.united_states, R.drawable.indonesia)
+    private val arrLanguage = arrayOf("IN","EN","ID")
+    private val arrFlag = intArrayOf(R.drawable.united_nations, R.drawable.united_states, R.drawable.indonesia)
 
     private val binding get() = _binding!!
 
@@ -78,6 +78,7 @@ class ProfileFragment : Fragment() {
         val name : String? = sharedPreferences.getToken(Constant.NAME)
         val email : String? = sharedPreferences.getToken(Constant.EMAIL)
         val localeID : String? = sharedPreferences.getToken(Constant.LOCALE)
+
         binding.tvName.text = name
         binding.tvEmail.text = email
 
@@ -107,7 +108,6 @@ class ProfileFragment : Fragment() {
                 .show()
         }
 
-
         val customSpinnerAdapter = CustomSpinnerAdapter(requireContext(), arrFlag, arrLanguage)
         binding.languageSpinner.adapter = customSpinnerAdapter
 
@@ -135,7 +135,6 @@ class ProfileFragment : Fragment() {
                 } else {
                     isUserAction = false
                 }
-
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }

@@ -9,13 +9,21 @@
         android:id="@+id/navigation_home"
         android:name="com.wahyush04.androidphincon.ui.main.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_detailProductActivity"
+            app:destination="@id/detailProductActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.wahyush04.androidphincon.ui.main.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_detailProductActivity"
+            app:destination="@id/detailProductActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
@@ -31,4 +39,13 @@
         android:name="com.wahyush04.androidphincon.ui.changepassword.ChangePasswordActivity"
         android:label="activity_change_password"
         tools:layout="@layout/activity_change_password" />
+    <activity
+        android:id="@+id/detailProductActivity"
+        android:name="com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity"
+        android:label="activity_detail_product"
+        tools:layout="@layout/activity_detail_product" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </activity>
 </navigation>

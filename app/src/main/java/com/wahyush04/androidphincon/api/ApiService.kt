@@ -2,10 +2,15 @@ package com.wahyush04.androidphincon.api
 
 import com.wahyush04.core.data.changeimage.ChangeImageResponse
 import com.wahyush04.core.data.changepassword.ChangePasswordResponse
+import com.wahyush04.core.data.detailproduct.DetailProductResponse
+import com.wahyush04.core.data.favorite.FavoriteResponse
 import com.wahyush04.core.data.login.LoginResponse
 import com.wahyush04.core.data.product.ProductResponse
 import com.wahyush04.core.data.refreshtoken.RefreshTokenResponse
 import com.wahyush04.core.data.register.RegisterResponse
+import com.wahyush04.core.data.updaterating.UpdateRatingResponse
+import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
+import com.wahyush04.core.data.updatestock.UpdateStockResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -78,4 +83,36 @@ interface ApiService {
         @Query("search") search : String?,
         @Query("id_user") id_user : Int
     ) : Call<ProductResponse>
+
+    @GET("training_android/public/api/ecommerce/get_detail_product")
+    fun getDetailProduct(
+        @Query("id_product") id_product : Int,
+        @Query("id_user") id_user : Int
+    ) : Call<DetailProductResponse>
+
+    @FormUrlEncoded
+    @POST("training_android/public/api/ecommerce/add_favorite")
+    fun addFavorite(
+        @Field("id_product") id_product : Int,
+        @Field("id_user") id_user : Int,
+    ) : Call<FavoriteResponse>
+
+    @FormUrlEncoded
+    @POST("training_android/public/api/ecommerce/remove_favorite")
+    fun removeFavorite(
+        @Field("id_product") id_product : Int,
+        @Field("id_user") id_user : Int,
+    ) : Call<FavoriteResponse>
+
+    @POST("training_android/public/api/ecommerce/update-stock")
+    fun buyProduct(
+        @Body requestBody : UpdateStockRequestBody
+    ) : Call <UpdateStockResponse>
+
+    @FormUrlEncoded
+    @PUT("training_android/public/api/ecommerce/update_rate/{id}")
+    fun updateRating(
+        @Path("id") id : Int,
+        @Field("rate") rate : String
+    ) : Call <UpdateRatingResponse>
 }

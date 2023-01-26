@@ -1,4 +1,4 @@
-package com.wahyush04.androidphincon.di
+package com.wahyush04.androidphincon.ui.di
 
 import com.wahyush04.androidphincon.api.ApiService
 import com.wahyush04.core.data.product.ProductResponse

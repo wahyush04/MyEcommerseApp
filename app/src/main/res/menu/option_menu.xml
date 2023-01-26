@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/logout"
+        android:id="@+id/cart"
         android:title="Log out"
-        android:icon="@drawable/ic_baseline_logout_24"
+        android:icon="@drawable/baseline_shopping_cart_24"
         app:showAsAction="always"/>
 </menu>

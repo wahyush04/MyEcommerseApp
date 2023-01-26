@@ -11,6 +11,7 @@ data class Success(
 )
 
 data class DataListProduct(
+    val id : Int,
     val name_product : String,
     val harga : String,
     val rate : Int,

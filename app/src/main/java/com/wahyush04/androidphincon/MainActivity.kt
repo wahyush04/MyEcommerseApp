@@ -125,4 +125,18 @@ class MainActivity : AppCompatActivity() {
         config.locale = locale
         resources.updateConfiguration(config, this.resources.displayMetrics)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.option_menu, menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.cart -> {
+                Toast.makeText(applicationContext, "Cart", Toast.LENGTH_SHORT).show()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }

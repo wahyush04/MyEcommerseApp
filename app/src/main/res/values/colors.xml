@@ -15,4 +15,7 @@
     <color name="secondaryDarkColor">#004ba0</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
+    <color name="light_grey">#A4A4A4</color>
+    <color name="transparent">#00FFFFFF</color>
+
 </resources>

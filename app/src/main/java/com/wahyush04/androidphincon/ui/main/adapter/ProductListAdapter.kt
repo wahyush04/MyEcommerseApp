@@ -2,6 +2,7 @@ package com.wahyush04.androidphincon.ui.main.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -41,7 +42,6 @@ class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.ListViewHolde
             binding.root.setOnClickListener {
                 onItemClickCallback?.onItemClicked(data)
             }
-            val harga = data.harga
             binding.apply {
                 Glide.with(itemView)
                     .load(data.image)
@@ -51,6 +51,7 @@ class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.ListViewHolde
                 tvPrice.text = formatRupiah(data.harga.toInt())
                 tvDate.text = formatDate(data.date)
                 ratingBar.rating = data.rate.toFloat()
+                ivFavorite.visibility = View.GONE
             }
         }
     }

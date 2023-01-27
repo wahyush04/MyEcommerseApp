@@ -9,27 +9,45 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class CartRepository(application: Application) {
-    private var favDao: ProductDao?
+    private var productDao: ProductDao?
     private var userDB: ProductDatabase? = ProductDatabase.getDatabase(application)
     private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
 
     init {
-        favDao = userDB?.favoriteDao()
+        productDao = userDB?.favoriteDao()
     }
 
     fun getTrolley(): LiveData<List<ProductEntity>>?{
-        return favDao?.getProduct()
+        return productDao?.getProduct()
+    }
+
+    suspend fun countItems(): Int? {
+        return productDao?.countItems()
     }
 
     fun addTrolley(product: ProductEntity){
-        executorService.execute{ favDao?.insert(product) }
+        executorService.execute{ productDao?.insert(product) }
     }
 
     fun deleteTrolley(data: ProductEntity){
-        executorService.execute{ favDao?.delete(data) }
+        executorService.execute{ productDao?.delete(data) }
     }
 
     fun deleteTrolleyAdapter(data: ProductEntity){
-        executorService.execute{ favDao?.delete(data) }
+        executorService.execute{ productDao?.delete(data) }
     }
+
+    fun updateQuantity(quantity: Int, id: Int): Int {
+        return productDao!!.updateQuantity(quantity, id)
+    }
+
+    fun checkBox(id: Int, state : Boolean): Int {
+        return productDao!!.updateCheck(id, state)
+    }
+
+    fun isCheck(id: Int): Int {
+        return productDao!!.isCheck(id)
+    }
+
+
 }

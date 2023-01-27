@@ -1,25 +1,20 @@
 package com.wahyush04.androidphincon.ui.login
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.wahyush04.core.Constant
-import com.wahyush04.androidphincon.MainActivity
+import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.databinding.ActivityLoginBinding
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.androidphincon.ui.register.RegisterActivity

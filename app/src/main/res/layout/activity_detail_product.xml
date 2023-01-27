@@ -47,9 +47,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="3dp"
                 android:maxLines="1"
                 android:text="Nama Produk"
                 android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_share"
                 app:layout_constraintStart_toEndOf="@+id/iv_back"
@@ -178,7 +181,7 @@
                         android:fadingEdge="horizontal"
                         android:scrollHorizontally="true"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         tools:text="Jam Tangan" />
 
                     <RatingBar
@@ -204,7 +207,7 @@
                         android:layout_width="141dp"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:gravity="end"
                         android:textStyle="bold"
                         tools:text="Rp. 10.000" />
@@ -268,7 +271,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Stock"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/line_detail_product" />
 
@@ -279,7 +282,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Size"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_stock" />
 
@@ -290,7 +293,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Weight"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_size" />
 
@@ -301,7 +304,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Type"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_weight" />
 
@@ -312,7 +315,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Description"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_type" />
 
@@ -328,6 +331,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=": 20"
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_stock"
                         app:layout_constraintStart_toStartOf="@+id/guideline2" />
 
@@ -336,6 +340,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=": -"
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_size"
                         app:layout_constraintStart_toStartOf="@+id/guideline2" />
 
@@ -344,6 +349,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=": 100 gram"
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_weight"
                         app:layout_constraintStart_toStartOf="@+id/guideline2" />
 
@@ -352,6 +358,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=": Accesories"
+                        android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_type"
                         app:layout_constraintStart_toStartOf="@+id/guideline2" />
 
@@ -368,6 +375,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginStart="10dp"
+                        android:textSize="12sp"
                         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                         app:layout_constraintTop_toBottomOf="@id/tv_description"
                         tools:layout_editor_absoluteX="10dp" />

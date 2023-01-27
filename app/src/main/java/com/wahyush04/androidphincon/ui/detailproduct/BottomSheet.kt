@@ -21,7 +21,7 @@ import com.wahyush04.core.helper.PreferenceHelper
 import java.text.DecimalFormat
 
 
-class BottomSheet(private val data: DetailProductResponse,private val from : String): BottomSheetDialogFragment() {
+class BottomSheet(private val data: DetailProductResponse, private val from : String): BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetBuyBinding? = null
     private val binding get() =  _binding
@@ -66,7 +66,6 @@ class BottomSheet(private val data: DetailProductResponse,private val from : Str
             tvStockProduct.text = "Stock : " + data.success?.data?.stock.toString()
             tvBuyButton.text = "Buy Now - " + hargaAwal
         }
-
 
         setBuyButton()
 
@@ -124,17 +123,23 @@ class BottomSheet(private val data: DetailProductResponse,private val from : Str
                 }
             }
         }
+
+        bottomSheetViewModel.loginError.observe(this){
+            it.getContentIfNotHandled()?.let {
+                Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun addToTrolley(){
         val id = data.success?.data?.id
         val productName = data.success?.data?.name_product
         val price = data.success?.data?.harga?.toInt()
-        val stock = binding?.tvCount?.text.toString().toInt()
+        val stock = data.success!!.data!!.stock!!.toInt()
         val stockbuy = binding?.tvCount?.text.toString().toInt()
         val totalHarga = totalHarga
         val image = data.success?.data?.image
-                val product = ProductEntity(id!!.toInt(), productName!!, price!!, totalHarga!!.toInt(), stock, stockbuy, image.toString())
+                val product = ProductEntity(id!!.toInt(), productName!!, price!!, totalHarga!!.toInt(), stock, stockbuy, image.toString(), 0)
                 detailProductViewModel.insertTrolley(product as ProductEntity)
                 Toast.makeText(requireContext(), "Data Berhasil Ditambah ke Trolley", Toast.LENGTH_SHORT).show()
     }

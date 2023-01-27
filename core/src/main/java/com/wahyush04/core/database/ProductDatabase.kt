@@ -26,6 +26,8 @@ abstract class ProductDatabase: RoomDatabase() {
             if (INSTANCE==null){
                 synchronized(ProductDatabase::class){
                     INSTANCE = Room.databaseBuilder(context.applicationContext, ProductDatabase::class.java, "db_product")
+                        .allowMainThreadQueries()
+                        .fallbackToDestructiveMigration()
                         .build()
                 }
             }

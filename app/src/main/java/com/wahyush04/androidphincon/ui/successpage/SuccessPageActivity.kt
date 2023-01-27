@@ -4,10 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import com.wahyush04.androidphincon.MainActivity
-import com.wahyush04.androidphincon.R
+import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.databinding.ActivitySuccessPageBinding
-import com.wahyush04.androidphincon.ui.detailproduct.DetailProductViewModel
 import com.wahyush04.core.helper.PreferenceHelper
 
 class SuccessPageActivity : AppCompatActivity() {

@@ -91,7 +91,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
             <meta-data
@@ -113,5 +113,4 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
-
 </manifest>

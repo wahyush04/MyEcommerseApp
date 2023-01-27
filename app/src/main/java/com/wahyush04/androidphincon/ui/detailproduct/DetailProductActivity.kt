@@ -14,6 +14,7 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
+import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
@@ -66,16 +67,20 @@ class DetailProductActivity : AppCompatActivity() {
             val price = data.success!!.data!!.harga!!.toInt()
             val image = data.success!!.data!!.image.toString()
 
-            binding.tvProductTitle.text = data.success?.data?.name_product
-            binding.tvProductName.text = data.success?.data?.name_product
-            binding.tvProductPrice.text = data.success?.data?.harga?.let { formatRupiah(it.toInt()) }
-            binding.tvStockValue.text = data.success?.data?.stock.toString()
-            binding.tvSizeValue.text = data.success?.data?.size
-            binding.tvWeightValue.text = data.success?.data?.weight
-            binding.tvTypeValue.text = data.success?.data?.type
-            binding.tvDescription.text = data.success?.data?.desc
-            binding.ratingBar.rating = data.success?.data?.rate?.toFloat()!!
-            binding.viewPager.adapter = ImageViwPagerAdapter(data.success!!.data?.image_product)
+            binding.apply {
+                tvProductTitle.text = data.success?.data?.name_product
+                tvProductName.text = data.success?.data?.name_product
+                tvProductPrice.text = data.success?.data?.harga?.let { formatRupiah(it.toInt()) }
+                tvStockValue.text = data.success?.data?.stock.toString()
+                tvSizeValue.text = data.success?.data?.size
+                tvWeightValue.text = data.success?.data?.weight
+                tvTypeValue.text = data.success?.data?.type
+                tvDescription.text = data.success?.data?.desc
+                ratingBar.rating = data.success?.data?.rate?.toFloat()!!
+                viewPager.adapter = ImageViwPagerAdapter(data.success!!.data?.image_product)
+                springDotsIndicator.attachTo(viewPager)
+            }
+
 
             CoroutineScope(Dispatchers.IO).launch {
                 withContext(Dispatchers.Main){
@@ -111,6 +116,10 @@ class DetailProductActivity : AppCompatActivity() {
                 shareIntent.type = "text/plain"
                 shareIntent.putExtra(Intent.EXTRA_TEXT, "https://wahyush04.com/deeplink?id=$id")
                 startActivity(Intent.createChooser(shareIntent, "Share link using"))
+            }
+
+            binding.ivBack.setOnClickListener {
+                startActivity(Intent(this, MainActivity::class.java))
             }
         }
 

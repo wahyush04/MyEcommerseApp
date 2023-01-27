@@ -24,5 +24,7 @@ data class ProductEntity (
         @ColumnInfo(name = "stock_buy")
         val stockbuy : Int,
         @ColumnInfo(name = "image")
-        val image : String
+        val image : String,
+        @ColumnInfo(name = "is_checked")
+        val is_checked : Int
 ) : Parcelable

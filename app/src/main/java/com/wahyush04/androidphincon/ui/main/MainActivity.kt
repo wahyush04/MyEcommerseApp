@@ -1,4 +1,4 @@
-package com.wahyush04.androidphincon
+package com.wahyush04.androidphincon.ui.main
 
 import android.Manifest
 import android.content.Intent
@@ -10,29 +10,34 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityMainBinding
 import com.wahyush04.androidphincon.ui.cart.CartActivity
-import com.wahyush04.androidphincon.ui.login.LoginActivity
-import com.wahyush04.androidphincon.ui.register.RegisterActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: PreferenceHelper
     private var idLocale: String = "en"
+    private lateinit var mainViewModel: MainViewModel
+    private var totalTrolley : Int? = 0
+
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -73,18 +78,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+//        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+        mainViewModel =
+            ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application))[MainViewModel::class.java]
+
+        supportActionBar?.hide()
+
         sharedPreferences = PreferenceHelper(this)
-        Log.d("tokenLogin", sharedPreferences.getPreference(Constant.TOKEN).toString())
-        Log.d("tokenLogin", sharedPreferences.getPreference(Constant.ID).toString())
         setLocate()
-        Log.d("localPref", sharedPreferences.getPreference(Constant.LOCALE).toString())
-
-        setAppBar()
-
-        val token: String = sharedPreferences.getToken(Constant.TOKEN).toString()
-        Log.d("TOKEN", token)
-        val rtoken: String = sharedPreferences.getToken(Constant.REFRESH_TOKEN).toString()
-        Log.d("TOKEN", rtoken)
+//        setAppBar()
 
         val navView: BottomNavigationView = binding.navView
 
@@ -97,18 +100,21 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-    }
 
-
-    private fun setAppBar(){
-        val actionBar = supportActionBar
-        actionBar?.setLogo(R.drawable.logo)
-        actionBar?.setDisplayUseLogoEnabled(true)
-        actionBar?.setDisplayShowTitleEnabled(false)
-        actionBar?.setDisplayShowHomeEnabled(true)
-        val colorDrawable = ColorDrawable(Color.parseColor("#FFC7CD"))
-        actionBar?.elevation = 0F
-        actionBar!!.setBackgroundDrawable(colorDrawable)
+        totalTrolley = mainViewModel.countTrolley()
+        binding.apply {
+            if (totalTrolley == 0) {
+                tvBadgesValue.visibility = View.INVISIBLE
+                imgBadges.visibility = View.INVISIBLE
+            } else {
+                imgBadges.visibility = View.VISIBLE
+                tvBadgesValue.visibility = View.VISIBLE
+                tvBadgesValue.text = totalTrolley.toString()
+            }
+            icCart.setOnClickListener {
+                startActivity(Intent(this@MainActivity, CartActivity::class.java))
+            }
+        }
     }
 
     private fun setLocate() {
@@ -141,4 +147,5 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
 }

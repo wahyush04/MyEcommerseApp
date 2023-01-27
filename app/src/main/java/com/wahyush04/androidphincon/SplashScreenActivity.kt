@@ -26,6 +26,7 @@ class SplashScreenActivity : AppCompatActivity() {
         img.animate().setDuration(2000).translationY(-1000f).withEndAction{
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 

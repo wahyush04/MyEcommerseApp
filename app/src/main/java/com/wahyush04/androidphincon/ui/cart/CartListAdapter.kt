@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
+import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -62,7 +64,7 @@ class CartListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = listData[position]
         holder.bind(data)
-        holder.binding.checkBoxSelectItem.isChecked = isCheckedAll
+//        holder.binding.checkBoxSelectItem.isChecked = isCheckedAll
 
     }
 
@@ -72,8 +74,8 @@ class CartListAdapter(
         fun bind(data: ProductEntity) {
             cartViewModel = ViewModelProvider(context as FragmentActivity)[CartViewModel::class.java]
             binding.apply {
-                val isCheck = cartViewModel.isCheck(data.is_checked)
-                Log.d("cekkocak", data.is_checked.toString())
+//                val isCheck = cartViewModel.isCheck(data.id)
+//                Log.d("isCheckeddata", isCheck.toString())
                 Glide.with(itemView.context)
                     .asBitmap()
                     .load(data.image)
@@ -92,27 +94,35 @@ class CartListAdapter(
                 btnDelete.setOnClickListener {
                     onDeleteItem(data)
                 }
-                checkBoxSelectItem.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-//                        val priceValue = data.harga.toInt()
-//                        val quantityValue = data.stock
-//                        val result = (priceValue * quantityValue)
-//                        totalValue += result
-                        onCheckedItem(totalValue)
-//                        binding.checkBoxSelectItem.isChecked = true
-//                        cartViewModel.checkBox(data.id, true)
-                        onInitData.invoke(listData[adapterPosition])
-                    } else if (!isChecked) {
-//                        val priceValue = data.harga.toInt()
-//                        val quantityValue = data.stock
-//                        val result = (priceValue * quantityValue)
-//                        totalValue -= result
-//                        onUnCheckedItem(totalValue)
-                        binding.checkBoxSelectItem.isChecked = true
-                        cartViewModel.checkBox(data.id, false)
-                        onInitData.invoke(listData[adapterPosition])
+                checkBoxSelectItem.setOnCheckedChangeListener { _, p1 ->
+                    if (p1) {
+                        onCheckedItem.invoke(listData[adapterPosition])
+                    } else if (!p1) {
+                        onUnCheckedItem.invoke(listData[adapterPosition])
                     }
                 }
+
+//                checkBoxSelectItem.setOnCheckedChangeListener { _, isChecked ->
+//                    if (isChecked) {
+////                        val priceValue = data.harga.toInt()
+////                        val quantityValue = data.stock
+////                        val result = (priceValue * quantityValue)
+////                        totalValue += result
+////                        onCheckedItem(data)
+////                        binding.checkBoxSelectItem.isChecked = true
+//                        cartViewModel.checkBox(data.id, true)
+//                        onInitData.invoke(listData[adapterPosition])
+//                    } else if (!isChecked) {
+////                        val priceValue = data.harga.toInt()
+////                        val quantityValue = data.stock
+////                        val result = (priceValue * quantityValue)
+////                        totalValue -= result
+////                        onUnCheckedItem(data)
+////                        binding.checkBoxSelectItem.isChecked = true
+//                        cartViewModel.checkBox(data.id, false)
+//                        onInitData.invoke(listData[adapterPosition])
+//                    }
+//                }
 
 
                 addQuantity.setOnClickListener {

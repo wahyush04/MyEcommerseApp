@@ -1,6 +1,7 @@
 package com.wahyush04.androidphincon.ui.cart
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.wahyush04.core.database.ProductDao
 import com.wahyush04.core.database.ProductDatabase
@@ -21,8 +22,12 @@ class CartRepository(application: Application) {
         return productDao?.getProduct()
     }
 
-    suspend fun countItems(): Int? {
+    fun countItems(): Int? {
         return productDao?.countItems()
+    }
+
+    fun getTotalHarga(): Int? {
+        return productDao?.getTotalHargaChecked()
     }
 
     fun addTrolley(product: ProductEntity){
@@ -37,11 +42,12 @@ class CartRepository(application: Application) {
         executorService.execute{ productDao?.delete(data) }
     }
 
-    fun updateQuantity(quantity: Int, id: Int): Int {
-        return productDao!!.updateQuantity(quantity, id)
+    fun updateQuantity(quantity: Int, id: Int, newTotalHarga : Int): Int {
+        return productDao!!.updateQuantity(quantity, id, newTotalHarga)
     }
 
-    fun checkBox(id: Int, state : Boolean): Int {
+    fun updateCheck(id: Int, state : Int): Int {
+        Log.d("bisasamperepository", "bisa ni")
         return productDao!!.updateCheck(id, state)
     }
 

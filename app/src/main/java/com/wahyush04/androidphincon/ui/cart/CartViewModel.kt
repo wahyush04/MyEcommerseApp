@@ -8,7 +8,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.core.data.ErrorResponse
-import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.data.updatestock.UpdateStockResponse
 import com.wahyush04.core.database.ProductDao
@@ -54,13 +53,17 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         return cartRepository.countItems()
     }
 
-    fun updateQuantity(quantity: Int, id: Int): Int = cartRepository.updateQuantity(quantity,id)
+    fun getTotalHarga() : Int? {
+        return cartRepository.getTotalHarga()
+    }
+
+    fun updateQuantity(quantity: Int, id: Int, newTotalHarga : Int): Int = cartRepository.updateQuantity(quantity,id, newTotalHarga)
 
 //    fun checkQuantity(id: Int): Int = cartRepository.isCheck(id, stat)
 
-    fun checkBox( id: Int,state : Boolean) : Int =  cartRepository.checkBox(id, state)
+    fun updateCheck(id: Int, state : Int) : Int  = cartRepository.updateCheck(id, state)
 
-    fun deleteCart(data : ProductEntity) = viewModelScope.launch(Dispatchers.IO) { cartRepository.deleteTrolley(data) }
+    fun deleteCart(data : ProductEntity) = cartRepository.deleteTrolley(data)
 
     fun setBuyProduct(requestBody: UpdateStockRequestBody, preferences : PreferenceHelper, context: Context){
         Log.d("requestBody",  requestBody.toString())

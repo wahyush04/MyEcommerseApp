@@ -137,11 +137,11 @@ class BottomSheet(private val data: DetailProductResponse, private val from : St
         val price = data.success?.data?.harga?.toInt()
         val stock = data.success!!.data!!.stock!!.toInt()
         val stockbuy = binding?.tvCount?.text.toString().toInt()
-        val totalHarga = totalHarga
+        val totalHarga = price?.times(stockbuy)
         val image = data.success?.data?.image
-                val product = ProductEntity(id!!.toInt(), productName!!, price!!, totalHarga!!.toInt(), stock, stockbuy, image.toString(), 0)
-                detailProductViewModel.insertTrolley(product as ProductEntity)
-                Toast.makeText(requireContext(), "Data Berhasil Ditambah ke Trolley", Toast.LENGTH_SHORT).show()
+        val product = ProductEntity(id!!.toInt(), productName!!, price!!, totalHarga!!.toInt(), stock, stockbuy, image.toString(), 0)
+        detailProductViewModel.insertTrolley(product as ProductEntity)
+        Toast.makeText(requireContext(), "Data Berhasil Ditambah ke Trolley", Toast.LENGTH_SHORT).show()
     }
 
 

@@ -3,10 +3,12 @@ package com.wahyush04.androidphincon.ui.cart
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.CompoundButton
 import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wahyush04.androidphincon.databinding.ActivityCartBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
@@ -14,13 +16,15 @@ import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.database.ProductDao
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.formatterIdr
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
     private lateinit var adapter: CartListAdapter
     private lateinit var favDao: ProductDao
     private lateinit var cartViewModel : CartViewModel
-    private var totalPrice : Int = 0
+    private var totalPrice : Int? = 0
     private lateinit var preferences : PreferenceHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +32,12 @@ class CartActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
+
         preferences = PreferenceHelper(this)
 
         cartViewModel = ViewModelProvider(this)[CartViewModel::class.java]
         doActionClicked()
 
-        initData()
         binding.btnBack.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
@@ -46,31 +50,50 @@ class CartActivity : AppCompatActivity() {
             }
 
         })
+
+        initData()
+        val result = cartViewModel.getTotalHarga()
+        binding.tvTotalPrice.text = result.toString().formatterIdr()
     }
 
 
     private fun doActionClicked() {
         adapter = CartListAdapter(
-            { cartViewModel.deleteCart(it) },
             {
-                val result = adapter.totalValue
-                cartViewModel.checkBox(it.id, true)
+                lifecycleScope.launch {
+                    cartViewModel.deleteCart(it)
+                    val result = cartViewModel.getTotalHarga()
+                    binding.tvTotalPrice.text = result.toString().formatterIdr()
+                }
+            },
+            {
+                val id = it.id
+                cartViewModel.updateCheck(id, 1)
+                val result = cartViewModel.getTotalHarga()
+                Log.d("sampemana", "activity ini mah")
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
             },
             {
-                val result = adapter.totalValue
-                cartViewModel.checkBox(it.id, false)
+                val id = it.id
+                cartViewModel.updateCheck(id, 0)
+                val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
             },
             {
                 val id = it.id
                 val quantity = it.stockbuy
-                cartViewModel.updateQuantity((quantity + 1), id)
+                val newTotalHarga = it.total_harga + it.harga
+                cartViewModel.updateQuantity((quantity + 1), id,newTotalHarga)
+                val result = cartViewModel.getTotalHarga()
+                binding.tvTotalPrice.text = result.toString().formatterIdr()
             },
             {
                 val id = it.id
                 val quantity = it.stockbuy
-                cartViewModel.updateQuantity((quantity - 1), id)
+                val newTotalHarga = it.total_harga - it.harga
+                cartViewModel.updateQuantity((quantity - 1), id, newTotalHarga)
+                val result = cartViewModel.getTotalHarga()
+                binding.tvTotalPrice.text = result.toString().formatterIdr()
             },
             {val schema = "data_stock"
                 val idProduct = it.id
@@ -90,8 +113,8 @@ class CartActivity : AppCompatActivity() {
                     rvCart.adapter = adapter
                     rvCart.layoutManager = LinearLayoutManager(this@CartActivity)
                     rvCart.setHasFixedSize(true)
-                    adapter.onItemClick = {
-                    }
+//                    adapter.onItemClick = {
+//                    }
                 }
             }
         }

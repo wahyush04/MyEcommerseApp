@@ -56,6 +56,10 @@ class CartRepository(application: Application) {
         return productDao!!.updateQuantity(quantity, id, newTotalHarga)
     }
 
+    fun checkALl(state : Int): Int {
+        return productDao!!.checkAll(state)
+    }
+
     fun updateCheck(id: Int, state : Int): Int {
         Log.d("bisasamperepository", "bisa ni")
         return productDao!!.updateCheck(id, state)

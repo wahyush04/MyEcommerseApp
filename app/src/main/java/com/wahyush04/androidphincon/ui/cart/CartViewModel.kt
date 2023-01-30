@@ -70,6 +70,8 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updateQuantity(quantity: Int, id: Int, newTotalHarga : Int): Int = cartRepository.updateQuantity(quantity,id, newTotalHarga)
 
+    fun checkAll(state : Int): Int = cartRepository.checkALl(state)
+
 //    fun checkQuantity(id: Int): Int = cartRepository.isCheck(id, stat)
 
     fun updateCheck(id: Int, state : Int) : Int  = cartRepository.updateCheck(id, state)

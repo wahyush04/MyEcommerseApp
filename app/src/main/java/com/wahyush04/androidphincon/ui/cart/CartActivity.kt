@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.wahyush04.androidphincon.databinding.ActivityCartBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.ui.successpage.SuccessPageActivity
+import com.wahyush04.core.Constant
 import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.database.DataTrolley
@@ -48,14 +49,22 @@ class CartActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
         }
 
-        binding.checkboxSelectAll.setOnCheckedChangeListener(object : OnCheckedChangeListener{
-            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
-                Toast.makeText(this@CartActivity, p1.toString(), Toast.LENGTH_SHORT ).show()
-                adapter.isCheckedAll(p1)
+        binding.checkboxSelectAll.isChecked = preferences.getIsCheck(Constant.ISCHECK)
 
+        binding.checkboxSelectAll.setOnCheckedChangeListener { p0, p1 ->
+            Toast.makeText(this@CartActivity, p1.toString(), Toast.LENGTH_SHORT).show()
+            if (p1){
+                preferences.putCheck(true)
+                cartViewModel.checkAll(1)
+                val result = cartViewModel.getTotalHarga()
+                binding.tvTotalPrice.text = result.toString().formatterIdr()
+            } else {
+                preferences.putCheck(false)
+                cartViewModel.checkAll(0)
+                val result = cartViewModel.getTotalHarga()
+                binding.tvTotalPrice.text = result.toString().formatterIdr()
             }
-
-        })
+        }
 
         initData()
 
@@ -142,9 +151,10 @@ class CartActivity : AppCompatActivity() {
                     rvCart.adapter = adapter
                     rvCart.layoutManager = LinearLayoutManager(this@CartActivity)
                     rvCart.setHasFixedSize(true)
-//                    adapter.onItemClick = {
-//                    }
                 }
+            } else {
+                binding.checkboxSelectAll.isChecked = false
+                cartViewModel.checkAll(0)
             }
         }
     }

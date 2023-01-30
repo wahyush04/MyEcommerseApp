@@ -41,6 +41,9 @@ interface ProductDao {
     @Query("SELECT id FROM tbl_product WHERE is_checked = 1")
     fun getIdChecked() : List<Int>
 
+    @Query("UPDATE tbl_product SET is_checked = :state")
+    fun checkAll(state: Int) : Int
+
 
 
 

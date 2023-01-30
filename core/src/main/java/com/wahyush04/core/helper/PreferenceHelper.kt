@@ -33,6 +33,15 @@ class PreferenceHelper(context: Context) {
             .apply()
     }
 
+    fun putCheck(isChecked : Boolean){
+        editor.putBoolean(Constant.ISCHECK, isChecked)
+            .apply()
+    }
+
+    fun getIsCheck(key: String) : Boolean{
+        return pref.getBoolean(key, false)
+    }
+
     fun getIsLogin(key: String) : Boolean{
         return pref.getBoolean(key, false)
     }

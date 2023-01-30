@@ -51,7 +51,7 @@ class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.ListViewHolde
                 tvPrice.text = formatRupiah(data.harga.toInt())
                 tvDate.text = formatDate(data.date)
                 ratingBar.rating = data.rate.toFloat()
-                ivFavorite.visibility = View.GONE
+                tbFav.visibility = View.GONE
             }
         }
     }

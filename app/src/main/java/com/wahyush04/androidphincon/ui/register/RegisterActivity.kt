@@ -261,6 +261,7 @@ class RegisterActivity : AppCompatActivity() {
                         .setPositiveButton(R.string.login) { _, _ ->
                             Toast.makeText(this,getString(R.string.register_success),Toast.LENGTH_SHORT).show()
                             startActivity(Intent(this, LoginActivity::class.java))
+                            finish()
                         }
                         .show()
                 }

@@ -51,6 +51,7 @@ class ProductFavoriteListAdapter : RecyclerView.Adapter<ProductFavoriteListAdapt
                 tvPrice.text = formatRupiah(data.harga.toInt())
                 tvDate.text = formatDate(data.date)
                 ratingBar.rating = data.rate.toFloat()
+                tbFav.isChecked = true
             }
         }
     }

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.CompoundButton
 import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Toast
@@ -18,6 +19,7 @@ import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.database.DataTrolley
 import com.wahyush04.core.database.ProductDao
+import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.formatterIdr
 import kotlinx.coroutines.launch
@@ -37,13 +39,14 @@ class CartActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
-
         preferences = PreferenceHelper(this)
         mutableListItem = mutableListOf()
         id = mutableListOf<Int>()
 
         cartViewModel = ViewModelProvider(this)[CartViewModel::class.java]
         doActionClicked()
+        initData()
+
 
         binding.btnBack.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
@@ -51,7 +54,7 @@ class CartActivity : AppCompatActivity() {
 
         binding.checkboxSelectAll.isChecked = preferences.getIsCheck(Constant.ISCHECK)
 
-        binding.checkboxSelectAll.setOnCheckedChangeListener { p0, p1 ->
+        binding.checkboxSelectAll.setOnCheckedChangeListener { _, p1 ->
             Toast.makeText(this@CartActivity, p1.toString(), Toast.LENGTH_SHORT).show()
             if (p1){
                 preferences.putCheck(true)
@@ -66,9 +69,9 @@ class CartActivity : AppCompatActivity() {
             }
         }
 
-        initData()
 
         binding.btnBuy.setOnClickListener {
+            showLoading(true)
             val result = cartViewModel.getTotalHarga()
             binding.tvTotalPrice.text = result.toString().formatterIdr()
 
@@ -90,6 +93,7 @@ class CartActivity : AppCompatActivity() {
             intent.putExtra("data", idList)
             startActivity(Intent(this, SuccessPageActivity::class.java))
             startActivity(intent)
+            showLoading(false)
         }
 
         val result = cartViewModel.getTotalHarga()
@@ -99,12 +103,9 @@ class CartActivity : AppCompatActivity() {
 
     private fun doActionClicked() {
         adapter = CartListAdapter(
-            {
-                lifecycleScope.launch {
-                    cartViewModel.deleteCart(it)
-                    val result = cartViewModel.getTotalHarga()
-                    binding.tvTotalPrice.text = result.toString().formatterIdr()
-                }
+            { cartViewModel.deleteCart(it)
+                val result = cartViewModel.getTotalHarga()
+                binding.tvTotalPrice.text = result.toString().formatterIdr()
             },
             {
                 val id = it.id
@@ -135,24 +136,20 @@ class CartActivity : AppCompatActivity() {
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
             },
-            {
-                val schema = "data_stock"
-                val idProduct = it.id
-                val buyProduct = it.stock
-            }, this
+            this
         )
     }
 
     private fun initData() {
+        binding.rvCart.adapter = adapter
+        binding.rvCart.layoutManager = LinearLayoutManager(this@CartActivity)
+        binding.rvCart.setHasFixedSize(true)
         cartViewModel.getTrolley().observe(this@CartActivity) {
             if (it.isNotEmpty()) {
+                showEmpty(false)
                 adapter.setData(it)
-                binding.apply {
-                    rvCart.adapter = adapter
-                    rvCart.layoutManager = LinearLayoutManager(this@CartActivity)
-                    rvCart.setHasFixedSize(true)
-                }
             } else {
+                showEmpty(true)
                 binding.checkboxSelectAll.isChecked = false
                 cartViewModel.checkAll(0)
             }
@@ -161,5 +158,34 @@ class CartActivity : AppCompatActivity() {
 
     private fun buyProduct(requestBody : UpdateStockRequestBody){
         cartViewModel.setBuyProduct(requestBody, preferences, this)
+    }
+
+    private fun showLoading(state: Boolean){
+        if (state){
+            binding.loadingDialog.loadingLayout.visibility = View.VISIBLE
+        }else{
+            binding.loadingDialog.loadingLayout.visibility = View.GONE
+        }
+    }
+
+    private fun showEmpty(state : Boolean){
+        if (state){
+            binding.emptyLayout.emptyLayout.visibility = View.VISIBLE
+            binding.cvNavBottom.visibility = View.GONE
+            binding.checkboxSelectAll.visibility = View.GONE
+            binding.tvCheckAll.visibility = View.GONE
+            binding.rvCart.visibility = View.GONE
+        } else {
+            binding.emptyLayout.emptyLayout.visibility = View.GONE
+            binding.cvNavBottom.visibility = View.VISIBLE
+            binding.checkboxSelectAll.visibility = View.VISIBLE
+            binding.tvCheckAll.visibility = View.VISIBLE
+            binding.rvCart.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 }

@@ -10,7 +10,7 @@ interface ProductDao {
     fun insert(user: ProductEntity)
 
     @Delete
-    fun delete(user: ProductEntity)
+    fun delete(data : ProductEntity)
 
     @Query("SELECT * FROM tbl_product")
     fun getProduct(): LiveData<List<ProductEntity>>
@@ -43,9 +43,5 @@ interface ProductDao {
 
     @Query("UPDATE tbl_product SET is_checked = :state")
     fun checkAll(state: Int) : Int
-
-
-
-
     
 }

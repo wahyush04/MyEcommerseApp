@@ -104,7 +104,7 @@ class DetailProductActivity : AppCompatActivity() {
             showShimmer(false)
 
             binding.btnTrolley.setOnClickListener {
-                val bottomSheet = BottomSheet(data, "trolley")
+                val bottomSheet = BottomSheetTrolley(data, "trolley")
                 bottomSheet.show(supportFragmentManager, "bottomSheet")
 //                product = ProductEntity(id, productName, price, price, stock, 1, image)
 //                detailProductViewModel.insertTrolley(product as ProductEntity)

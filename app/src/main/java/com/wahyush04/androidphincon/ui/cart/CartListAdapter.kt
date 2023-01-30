@@ -26,26 +26,27 @@ class CartListAdapter(
     private val onUnCheckedItem: (ProductEntity) -> Unit,
     private val onAddQuantity: (ProductEntity) -> Unit,
     private val onMinQuantity: (ProductEntity) -> Unit,
-    private val onInitData: (ProductEntity) -> Unit,
     val context: Context
 ) : RecyclerView.Adapter<CartListAdapter.ViewHolder>() {
     private var listData = ArrayList<ProductEntity>()
-    var onItemClick: ((ProductEntity) -> Unit)? = null
-    var totalValue: Int = 0
     private lateinit var cartViewModel : CartViewModel
-    private var isCheckedAll = false
+
+    private lateinit var onItemClickCallback: OnItemClickCallback
+    private var onItemClick: CartListAdapter.OnAdapterListener? = null
+    fun setOnItemClick(onItemClick: CartListAdapter.OnAdapterListener){
+        this.onItemClick = onItemClick
+    }
+
+    fun setOnDeleteItemClickCallback(onItemClickCallback: OnItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(newListData: List<ProductEntity>?) {
         if (newListData == null) return
         listData.clear()
         listData.addAll(newListData)
-        notifyDataSetChanged()
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun isCheckedAll(isChecked : Boolean){
-        isCheckedAll = isChecked
+        notifyItemRemoved(newListData.size)
         notifyDataSetChanged()
     }
 
@@ -94,6 +95,9 @@ class CartListAdapter(
                 btnDelete.setOnClickListener {
                     onDeleteItem(data)
                 }
+//                btnDelete.setOnClickListener {
+//                    onItemClickCallback.onItemClicked(data)
+//                }
                 checkBoxSelectItem.setOnCheckedChangeListener { _, p1 ->
                     if (p1) {
                         onCheckedItem.invoke(listData[adapterPosition])
@@ -102,29 +106,6 @@ class CartListAdapter(
                     }
                 }
 
-//                checkBoxSelectItem.setOnCheckedChangeListener { _, isChecked ->
-//                    if (isChecked) {
-////                        val priceValue = data.harga.toInt()
-////                        val quantityValue = data.stock
-////                        val result = (priceValue * quantityValue)
-////                        totalValue += result
-////                        onCheckedItem(data)
-////                        binding.checkBoxSelectItem.isChecked = true
-//                        cartViewModel.checkBox(data.id, true)
-//                        onInitData.invoke(listData[adapterPosition])
-//                    } else if (!isChecked) {
-////                        val priceValue = data.harga.toInt()
-////                        val quantityValue = data.stock
-////                        val result = (priceValue * quantityValue)
-////                        totalValue -= result
-////                        onUnCheckedItem(data)
-////                        binding.checkBoxSelectItem.isChecked = true
-//                        cartViewModel.checkBox(data.id, false)
-//                        onInitData.invoke(listData[adapterPosition])
-//                    }
-//                }
-
-
                 addQuantity.setOnClickListener {
                     onAddQuantity.invoke(listData[adapterPosition])
                 }
@@ -132,6 +113,26 @@ class CartListAdapter(
                     onMinQuantity.invoke(listData[adapterPosition])
                 }
             }
+        }
+    }
+
+    interface OnItemClickCallback {
+        fun onItemClicked(data: ProductEntity)
+    }
+
+    interface OnAdapterListener {
+        fun onDelete(data: ProductEntity)
+        fun onIncrease(data: ProductEntity, position: Int)
+        fun onDecrease(data: ProductEntity, position: Int)
+        fun onChecked(data: ProductEntity, isChecked: Boolean)
+
+    }
+
+    fun removeData(id: Int) {
+        val index = listData.indexOfFirst { it.id == id }
+        if (index != -1) {
+            listData.removeAt(index)
+            notifyItemRemoved(index)
         }
     }
 }

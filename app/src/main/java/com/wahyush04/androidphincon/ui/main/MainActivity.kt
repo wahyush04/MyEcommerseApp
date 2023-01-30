@@ -148,4 +148,19 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onResume() {
+        super.onResume()
+        totalTrolley = mainViewModel.countTrolley()
+        binding.apply {
+            if (totalTrolley == 0) {
+                tvBadgesValue.visibility = View.INVISIBLE
+                imgBadges.visibility = View.INVISIBLE
+            } else {
+                imgBadges.visibility = View.VISIBLE
+                tvBadgesValue.visibility = View.VISIBLE
+                tvBadgesValue.text = totalTrolley.toString()
+            }
+        }
+    }
+
 }

@@ -34,5 +34,5 @@ data class DataTrolley(
         @ColumnInfo(name = "id")
         val id : Int,
         @ColumnInfo(name = "stock_buy")
-        val stock : Int,
+        val stock_buy : Int,
 ) : Parcelable

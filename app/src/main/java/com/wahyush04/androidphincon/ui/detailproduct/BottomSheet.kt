@@ -2,6 +2,7 @@ package com.wahyush04.androidphincon.ui.detailproduct
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import com.wahyush04.core.data.detailproduct.DetailProductResponse
 import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
 import java.text.DecimalFormat
+import kotlin.math.log
 
 
 class BottomSheet(private val data: DetailProductResponse, private val from : String): BottomSheetDialogFragment() {
@@ -116,6 +118,7 @@ class BottomSheet(private val data: DetailProductResponse, private val from : St
             if (it != null){
                 if (it.success.status == 201){
                     val intent = Intent(requireContext(), SuccessPageActivity::class.java)
+                    Log.d("idIntentbs", id!!)
                     intent.putExtra("data", id)
                     startActivity(intent)
                 }else{

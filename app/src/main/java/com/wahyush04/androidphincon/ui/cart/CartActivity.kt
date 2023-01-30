@@ -12,12 +12,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wahyush04.androidphincon.databinding.ActivityCartBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
+import com.wahyush04.androidphincon.ui.successpage.SuccessPageActivity
+import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
+import com.wahyush04.core.database.DataTrolley
 import com.wahyush04.core.database.ProductDao
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.formatterIdr
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
@@ -26,6 +28,8 @@ class CartActivity : AppCompatActivity() {
     private lateinit var cartViewModel : CartViewModel
     private var totalPrice : Int? = 0
     private lateinit var preferences : PreferenceHelper
+    private lateinit var mutableListItem : MutableList<DataStockItem>
+    private lateinit var id : MutableList<Int>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCartBinding.inflate(layoutInflater)
@@ -34,6 +38,8 @@ class CartActivity : AppCompatActivity() {
 
 
         preferences = PreferenceHelper(this)
+        mutableListItem = mutableListOf()
+        id = mutableListOf<Int>()
 
         cartViewModel = ViewModelProvider(this)[CartViewModel::class.java]
         doActionClicked()
@@ -52,6 +58,31 @@ class CartActivity : AppCompatActivity() {
         })
 
         initData()
+
+        binding.btnBuy.setOnClickListener {
+            val result = cartViewModel.getTotalHarga()
+            binding.tvTotalPrice.text = result.toString().formatterIdr()
+
+            val checkedTrolley =  cartViewModel.getTrolleyChecked()
+            for (item in checkedTrolley!!){
+                mutableListItem.add(DataStockItem(item.id.toString(), item.stock_buy))
+                id.add(item.id)
+            }
+
+            val listListRequestItem: List<DataStockItem> = mutableListItem.toList()
+            val idList = id.toIntArray()
+            val requestBody = UpdateStockRequestBody(listListRequestItem)
+            Log.d("checkedTrolley", requestBody.toString())
+            buyProduct(requestBody)
+            cartViewModel.deleteTrolleyChecked()
+            Toast.makeText(this, "Pembelian Berhasil", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(this, SuccessPageActivity::class.java)
+            intent.putExtra("data", idList)
+            startActivity(Intent(this, SuccessPageActivity::class.java))
+            startActivity(intent)
+        }
+
         val result = cartViewModel.getTotalHarga()
         binding.tvTotalPrice.text = result.toString().formatterIdr()
     }
@@ -95,12 +126,10 @@ class CartActivity : AppCompatActivity() {
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
             },
-            {val schema = "data_stock"
+            {
+                val schema = "data_stock"
                 val idProduct = it.id
                 val buyProduct = it.stock
-                binding.btnBuy.setOnClickListener {
-                    buyProduct()
-                }
             }, this
         )
     }
@@ -120,8 +149,7 @@ class CartActivity : AppCompatActivity() {
         }
     }
 
-    private fun buyProduct(){
-        val requestBody = UpdateStockRequestBody(listOf())
+    private fun buyProduct(requestBody : UpdateStockRequestBody){
         cartViewModel.setBuyProduct(requestBody, preferences, this)
     }
 }

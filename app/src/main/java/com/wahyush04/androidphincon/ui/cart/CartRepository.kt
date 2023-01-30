@@ -3,6 +3,8 @@ package com.wahyush04.androidphincon.ui.cart
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
+import com.wahyush04.core.data.updatestock.DataStockItem
+import com.wahyush04.core.database.DataTrolley
 import com.wahyush04.core.database.ProductDao
 import com.wahyush04.core.database.ProductDatabase
 import com.wahyush04.core.database.ProductEntity
@@ -20,6 +22,14 @@ class CartRepository(application: Application) {
 
     fun getTrolley(): LiveData<List<ProductEntity>>?{
         return productDao?.getProduct()
+    }
+
+    fun getCheckedTrolley(): List<DataTrolley>?{
+        return productDao?.getTrolleyChecked()
+    }
+
+    fun deleteCheckedTrolley(): Int?{
+        return productDao?.deleteTrolley()
     }
 
     fun countItems(): Int? {

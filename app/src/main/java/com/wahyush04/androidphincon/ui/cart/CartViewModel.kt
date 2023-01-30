@@ -8,8 +8,10 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.data.updatestock.UpdateStockResponse
+import com.wahyush04.core.database.DataTrolley
 import com.wahyush04.core.database.ProductDao
 import com.wahyush04.core.database.ProductDatabase
 import com.wahyush04.core.database.ProductEntity
@@ -35,6 +37,15 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getTrolley(): LiveData<List<ProductEntity>> {
         return favDao.getProduct()
+    }
+
+
+    fun getTrolleyChecked(): List<DataTrolley>? {
+        return cartRepository.getCheckedTrolley()
+    }
+
+    fun deleteTrolleyChecked(): Int? {
+        return cartRepository.deleteCheckedTrolley()
     }
 
     fun insert(data: ProductEntity){
@@ -66,6 +77,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteCart(data : ProductEntity) = cartRepository.deleteTrolley(data)
 
     fun setBuyProduct(requestBody: UpdateStockRequestBody, preferences : PreferenceHelper, context: Context){
+//        val requestBody = UpdateStockRequestBody(requestBody)
         Log.d("requestBody",  requestBody.toString())
         val client = ApiConfig.getApiService(preferences, context).buyProduct(requestBody)
         client.enqueue(object : Callback<UpdateStockResponse> {

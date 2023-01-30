@@ -2,6 +2,7 @@ package com.wahyush04.core.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.wahyush04.core.data.updatestock.DataStockItem
 
 @Dao
 interface ProductDao {
@@ -14,8 +15,8 @@ interface ProductDao {
     @Query("SELECT * FROM tbl_product")
     fun getProduct(): LiveData<List<ProductEntity>>
 
-    @Query("SELECT * FROM tbl_product")
-    fun getTrolley(): LiveData<List<ProductEntity>>
+    @Query("SELECT id,stock_buy FROM tbl_product WHERE is_checked = 1")
+    fun getTrolleyChecked(): List<DataTrolley>
 
     @Query("SELECT COUNT(*) FROM tbl_product")
     fun countItems(): Int
@@ -33,6 +34,14 @@ interface ProductDao {
 
     @Query("SELECT id,stock_buy FROM tbl_product WHERE is_checked = 1")
     fun getDataTrolley() : LiveData<List<DataTrolley>>
+
+    @Query("DELETE FROM tbl_product WHERE is_checked = 1")
+    fun deleteTrolley() : Int
+
+    @Query("SELECT id FROM tbl_product WHERE is_checked = 1")
+    fun getIdChecked() : List<Int>
+
+
 
 
     

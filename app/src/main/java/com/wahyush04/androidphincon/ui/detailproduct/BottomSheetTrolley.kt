@@ -33,7 +33,7 @@ class BottomSheetTrolley(private val data: DetailProductResponse, private val fr
     private lateinit var sharedPreferences: PreferenceHelper
     private lateinit var detailProductViewModel : DetailProductViewModel
 
-    private val bottomSheetViewModel: BuyBottomSheetViewModel by viewModels()
+    private lateinit var bottomSheetViewModel: BuyBottomSheetViewModel
 
     override fun getTheme(): Int {
         return R.style.NoBackgroundDialogTheme
@@ -53,6 +53,9 @@ class BottomSheetTrolley(private val data: DetailProductResponse, private val fr
 
         detailProductViewModel =
             ViewModelProvider(this)[DetailProductViewModel::class.java]
+
+        bottomSheetViewModel =
+            ViewModelProvider(this)[BuyBottomSheetViewModel::class.java]
 
         sharedPreferences = PreferenceHelper(requireContext())
         initiateHarga = data.success?.data?.harga?.toInt()
@@ -86,7 +89,13 @@ class BottomSheetTrolley(private val data: DetailProductResponse, private val fr
         }
 
         binding?.cvBuyButton?.setOnClickListener {
+            val isTrolley = bottomSheetViewModel.isTrolley(data.success?.data?.id.toString().toInt())
+            if (isTrolley == 1){
+                Toast.makeText(requireContext(), "Product Already in Trolley", Toast.LENGTH_SHORT).show()
+            } else{
                 addToTrolley()
+            }
+
         }
     }
 

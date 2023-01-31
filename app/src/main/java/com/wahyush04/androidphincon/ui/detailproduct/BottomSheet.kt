@@ -33,7 +33,7 @@ class BottomSheet(private val data: DetailProductResponse, private val from : St
     private lateinit var sharedPreferences: PreferenceHelper
     private lateinit var detailProductViewModel : DetailProductViewModel
 
-    private val bottomSheetViewModel: BuyBottomSheetViewModel by viewModels()
+    private lateinit var bottomSheetViewModel: BuyBottomSheetViewModel
 
     override fun getTheme(): Int {
         return R.style.NoBackgroundDialogTheme
@@ -53,6 +53,9 @@ class BottomSheet(private val data: DetailProductResponse, private val from : St
 
         detailProductViewModel =
             ViewModelProvider(this)[DetailProductViewModel::class.java]
+
+        bottomSheetViewModel =
+            ViewModelProvider(this)[BuyBottomSheetViewModel::class.java]
 
         sharedPreferences = PreferenceHelper(requireContext())
         initiateHarga = data.success?.data?.harga?.toInt()

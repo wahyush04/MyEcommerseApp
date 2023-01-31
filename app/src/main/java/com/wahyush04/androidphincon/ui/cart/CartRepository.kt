@@ -40,6 +40,10 @@ class CartRepository(application: Application) {
         return productDao?.getTotalHargaChecked()
     }
 
+    fun isTrolley(id : Int): Int? {
+        return productDao?.isTrolley(id)
+    }
+
     fun addTrolley(product: ProductEntity){
         productDao?.insert(product)
     }
@@ -47,10 +51,6 @@ class CartRepository(application: Application) {
     fun deleteTrolley(data: ProductEntity){
         productDao?.delete(data)
     }
-
-//    fun deleteTrolleyAdapter(data: ProductEntity){
-//        executorService.execute{ productDao?.delete(data) }
-//    }
 
     fun updateQuantity(quantity: Int, id: Int, newTotalHarga : Int): Int {
         return productDao!!.updateQuantity(quantity, id, newTotalHarga)
@@ -68,6 +68,4 @@ class CartRepository(application: Application) {
     fun isCheck(id: Int): Int {
         return productDao!!.isCheck(id)
     }
-
-
 }

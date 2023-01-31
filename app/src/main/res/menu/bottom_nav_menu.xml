@@ -16,5 +16,4 @@
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_baseline_person_24"
         tools:ignore="MenuTitle" />
-
 </menu>

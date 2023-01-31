@@ -3,6 +3,7 @@ package com.wahyush04.androidphincon.ui.main.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -58,7 +59,15 @@ class HomeFragment : Fragment() {
         val context = activity.applicationContext
         sharedPreferences = PreferenceHelper(context)
 
-        binding.rvProductList.layoutManager = LinearLayoutManager(context)
+
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val screenHeight = displayMetrics.heightPixels
+        val isPhone = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK < Configuration.SCREENLAYOUT_SIZE_LARGE
+
+        if (isPhone) {
+            binding.rvProductList.layoutManager = LinearLayoutManager(context)
+        }
         binding.rvProductList.setHasFixedSize(true)
         binding.rvProductList.adapter = adapter
 
@@ -184,7 +193,7 @@ class HomeFragment : Fragment() {
             .show()
     }
 
-    fun showEmpty(state : Boolean){
+    private fun showEmpty(state : Boolean){
         if (state){
             binding.emptyLayout.emptyLayout.visibility = View.VISIBLE
         } else {

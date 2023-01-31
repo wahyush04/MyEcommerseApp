@@ -1,18 +1,22 @@
 package com.wahyush04.androidphincon.ui.detailproduct
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.api.ApiConfig
+import com.wahyush04.androidphincon.ui.cart.CartRepository
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.changepassword.ChangePasswordResponse
 import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.data.updatestock.UpdateStockResponse
+import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.Event
 import com.wahyush04.core.helper.PreferenceHelper
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -22,7 +26,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class BuyBottomSheetViewModel : ViewModel() {
+class BuyBottomSheetViewModel(application: Application) : AndroidViewModel(application) {
     val updateStockResponse = MutableLiveData<UpdateStockResponse>()
 
     private var _loginError = MutableLiveData<Event<ErrorResponse>>()
@@ -34,6 +38,8 @@ class BuyBottomSheetViewModel : ViewModel() {
     private var _price = MutableLiveData<Int>()
     val price: LiveData<Int> = _price
 
+    private val cartRepository : CartRepository = CartRepository(application)
+
     init {
         _quantity.value = 1
     }
@@ -42,6 +48,10 @@ class BuyBottomSheetViewModel : ViewModel() {
         if (_quantity.value!! < stock!!) {
             _quantity.value = _quantity.value?.plus(1)
         }
+    }
+
+    fun isTrolley(id : Int): Int?{
+        return cartRepository.isTrolley(id)
     }
 
     fun decreaseQuantity() {

@@ -6,7 +6,7 @@ import com.wahyush04.core.data.updatestock.DataStockItem
 
 @Dao
 interface ProductDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(user: ProductEntity)
 
     @Delete
@@ -43,5 +43,8 @@ interface ProductDao {
 
     @Query("UPDATE tbl_product SET is_checked = :state")
     fun checkAll(state: Int) : Int
+
+    @Query("SELECT COUNT(*) FROM tbl_product WHERE id = :id")
+    fun isTrolley(id: Int) : Int
     
 }

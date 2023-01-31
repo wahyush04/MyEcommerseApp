@@ -97,8 +97,8 @@ class DetailProductViewModel(application: Application) : AndroidViewModel(applic
         cartRepository.addTrolley(data)
     }
 
-    fun deleteTrolley(data : ProductEntity){
-        cartRepository.deleteTrolley(data)
-    }
+//    fun deleteTrolley(data : ProductEntity){
+//        cartRepository.deleteTrolley(data)
+//    }
 
 }

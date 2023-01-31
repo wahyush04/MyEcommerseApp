@@ -31,15 +31,15 @@ class CartListAdapter(
     private var listData = ArrayList<ProductEntity>()
     private lateinit var cartViewModel : CartViewModel
 
-    private lateinit var onItemClickCallback: OnItemClickCallback
-    private var onItemClick: CartListAdapter.OnAdapterListener? = null
-    fun setOnItemClick(onItemClick: CartListAdapter.OnAdapterListener){
-        this.onItemClick = onItemClick
-    }
-
-    fun setOnDeleteItemClickCallback(onItemClickCallback: OnItemClickCallback) {
-        this.onItemClickCallback = onItemClickCallback
-    }
+//    private lateinit var onItemClickCallback: OnItemClickCallback
+//    private var onItemClick: CartListAdapter.OnAdapterListener? = null
+//    fun setOnItemClick(onItemClick: CartListAdapter.OnAdapterListener){
+//        this.onItemClick = onItemClick
+//    }
+//
+//    fun setOnDeleteItemClickCallback(onItemClickCallback: OnItemClickCallback) {
+//        this.onItemClickCallback = onItemClickCallback
+//    }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(newListData: List<ProductEntity>?) {
@@ -116,23 +116,23 @@ class CartListAdapter(
         }
     }
 
-    interface OnItemClickCallback {
-        fun onItemClicked(data: ProductEntity)
-    }
-
-    interface OnAdapterListener {
-        fun onDelete(data: ProductEntity)
-        fun onIncrease(data: ProductEntity, position: Int)
-        fun onDecrease(data: ProductEntity, position: Int)
-        fun onChecked(data: ProductEntity, isChecked: Boolean)
-
-    }
-
-    fun removeData(id: Int) {
-        val index = listData.indexOfFirst { it.id == id }
-        if (index != -1) {
-            listData.removeAt(index)
-            notifyItemRemoved(index)
-        }
-    }
+//    interface OnItemClickCallback {
+//        fun onItemClicked(data: ProductEntity)
+//    }
+//
+//    interface OnAdapterListener {
+//        fun onDelete(data: ProductEntity)
+//        fun onIncrease(data: ProductEntity, position: Int)
+//        fun onDecrease(data: ProductEntity, position: Int)
+//        fun onChecked(data: ProductEntity, isChecked: Boolean)
+//
+//    }
+//
+//    fun removeData(id: Int) {
+//        val index = listData.indexOfFirst { it.id == id }
+//        if (index != -1) {
+//            listData.removeAt(index)
+//            notifyItemRemoved(index)
+//        }
+//    }
 }

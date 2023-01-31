@@ -1,14 +1,18 @@
 package com.wahyush04.androidphincon.ui.detailproduct
 
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.navArgs
+import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
@@ -23,6 +27,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
 import java.text.DecimalFormat
 
 class DetailProductActivity : AppCompatActivity() {
@@ -64,6 +71,8 @@ class DetailProductActivity : AppCompatActivity() {
             val id = data.success!!.data!!.id!!.toInt()
             val productName =  data.success!!.data!!.name_product.toString()
             val stock =  data.success!!.data!!.stock!!.toInt()
+            val weight : String? =  data.success?.data?.weight
+            val size : String? =  data.success?.data?.size
             val price = data.success!!.data!!.harga!!.toInt()
             val image = data.success!!.data!!.image.toString()
 
@@ -79,6 +88,10 @@ class DetailProductActivity : AppCompatActivity() {
                 ratingBar.rating = data.success?.data?.rate?.toFloat()!!
                 viewPager.adapter = ImageViwPagerAdapter(data.success!!.data?.image_product)
                 springDotsIndicator.attachTo(viewPager)
+                Glide.with(applicationContext)
+                    .load(image)
+                    .centerCrop()
+                    .into(tempImage!!)
             }
 
 
@@ -112,10 +125,11 @@ class DetailProductActivity : AppCompatActivity() {
             }
 
             binding.btnShare.setOnClickListener {
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                shareIntent.type = "text/plain"
-                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://wahyush04.com/deeplink?id=$id")
-                startActivity(Intent.createChooser(shareIntent, "Share link using"))
+//                val shareIntent = Intent(Intent.ACTION_SEND)
+//                shareIntent.type = "text/plain"
+//                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://wahyush04.com/deeplink?id=$id")
+//                startActivity(Intent.createChooser(shareIntent, "Share link using"))
+                shareDeepLink(productName, stock.toString(), weight.toString(), size.toString(), "https://wahyush04.com/deeplink?id=$id")
             }
 
             binding.ivBack.setOnClickListener {
@@ -154,6 +168,23 @@ class DetailProductActivity : AppCompatActivity() {
             binding.botNavLayout.visibility = View.VISIBLE
         }
     }
+
+ fun shareDeepLink(name : String, stock : String, weight: String, size : String, link : String, ){
+     val image = binding.tempImage?.drawable
+
+     val mBitmap = (image as BitmapDrawable).bitmap
+     val path = MediaStore.Images.Media.insertImage(contentResolver,mBitmap, "image desc", null)
+
+     val uri = Uri.parse(path)
+
+     val shareIntent = Intent(Intent.ACTION_SEND)
+     shareIntent.type = "image/*"
+     shareIntent.putExtra(Intent.EXTRA_TEXT,
+            "Name : "+ name +"\n"+"Stock : "+ stock +"\n"+ "Weight : "+ weight +"\n"+"Size : "+ size +"\n"+"Link : "+ link
+         )
+     shareIntent.putExtra(Intent.EXTRA_STREAM,uri)
+     startActivity(Intent.createChooser(shareIntent, "Share"))
+ }
 
     override fun onPause() {
         super.onPause()

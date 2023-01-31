@@ -151,6 +151,7 @@ class RegisterActivity : AppCompatActivity() {
                 it
             )
             currentPhotoPath = it.absolutePath
+            Log.d("imagePath", currentPhotoPath)
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
             launcherIntentCamera.launch(intent)
         }

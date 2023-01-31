@@ -1,13 +1,17 @@
 package com.wahyush04.androidphincon.ui.detailproduct
 
+import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.wahyush04.core.data.detailproduct.ImageProductItem
+import com.wahyush04.core.database.ProductEntity
 
-class ImageViwPagerAdapter(private val images: List<ImageProductItem?>?) : PagerAdapter() {
+class ImageViwPagerAdapter(
+    private val images: List<ImageProductItem?>?,
+    ) : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val imageView = ImageView(container.context)

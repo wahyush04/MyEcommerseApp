@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -177,9 +178,19 @@ class DetailProductActivity : AppCompatActivity() {
                 intent.type = "image/*"
                 intent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "Name : $name\nStock : $stock\nWeight : $weight\nSize : $size\nLink : $link"
+                    "Name : ${name}\nStock : ${stock}\nWeight : ${weight}\nSize : ${size}\n $link"
                 )
-                intent.putExtra(Intent.EXTRA_STREAM, getBitmapFromView(bitmap))
+
+                val path = MediaStore.Images.Media.insertImage(
+                    contentResolver,
+                    bitmap,
+                    "image desc",
+                    null
+                )
+
+                val uri = Uri.parse(path)
+
+                intent.putExtra(Intent.EXTRA_STREAM, uri)
                 startActivity(Intent.createChooser(intent, "Share To"))
             }
 
@@ -191,7 +202,6 @@ class DetailProductActivity : AppCompatActivity() {
                 Log.v("IMG Downloader", "Bitmap Preparing Load...");
             }
         })
-
     }
 
 

@@ -33,7 +33,6 @@ import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile
-import kotlinx.android.synthetic.main.activity_register.view.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody

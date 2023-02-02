@@ -6,6 +6,7 @@ import com.wahyush04.core.data.detailproduct.DetailProductResponse
 import com.wahyush04.core.data.favorite.FavoriteResponse
 import com.wahyush04.core.data.login.LoginResponse
 import com.wahyush04.core.data.product.ProductResponse
+import com.wahyush04.core.data.product.ProductResponsePaging
 import com.wahyush04.core.data.refreshtoken.RefreshTokenResponse
 import com.wahyush04.core.data.register.RegisterResponse
 import com.wahyush04.core.data.updaterating.UpdateRatingResponse
@@ -66,11 +67,6 @@ interface ApiService {
         @Field("refresh_token") refresh_token : String?
     ) : Response<RefreshTokenResponse>
 
-    @FormUrlEncoded
-    @GET("training_android/public/api/ecommerce/get_list_product")
-    suspend fun getProductRepo(
-        @Query("search") search : String?
-    ) : ProductResponse
 
     @GET("training_android/public/api/ecommerce/get_list_product")
     fun getProduct(
@@ -115,4 +111,10 @@ interface ApiService {
         @Path("id") id : Int,
         @Field("rate") rate : String
     ) : Call <UpdateRatingResponse>
+
+    @GET("training_android/public/api/ecommerce/get_list_product_paging")
+     suspend fun getProductPaging(
+        @Query("search") search : String?,
+        @Query("offset") offset : Int?
+    ) : ProductResponsePaging
 }

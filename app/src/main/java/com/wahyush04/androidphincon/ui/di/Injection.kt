@@ -2,12 +2,12 @@ package com.wahyush04.androidphincon.ui.di
 
 import android.content.Context
 import com.wahyush04.androidphincon.api.ApiConfig
-//import com.wahyush04.androidphincon.ui.main.ApiConfig
 import com.wahyush04.core.helper.PreferenceHelper
 
-//object Injection {
-//    fun provideRepository(context: Context, preferences: PreferenceHelper): PhinconRepository {
-//        val apiService = ApiConfig.getApiService(preferences, context)
-//        return PhinconRepository(apiService)
-//    }
-//}
+object Injection {
+    fun provideRepository(context: Context, pref : PreferenceHelper): ProductRepository {
+//        val database = ProductDatabase.getDatabase(context)
+        val apiService = ApiConfig.getApiService(pref, context)
+        return ProductRepository(apiService)
+    }
+}

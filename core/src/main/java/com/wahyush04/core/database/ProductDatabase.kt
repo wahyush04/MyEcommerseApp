@@ -1,6 +1,5 @@
 package com.wahyush04.core.database
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
@@ -22,7 +21,8 @@ abstract class ProductDatabase: RoomDatabase() {
                 INSTANCE ?: getDatabaseOnFragment(context).also { INSTANCE = it }
             }
 
-        fun getDatabase(context: Application): ProductDatabase{
+        @JvmStatic
+        fun getDatabase(context: Context): ProductDatabase{
             if (INSTANCE==null){
                 synchronized(ProductDatabase::class){
                     INSTANCE = Room.databaseBuilder(context.applicationContext, ProductDatabase::class.java, "db_product")

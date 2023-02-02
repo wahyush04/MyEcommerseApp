@@ -1,7 +1,6 @@
 package com.wahyush04.androidphincon.ui.main.home
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -9,19 +8,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
+import com.wahyush04.androidphincon.paging.LoadingStateAdapter
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.androidphincon.ui.main.adapter.ProductListAdapter
-import com.wahyush04.core.data.product.DataListProduct
+import com.wahyush04.core.data.product.DataListProductPaging
 import com.wahyush04.core.helper.PreferenceHelper
-import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.coroutines.*
 
 
@@ -33,8 +29,10 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var sharedPreferences: PreferenceHelper
+
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var adapter: ProductListAdapter
+//    private lateinit var adapter: ProductListAdapter
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
     private var searchJob: Job? = null
@@ -46,48 +44,28 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        homeViewModel =
-            ViewModelProvider(this)[HomeViewModel::class.java]
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         adapter = ProductListAdapter()
-        adapter.notifyDataSetChanged()
-
-        val activity = requireActivity()
-        val context = activity.applicationContext
-        sharedPreferences = PreferenceHelper(context)
 
 
+        sharedPreferences = PreferenceHelper(requireContext())
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
         val screenHeight = displayMetrics.heightPixels
         val isPhone = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK < Configuration.SCREENLAYOUT_SIZE_LARGE
 
         if (isPhone) {
-            binding.rvProductList.layoutManager = LinearLayoutManager(context)
+            binding.rvProductList.layoutManager = LinearLayoutManager(requireContext())
         }
-        binding.rvProductList.setHasFixedSize(true)
         binding.rvProductList.adapter = adapter
 
-        binding.febSort.setOnClickListener {
-            selectSorting()
-        }
+        val factory = ViewModelFactory(requireContext().applicationContext, sharedPreferences)
+        homeViewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 
-        binding.febSort.hide()
-
-        binding.rvProductList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                binding.febSort.hide()
-                    febJob?.cancel()
-                    febJob = coroutineScope.launch {
-                        delay(2500)
-                        binding.febSort.show()
-                    }
-            }
-        })
+        getData(null)
 
         binding.svSearch.doOnTextChanged { text, start, before, count ->
             searchJob?.cancel()
@@ -95,9 +73,9 @@ class HomeFragment : Fragment() {
                 text?.let {
                     delay(2000)
                     if (it.isEmpty()) {
-                        getProduct(null, requireContext().applicationContext, sharedPreferences)
+                        getData(null)
                     } else {
-                        getProduct(text.toString(), requireContext().applicationContext, sharedPreferences)
+                        getData(text.toString())
                     }
                 }
             }
@@ -105,15 +83,15 @@ class HomeFragment : Fragment() {
 
         val swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
-            getProduct(null, requireContext().applicationContext, sharedPreferences)
-            sv_search.text = null
-            swipeRefreshLayout.isRefreshing = false
+            showShimmer(true)
+            getData(null)
             searchJob?.cancel()
+            swipeRefreshLayout.isRefreshing = false
         }
 
         adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback{
-            override fun onItemClicked(data: DataListProduct) {
-                val intent = Intent(getActivity(), DetailProductActivity::class.java)
+            override fun onItemClicked(data: DataListProductPaging) {
+                val intent = Intent(activity, DetailProductActivity::class.java)
                 intent.putExtra("id", data.id)
                 Log.d("idHome", data.id.toString())
                 startActivity(intent)
@@ -123,73 +101,17 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun setData(sort : String?){
-//        showShimmer(true)
-        homeViewModel.getProductData().observe(viewLifecycleOwner){ data ->
-            if (data != null) {
-                if (sort == "From A to Z"){
-                    adapter.setList(data.sortedBy { it.name_product }.toList())
-                    binding.rvProductList.visibility = View.VISIBLE
-                } else if (sort == "From Z to A") {
-                    adapter.setList(data.sortedByDescending { it.name_product }.toList())
-                    binding.rvProductList.visibility = View.VISIBLE
-                } else{
-                    adapter.setList(data)
-                    binding.rvProductList.visibility = View.VISIBLE
-                }
-                showEmpty(false)
-            } else {
-                showEmpty(true)
-                Toast.makeText(requireContext().applicationContext, "No Data", Toast.LENGTH_SHORT).show()
-            }
-
-            if (data != null) {
-                if (data.isEmpty()){
-                    showEmpty(true)
-                    Toast.makeText(requireContext().applicationContext, "No Data", Toast.LENGTH_SHORT).show()
-                }
-            }
-            showShimmer(false)
-        }
-    }
-
-    private fun getProduct(search : String?, context : Context, preferences : PreferenceHelper){
-        showShimmer(true)
-        homeViewModel.getProduct(search, context , preferences)
-
-    }
 
     private fun showShimmer(state : Boolean){
         if (state){
-            binding.rvProductList.visibility = View.GONE
-            binding.shimmerList.visibility = View.VISIBLE
             binding.shimmerList.startShimmer()
+            binding.shimmerList.visibility = View.VISIBLE
+            binding.rvProductList.visibility = View.GONE
         }else{
             binding.rvProductList.visibility = View.VISIBLE
             binding.shimmerList.visibility = View.GONE
             binding.shimmerList.stopShimmer()
         }
-    }
-
-    private fun selectSorting() {
-        val items = arrayOf("From A to Z", "From Z to A")
-        var selectedOption = ""
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Sort By")
-            .setSingleChoiceItems(items, -1){_, which ->
-                selectedOption = items[which]
-            }
-            .setPositiveButton("OK"){_,_ ->
-                when (selectedOption){
-                    "From A to Z" -> setData("From A to Z")
-                    "From Z to A" -> setData("From Z to A")
-                }
-            }
-            .setNegativeButton("Cancel"){ dialog, _ ->
-                dialog.dismiss()
-
-            }
-            .show()
     }
 
     private fun showEmpty(state : Boolean){
@@ -206,13 +128,12 @@ class HomeFragment : Fragment() {
         searchJob?.cancel()
     }
 
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onResume() {
+        super.onResume()
         febJob?.cancel()
         searchJob?.cancel()
     }
+
 
     override fun onPause() {
         super.onPause()
@@ -220,24 +141,34 @@ class HomeFragment : Fragment() {
         searchJob?.cancel()
     }
 
-    override fun onStop() {
-        super.onStop()
-        febJob?.cancel()
-        searchJob?.cancel()
+    private fun getData(search : String?) {
+        val adapter = ProductListAdapter()
+        binding.rvProductList.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
+            }
+        )
+        homeViewModel.productListPaging(search).observe(viewLifecycleOwner) {
+            showShimmer(true)
+            if (it !== null){
+                adapter.submitData(lifecycle, it)
+                adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback {
+                    override fun onItemClicked(data: DataListProductPaging) {
+                        val intent = Intent(requireActivity(), DetailProductActivity::class.java)
+                        intent.putExtra("id", data.id)
+                        startActivity(intent)
+                    }
+                })
+            }else{
+                showEmpty(true)
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        febJob?.cancel()
-        searchJob?.cancel()
         showShimmer(true)
-        val activity = requireActivity()
-        val context = activity.applicationContext
-        sharedPreferences = PreferenceHelper(context)
-        coroutineScope.launch {
-            homeViewModel.getProduct(null, requireContext().applicationContext , sharedPreferences)
-        }
-        setData(null)
     }
+
 
 }

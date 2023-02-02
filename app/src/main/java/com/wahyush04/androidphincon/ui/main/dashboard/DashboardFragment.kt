@@ -20,7 +20,6 @@ import com.wahyush04.androidphincon.ui.main.adapter.ProductFavoriteListAdapter
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.helper.PreferenceHelper
-import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.coroutines.*
 
 
@@ -105,8 +104,8 @@ class DashboardFragment : Fragment() {
         swipeRefreshLayout.setOnRefreshListener {
             val id_user = sharedPreferences.getPreference(Constant.ID)
             getFavoriteProduct(null,id_user!!.toInt(), sharedPreferences)
-            sv_search.text = null
-            swipeRefreshLayout.isRefreshing = false
+            binding.svSearch.text = null
+            binding.swipeRefreshLayout.isRefreshing = false
             searchJob?.cancel()
         }
 

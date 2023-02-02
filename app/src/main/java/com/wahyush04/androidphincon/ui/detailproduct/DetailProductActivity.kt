@@ -71,11 +71,13 @@ class DetailProductActivity : AppCompatActivity() {
 
     private fun showShimmer(state : Boolean){
         if (state){
+            binding.swipeRefreshLayout.visibility = View.GONE
             binding.scrollView.visibility = View.GONE
             binding.shimmerDetail.startShimmer()
             binding.shimmerDetail.visibility = View.VISIBLE
             binding.botNavLayout.visibility = View.GONE
         }else{
+            binding.swipeRefreshLayout.visibility = View.VISIBLE
             binding.scrollView.visibility = View.VISIBLE
             binding.shimmerDetail.visibility = View.GONE
             binding.shimmerDetail.stopShimmer()

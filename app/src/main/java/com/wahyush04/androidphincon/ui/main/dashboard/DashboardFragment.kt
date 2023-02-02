@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -21,6 +20,7 @@ import com.wahyush04.androidphincon.ui.main.adapter.ProductFavoriteListAdapter
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.helper.PreferenceHelper
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.coroutines.*
 
 
@@ -100,6 +100,15 @@ class DashboardFragment : Fragment() {
                     }
             }
         })
+
+        val swipeRefreshLayout = binding.swipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            val id_user = sharedPreferences.getPreference(Constant.ID)
+            getFavoriteProduct(null,id_user!!.toInt(), sharedPreferences)
+            sv_search.text = null
+            swipeRefreshLayout.isRefreshing = false
+            searchJob?.cancel()
+        }
 
         adapter.setOnItemClickCallback(object : ProductFavoriteListAdapter.OnItemClickCallback{
             override fun onItemClicked(data: DataListProduct) {

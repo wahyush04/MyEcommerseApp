@@ -35,8 +35,8 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         favDao = ProductDatabase.getInstance(application).favoriteDao()
     }
 
-    fun getTrolley(): LiveData<List<ProductEntity>> {
-        return favDao.getProduct()
+    fun getTrolley(): LiveData<List<ProductEntity>>? {
+        return cartRepository.getTrolley()
     }
 
 

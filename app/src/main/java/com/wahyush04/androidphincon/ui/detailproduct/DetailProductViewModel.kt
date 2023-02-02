@@ -10,7 +10,6 @@ import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.androidphincon.ui.cart.CartRepository
 import com.wahyush04.core.data.detailproduct.DetailProductResponse
 import com.wahyush04.core.data.favorite.FavoriteResponse
-import com.wahyush04.core.database.ProductDao
 import com.wahyush04.core.database.ProductDatabase
 import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
@@ -23,7 +22,6 @@ class DetailProductViewModel(application: Application) : AndroidViewModel(applic
     val addFavoriteResponse = MutableLiveData<FavoriteResponse>()
     val removeFavoriteResponse = MutableLiveData<FavoriteResponse>()
     private var db: ProductDatabase? = ProductDatabase.getDatabase(application)
-    private var favDao: ProductDao? = db?.favoriteDao()
     private val cartRepository : CartRepository = CartRepository(application)
 
     fun setDetailProduct(pref : PreferenceHelper, context : Context, id : Int, id_user : Int){
@@ -96,9 +94,5 @@ class DetailProductViewModel(application: Application) : AndroidViewModel(applic
     fun insertTrolley(data: ProductEntity){
         cartRepository.addTrolley(data)
     }
-
-//    fun deleteTrolley(data : ProductEntity){
-//        cartRepository.deleteTrolley(data)
-//    }
 
 }

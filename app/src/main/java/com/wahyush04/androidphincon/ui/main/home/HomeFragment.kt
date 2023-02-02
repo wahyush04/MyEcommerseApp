@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -22,6 +21,7 @@ import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.androidphincon.ui.main.adapter.ProductListAdapter
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.helper.PreferenceHelper
+import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.coroutines.*
 
 
@@ -77,20 +77,15 @@ class HomeFragment : Fragment() {
 
         binding.febSort.hide()
 
-//        getProduct(null, requireContext().applicationContext, sharedPreferences)
-//        setData(null)
-
         binding.rvProductList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 binding.febSort.hide()
-//                if (dy >= 0) {
                     febJob?.cancel()
                     febJob = coroutineScope.launch {
                         delay(2500)
                         binding.febSort.show()
                     }
-//                }
             }
         })
 
@@ -108,12 +103,16 @@ class HomeFragment : Fragment() {
             }
         }
 
+        val swipeRefreshLayout = binding.swipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            getProduct(null, requireContext().applicationContext, sharedPreferences)
+            sv_search.text = null
+            swipeRefreshLayout.isRefreshing = false
+            searchJob?.cancel()
+        }
+
         adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback{
             override fun onItemClicked(data: DataListProduct) {
-//                val view = view
-//                val toDetail = HomeFragmentDirections.actionNavigationHomeToDetailProductActivity(data.id.toString())
-//                view?.findNavController()?.navigate(toDetail)
-
                 val intent = Intent(getActivity(), DetailProductActivity::class.java)
                 intent.putExtra("id", data.id)
                 Log.d("idHome", data.id.toString())
@@ -125,7 +124,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setData(sort : String?){
-        showShimmer(true)
+//        showShimmer(true)
         homeViewModel.getProductData().observe(viewLifecycleOwner){ data ->
             if (data != null) {
                 if (sort == "From A to Z"){
@@ -231,6 +230,7 @@ class HomeFragment : Fragment() {
         super.onStart()
         febJob?.cancel()
         searchJob?.cancel()
+        showShimmer(true)
         val activity = requireActivity()
         val context = activity.applicationContext
         sharedPreferences = PreferenceHelper(context)

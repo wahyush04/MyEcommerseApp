@@ -17,10 +17,6 @@ class HomeViewModel() : ViewModel() {
 
     val productResponse = MutableLiveData<ArrayList<DataListProduct>?>()
 
-//    suspend fun getProductRepo(search : String?, context : Context, preferences : PreferenceHelper) : ProductResponse{
-//        return phinconRepository.getProduct(search)
-//    }
-
     fun getProduct(search : String?, context : Context, preferences : PreferenceHelper){
         val client = ApiConfig.getApiService(preferences, context).getProduct(search)
         client.enqueue(object : Callback<ProductResponse>{
@@ -45,13 +41,3 @@ class HomeViewModel() : ViewModel() {
     }
 
 }
-
-//class ViewModelFactory(private val context: Context,private val preferences: PreferenceHelper) : ViewModelProvider.Factory {
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-//            @Suppress("UNCHECKED_CAST")
-//            return HomeViewModel(Injection.provideRepository(context, preferences)) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//}

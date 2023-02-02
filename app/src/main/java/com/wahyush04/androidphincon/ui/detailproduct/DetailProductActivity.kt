@@ -1,45 +1,37 @@
 package com.wahyush04.androidphincon.ui.detailproduct
 
 import android.content.Intent
-import android.graphics.drawable.BitmapDrawable
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.navArgs
 import com.bumptech.glide.Glide
-import com.denzcoskun.imageslider.ImageSlider
-import com.denzcoskun.imageslider.constants.ScaleTypes
-import com.denzcoskun.imageslider.models.SlideModel
-import com.wahyush04.androidphincon.R
+import com.squareup.picasso.Picasso
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.core.Constant
-import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
-import com.wahyush04.core.helper.formatRupiah
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.net.URL
+import java.io.IOException
 import java.text.DecimalFormat
 
 class DetailProductActivity : AppCompatActivity() {
     private lateinit var binding : ActivityDetailProductBinding
     private lateinit var detailProductViewModel : DetailProductViewModel
     private lateinit var preferences: PreferenceHelper
-    private val args: DetailProductActivityArgs? by navArgs()
-    private var product: ProductEntity? = null
     private var isChecked = true
     private var idProduct : Int? = null
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,14 +41,13 @@ class DetailProductActivity : AppCompatActivity() {
         showShimmer(true)
 
         supportActionBar?.hide()
-        detailProductViewModel = ViewModelProvider(this)[DetailProductViewModel::class.java]
+        detailProductViewModel =
+            ViewModelProvider(this)[DetailProductViewModel::class.java]
         preferences = PreferenceHelper(this)
 
         val intentID = intent.getIntExtra("id", 0)
-
         idProduct = intentID
         Log.d("idDetail", idProduct.toString())
-
         if (idProduct == 0){
             val data: Uri? = intent?.data
             val id = data?.getQueryParameter("id")
@@ -65,8 +56,36 @@ class DetailProductActivity : AppCompatActivity() {
             }
         }
 
+        val swipeRefreshLayout = binding.swipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            getData()
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun formatRupiah(angka: Int): String {
+        val formatRupiah = DecimalFormat("Rp #,###")
+        return formatRupiah.format(angka)
+    }
+
+    private fun showShimmer(state : Boolean){
+        if (state){
+            binding.scrollView.visibility = View.GONE
+            binding.shimmerDetail.startShimmer()
+            binding.shimmerDetail.visibility = View.VISIBLE
+            binding.botNavLayout.visibility = View.GONE
+        }else{
+            binding.scrollView.visibility = View.VISIBLE
+            binding.shimmerDetail.visibility = View.GONE
+            binding.shimmerDetail.stopShimmer()
+            binding.botNavLayout.visibility = View.VISIBLE
+        }
+    }
+
+
+    private fun setData(){
+//        showShimmer(true)
         val idUser : Int = preferences.getPreference(Constant.ID)!!.toInt()
-        detailProductViewModel.setDetailProduct(preferences, this@DetailProductActivity, idProduct!!.toInt(), idUser)
         detailProductViewModel.getDetailProduct().observe(this){ data ->
             val id = data.success!!.data!!.id!!.toInt()
             val productName =  data.success!!.data!!.name_product.toString()
@@ -114,27 +133,21 @@ class DetailProductActivity : AppCompatActivity() {
                 bottomSheet.show(supportFragmentManager, "bottomSheet")
             }
 
-            showShimmer(false)
 
             binding.btnTrolley.setOnClickListener {
                 val bottomSheet = BottomSheetTrolley(data, "trolley")
                 bottomSheet.show(supportFragmentManager, "bottomSheet")
-//                product = ProductEntity(id, productName, price, price, stock, 1, image)
-//                detailProductViewModel.insertTrolley(product as ProductEntity)
-//                Toast.makeText(this, "User Berhasil Ditambah ke Trolley", Toast.LENGTH_SHORT).show()
+
             }
 
             binding.btnShare.setOnClickListener {
-//                val shareIntent = Intent(Intent.ACTION_SEND)
-//                shareIntent.type = "text/plain"
-//                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://wahyush04.com/deeplink?id=$id")
-//                startActivity(Intent.createChooser(shareIntent, "Share link using"))
-                shareDeepLink(productName, stock.toString(), weight.toString(), size.toString(), "https://wahyush04.com/deeplink?id=$id")
+                shareDeepLink(productName, stock.toString(), weight.toString(), size.toString(), "https://wahyush04.com/deeplink?id=$id", image)
             }
 
             binding.ivBack.setOnClickListener {
                 startActivity(Intent(this, MainActivity::class.java))
             }
+            showShimmer(false)
         }
 
         binding.tbFav.setOnClickListener {
@@ -150,44 +163,65 @@ class DetailProductActivity : AppCompatActivity() {
         }
     }
 
-    private fun formatRupiah(angka: Int): String {
-        val formatRupiah = DecimalFormat("Rp #,###")
-        return formatRupiah.format(angka)
+    private fun getData(){
+        showShimmer(true)
+        val idUser : Int = preferences.getPreference(Constant.ID)!!.toInt()
+        detailProductViewModel.setDetailProduct(preferences, this@DetailProductActivity, idProduct!!.toInt(), idUser)
     }
 
-    private fun showShimmer(state : Boolean){
-        if (state){
-            binding.scrollView.visibility = View.GONE
-            binding.shimmerDetail.startShimmer()
-            binding.shimmerDetail.visibility = View.VISIBLE
-            binding.botNavLayout.visibility = View.GONE
-        }else{
-            binding.scrollView.visibility = View.VISIBLE
-            binding.shimmerDetail.visibility = View.GONE
-            binding.shimmerDetail.stopShimmer()
-            binding.botNavLayout.visibility = View.VISIBLE
+    private fun shareDeepLink(name : String, stock : String, weight: String, size : String, link : String, image : String){
+
+        Picasso.get().load(image).into(object : com.squareup.picasso.Target {
+            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "image/*"
+                intent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Name : $name\nStock : $stock\nWeight : $weight\nSize : $size\nLink : $link"
+                )
+                intent.putExtra(Intent.EXTRA_STREAM, getBitmapFromView(bitmap))
+                startActivity(Intent.createChooser(intent, "Share To"))
+            }
+
+            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+                Log.v("IMG Downloader", "Bitmap Failed...");
+            }
+
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                Log.v("IMG Downloader", "Bitmap Preparing Load...");
+            }
+        })
+
+    }
+
+
+    private fun getBitmapFromView(bmp: Bitmap?): Uri? {
+        var bmpUri: Uri? = null
+        try {
+            val file = File(this.externalCacheDir, System.currentTimeMillis().toString() + ".jpg")
+
+            val out = FileOutputStream(file)
+            bmp?.compress(Bitmap.CompressFormat.JPEG, 90, out)
+            out.close()
+            bmpUri = Uri.fromFile(file)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+        return bmpUri
     }
-
- fun shareDeepLink(name : String, stock : String, weight: String, size : String, link : String, ){
-     val image = binding.tempImage?.drawable
-
-     val mBitmap = (image as BitmapDrawable).bitmap
-     val path = MediaStore.Images.Media.insertImage(contentResolver,mBitmap, "image desc", null)
-
-     val uri = Uri.parse(path)
-
-     val shareIntent = Intent(Intent.ACTION_SEND)
-     shareIntent.type = "image/*"
-     shareIntent.putExtra(Intent.EXTRA_TEXT,
-            "Name : "+ name +"\n"+"Stock : "+ stock +"\n"+ "Weight : "+ weight +"\n"+"Size : "+ size +"\n"+"Link : "+ link
-         )
-     shareIntent.putExtra(Intent.EXTRA_STREAM,uri)
-     startActivity(Intent.createChooser(shareIntent, "Share"))
- }
 
     override fun onPause() {
         super.onPause()
         showShimmer(false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        showShimmer(true)
+        coroutineScope.launch {
+            val idUser : Int = preferences.getPreference(Constant.ID)!!.toInt()
+            detailProductViewModel.setDetailProduct(preferences, this@DetailProductActivity, idProduct!!.toInt(), idUser)
+        }
+        setData()
     }
 }

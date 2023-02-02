@@ -14,7 +14,6 @@ import java.util.concurrent.Executors
 class CartRepository(application: Application) {
     private var productDao: ProductDao?
     private var userDB: ProductDatabase? = ProductDatabase.getDatabase(application)
-    private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
 
     init {
         productDao = userDB?.favoriteDao()
@@ -61,7 +60,6 @@ class CartRepository(application: Application) {
     }
 
     fun updateCheck(id: Int, state : Int): Int {
-        Log.d("bisasamperepository", "bisa ni")
         return productDao!!.updateCheck(id, state)
     }
 

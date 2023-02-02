@@ -31,16 +31,6 @@ class CartListAdapter(
     private var listData = ArrayList<ProductEntity>()
     private lateinit var cartViewModel : CartViewModel
 
-//    private lateinit var onItemClickCallback: OnItemClickCallback
-//    private var onItemClick: CartListAdapter.OnAdapterListener? = null
-//    fun setOnItemClick(onItemClick: CartListAdapter.OnAdapterListener){
-//        this.onItemClick = onItemClick
-//    }
-//
-//    fun setOnDeleteItemClickCallback(onItemClickCallback: OnItemClickCallback) {
-//        this.onItemClickCallback = onItemClickCallback
-//    }
-
     @SuppressLint("NotifyDataSetChanged")
     fun setData(newListData: List<ProductEntity>?) {
         if (newListData == null) return
@@ -55,17 +45,9 @@ class CartListAdapter(
         return ViewHolder(binding)
     }
 
-
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-//        ViewHolder(
-//            LayoutInflater.from(parent.context).inflate(R.layout.cart_item, parent, false)
-//        )
-
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = listData[position]
         holder.bind(data)
-//        holder.binding.checkBoxSelectItem.isChecked = isCheckedAll
 
     }
 
@@ -75,14 +57,11 @@ class CartListAdapter(
         fun bind(data: ProductEntity) {
             cartViewModel = ViewModelProvider(context as FragmentActivity)[CartViewModel::class.java]
             binding.apply {
-//                val isCheck = cartViewModel.isCheck(data.id)
-//                Log.d("isCheckeddata", isCheck.toString())
                 Glide.with(itemView.context)
                     .asBitmap()
                     .load(data.image)
                     .placeholder(R.drawable.baseline_broken_image_24)
                     .into(imgProduct)
-//                tvTittleProduct.text = isCheck.toString()
                 tvTittleProduct.text = data.name_product
                 tvPriceProduct.text = formatRupiah(data.harga)
                 tvQuantity.text = data.stockbuy.toString()
@@ -95,13 +74,11 @@ class CartListAdapter(
                 btnDelete.setOnClickListener {
                     onDeleteItem(data)
                 }
-//                btnDelete.setOnClickListener {
-//                    onItemClickCallback.onItemClicked(data)
-//                }
-                checkBoxSelectItem.setOnCheckedChangeListener { _, p1 ->
-                    if (p1) {
+
+                checkBoxSelectItem.setOnCheckedChangeListener { _, state ->
+                    if (state) {
                         onCheckedItem.invoke(listData[adapterPosition])
-                    } else if (!p1) {
+                    } else if (!state) {
                         onUnCheckedItem.invoke(listData[adapterPosition])
                     }
                 }
@@ -115,24 +92,4 @@ class CartListAdapter(
             }
         }
     }
-
-//    interface OnItemClickCallback {
-//        fun onItemClicked(data: ProductEntity)
-//    }
-//
-//    interface OnAdapterListener {
-//        fun onDelete(data: ProductEntity)
-//        fun onIncrease(data: ProductEntity, position: Int)
-//        fun onDecrease(data: ProductEntity, position: Int)
-//        fun onChecked(data: ProductEntity, isChecked: Boolean)
-//
-//    }
-//
-//    fun removeData(id: Int) {
-//        val index = listData.indexOfFirst { it.id == id }
-//        if (index != -1) {
-//            listData.removeAt(index)
-//            notifyItemRemoved(index)
-//        }
-//    }
 }

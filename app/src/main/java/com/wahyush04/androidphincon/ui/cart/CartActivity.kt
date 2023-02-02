@@ -144,7 +144,7 @@ class CartActivity : AppCompatActivity() {
         binding.rvCart.adapter = adapter
         binding.rvCart.layoutManager = LinearLayoutManager(this@CartActivity)
         binding.rvCart.setHasFixedSize(true)
-        cartViewModel.getTrolley().observe(this@CartActivity) {
+        cartViewModel.getTrolley()?.observe(this@CartActivity) {
             if (it.isNotEmpty()) {
                 showEmpty(false)
                 adapter.setData(it)

@@ -15,7 +15,9 @@ class ProductRepository(private val apiService: ApiService) {
         Log.d("paging", "repositori")
         return Pager(
             config = PagingConfig(
-                pageSize = 5
+                initialLoadSize = 5,
+                pageSize = 5,
+                prefetchDistance = 1
             ),
             pagingSourceFactory = {
                 ProductPagingSource(search, apiService)

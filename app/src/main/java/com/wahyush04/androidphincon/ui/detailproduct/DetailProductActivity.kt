@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.squareup.picasso.Picasso
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
@@ -110,10 +109,6 @@ class DetailProductActivity : AppCompatActivity() {
                 ratingBar.rating = data.success?.data?.rate?.toFloat()!!
                 viewPager.adapter = ImageViwPagerAdapter(data.success!!.data?.image_product)
                 springDotsIndicator.attachTo(viewPager)
-                Glide.with(applicationContext)
-                    .load(image)
-                    .centerCrop()
-                    .into(tempImage!!)
             }
 
 
@@ -222,6 +217,10 @@ class DetailProductActivity : AppCompatActivity() {
         return bmpUri
     }
 
+    fun setOtherProduct(){
+
+    }
+
     override fun onPause() {
         super.onPause()
         showShimmer(false)
@@ -236,4 +235,5 @@ class DetailProductActivity : AppCompatActivity() {
         }
         setData()
     }
+
 }

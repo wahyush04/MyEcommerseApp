@@ -17,7 +17,6 @@ class DashboardViewModel : ViewModel() {
 
     val productResponse = MutableLiveData<ArrayList<DataListProduct>?>()
 
-
     fun getFavoriteProduct(search : String?, id : Int, context : Context, preferences : PreferenceHelper){
         val client = ApiConfig.getApiService(preferences, context).getFavorite(search, id)
         client.enqueue(object : Callback<ProductResponse> {

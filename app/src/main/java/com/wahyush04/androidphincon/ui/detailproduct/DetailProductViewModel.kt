@@ -10,7 +10,8 @@ import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.androidphincon.ui.cart.CartRepository
 import com.wahyush04.core.data.detailproduct.DetailProductResponse
 import com.wahyush04.core.data.favorite.FavoriteResponse
-import com.wahyush04.core.database.ProductDatabase
+import com.wahyush04.core.data.product.DataListProduct
+import com.wahyush04.core.data.product.ProductResponse
 import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
 import retrofit2.Call
@@ -21,8 +22,56 @@ class DetailProductViewModel(application: Application) : AndroidViewModel(applic
     val detailProduct = MutableLiveData<DetailProductResponse>()
     val addFavoriteResponse = MutableLiveData<FavoriteResponse>()
     val removeFavoriteResponse = MutableLiveData<FavoriteResponse>()
-    private var db: ProductDatabase? = ProductDatabase.getDatabase(application)
     private val cartRepository : CartRepository = CartRepository(application)
+
+    val productOtherResponse = MutableLiveData<ArrayList<DataListProduct>?>()
+    val productHistoryResponse = MutableLiveData<ArrayList<DataListProduct>?>()
+
+    fun setOtherProduct(id : Int, context : Context, preferences : PreferenceHelper){
+        val client = ApiConfig.getApiService(preferences, context).getOtherProducts(id)
+        client.enqueue(object : Callback<ProductResponse> {
+            override fun onResponse(
+                call: Call<ProductResponse>,
+                response: Response<ProductResponse>
+            ) {
+                if (response.isSuccessful){
+                    productOtherResponse.postValue(response.body()?.success?.data)
+                }
+            }
+
+            override fun onFailure(call: Call<ProductResponse>, t: Throwable) {
+                Log.d("Failed", "Failed search data")
+            }
+
+        })
+    }
+
+    fun getOtherProduct(): LiveData<ArrayList<DataListProduct>?>{
+        return productOtherResponse
+    }
+
+    fun setHistoryProduct(id : Int, context : Context, preferences : PreferenceHelper){
+        val client = ApiConfig.getApiService(preferences, context).getProductSearchHistory(id)
+        client.enqueue(object : Callback<ProductResponse> {
+            override fun onResponse(
+                call: Call<ProductResponse>,
+                response: Response<ProductResponse>
+            ) {
+                if (response.isSuccessful){
+                    productHistoryResponse.postValue(response.body()?.success?.data)
+                }
+            }
+
+            override fun onFailure(call: Call<ProductResponse>, t: Throwable) {
+                Log.d("Failed", "Failed search data")
+            }
+
+        })
+    }
+
+    fun getHiProduct(): LiveData<ArrayList<DataListProduct>?>{
+        return productHistoryResponse
+    }
 
     fun setDetailProduct(pref : PreferenceHelper, context : Context, id : Int, id_user : Int){
         val client = ApiConfig.getApiService(pref, context).getDetailProduct(id, id_user)

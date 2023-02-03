@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
 import com.wahyush04.androidphincon.paging.LoadingStateAdapter
@@ -36,7 +37,6 @@ class HomeFragment : Fragment() {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
     private var searchJob: Job? = null
-    private var febJob: Job? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -83,7 +83,6 @@ class HomeFragment : Fragment() {
 
         val swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
-            showShimmer(true)
             getData(null)
             searchJob?.cancel()
             swipeRefreshLayout.isRefreshing = false
@@ -124,20 +123,18 @@ class HomeFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        febJob?.cancel()
         searchJob?.cancel()
     }
 
     override fun onResume() {
         super.onResume()
-        febJob?.cancel()
         searchJob?.cancel()
+        getData(null)
     }
 
 
     override fun onPause() {
         super.onPause()
-        febJob?.cancel()
         searchJob?.cancel()
     }
 
@@ -148,9 +145,15 @@ class HomeFragment : Fragment() {
                 adapter.retry()
             }
         )
+        adapter.addLoadStateListener { loadState ->
+            showShimmer(loadState.refresh is LoadState.Loading)
+        }
+
         homeViewModel.productListPaging(search).observe(viewLifecycleOwner) {
-            showShimmer(true)
-            if (it !== null){
+            Log.d("showEmpty", it.toString())
+            if (it == null){
+                showEmpty(true)
+            }else{
                 adapter.submitData(lifecycle, it)
                 adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback {
                     override fun onItemClicked(data: DataListProductPaging) {
@@ -159,16 +162,15 @@ class HomeFragment : Fragment() {
                         startActivity(intent)
                     }
                 })
-            }else{
-                showEmpty(true)
             }
         }
+
     }
 
     override fun onStart() {
         super.onStart()
-        showShimmer(true)
     }
+
 
 
 }

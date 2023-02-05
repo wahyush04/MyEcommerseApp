@@ -77,11 +77,10 @@
                 <!-- ImageView beside title of ToolBar -->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
 
+    </com.google.android.material.appbar.AppBarLayout>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
@@ -94,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.core.widget.NestedScrollView
+            <me.didik.component.StickyNestedScrollView
                 android:id="@+id/scrollView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -392,6 +391,38 @@
                         android:layout_marginTop="10dp"
                         android:background="@android:color/darker_gray"/>
 
+                    <FrameLayout
+                        android:id="@+id/section_other_product_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        app:cardBackgroundColor="@color/transparent"
+                        android:backgroundTint="@color/transparent">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_other_product"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/white"
+                                android:padding="14dp"
+                                android:elevation="4dp"
+                                android:text="Other Product"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                            <View
+                                android:id="@+id/line"
+                                android:layout_width="match_parent"
+                                android:layout_height="8dp"
+                                android:layout_marginTop="10dp"
+                                android:visibility="invisible"
+                                android:background="@android:color/darker_gray"/>
+                        </LinearLayout>
+                    </FrameLayout>
+
                     <include
                         android:id="@+id/section_other_product"
                         android:layout_width="match_parent"
@@ -404,6 +435,39 @@
                         android:layout_height="8dp"
                         android:layout_marginTop="10dp"
                         android:background="@android:color/darker_gray"/>
+
+                    <FrameLayout
+                        android:id="@+id/section_history_product_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        app:cardBackgroundColor="@color/transparent"
+                        android:backgroundTint="@color/transparent"
+                        android:tag="sticky">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_history_product"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/white"
+                                android:padding="14dp"
+                                android:elevation="4dp"
+                                android:text="Riwayat Pencarian"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                            <View
+                                android:id="@+id/line2"
+                                android:layout_width="match_parent"
+                                android:layout_height="8dp"
+                                android:layout_marginTop="10dp"
+                                android:visibility="invisible"
+                                android:background="@android:color/darker_gray"/>
+                        </LinearLayout>
+                    </FrameLayout>
                     <include
                         android:id="@+id/section_search_product"
                         android:layout_width="match_parent"
@@ -412,8 +476,7 @@
 
 
                 </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-
+            </me.didik.component.StickyNestedScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

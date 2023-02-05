@@ -8,13 +8,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_other_product"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Other Product" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_other_product"
         android:layout_marginStart="10dp"

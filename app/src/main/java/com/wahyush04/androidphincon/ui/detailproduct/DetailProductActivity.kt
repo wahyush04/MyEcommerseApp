@@ -57,12 +57,12 @@ class DetailProductActivity : AppCompatActivity() {
 //        if (isPhone) {
 //
 //        }
-        binding.sectionOtherProduct?.rvOtherProduct?.layoutManager = LinearLayoutManager(this)
-        binding.sectionSearchProduct?.rvSearchHistory?.layoutManager = LinearLayoutManager(this)
-        binding.sectionOtherProduct?.rvOtherProduct?.setHasFixedSize(true)
-        binding.sectionOtherProduct?.rvOtherProduct?.adapter = adapterOtherProduct
-        binding.sectionSearchProduct?.rvSearchHistory?.setHasFixedSize(true)
-        binding.sectionSearchProduct?.rvSearchHistory?.adapter = adapterOtherProduct
+        binding.sectionOtherProduct.rvOtherProduct.layoutManager = LinearLayoutManager(this)
+        binding.sectionSearchProduct.rvSearchHistory.layoutManager = LinearLayoutManager(this)
+        binding.sectionOtherProduct.rvOtherProduct.setHasFixedSize(true)
+        binding.sectionOtherProduct.rvOtherProduct.adapter = adapterOtherProduct
+        binding.sectionSearchProduct.rvSearchHistory.setHasFixedSize(true)
+        binding.sectionSearchProduct.rvSearchHistory.adapter = adapterOtherProduct
 
         detailProductViewModel =
             ViewModelProvider(this)[DetailProductViewModel::class.java]

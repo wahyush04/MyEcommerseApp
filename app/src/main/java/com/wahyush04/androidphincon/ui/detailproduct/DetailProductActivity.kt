@@ -1,5 +1,6 @@
 package com.wahyush04.androidphincon.ui.detailproduct
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -11,18 +12,17 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.squareup.picasso.Picasso
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
+import com.wahyush04.androidphincon.ui.main.adapter.OtherProductAdapter
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.DecimalFormat
 
 class DetailProductActivity : AppCompatActivity() {
@@ -31,9 +31,12 @@ class DetailProductActivity : AppCompatActivity() {
     private lateinit var preferences: PreferenceHelper
     private var isChecked = true
     private var idProduct : Int? = null
+    private lateinit var adapterOtherProduct : OtherProductAdapter
+    private lateinit var adapterHistoryProduct : OtherProductAdapter
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =  ActivityDetailProductBinding.inflate(layoutInflater)
@@ -41,6 +44,26 @@ class DetailProductActivity : AppCompatActivity() {
         showShimmer(true)
 
         supportActionBar?.hide()
+        adapterOtherProduct = OtherProductAdapter()
+        adapterOtherProduct.notifyDataSetChanged()
+        adapterHistoryProduct = OtherProductAdapter()
+        adapterHistoryProduct.notifyDataSetChanged()
+
+//        val displayMetrics = resources.displayMetrics
+//        val screenWidth = displayMetrics.widthPixels
+//        val screenHeight = displayMetrics.heightPixels
+//        val isPhone = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK < Configuration.SCREENLAYOUT_SIZE_LARGE
+//
+//        if (isPhone) {
+//
+//        }
+        binding.sectionOtherProduct?.rvOtherProduct?.layoutManager = LinearLayoutManager(this)
+        binding.sectionSearchProduct?.rvSearchHistory?.layoutManager = LinearLayoutManager(this)
+        binding.sectionOtherProduct?.rvOtherProduct?.setHasFixedSize(true)
+        binding.sectionOtherProduct?.rvOtherProduct?.adapter = adapterOtherProduct
+        binding.sectionSearchProduct?.rvSearchHistory?.setHasFixedSize(true)
+        binding.sectionSearchProduct?.rvSearchHistory?.adapter = adapterOtherProduct
+
         detailProductViewModel =
             ViewModelProvider(this)[DetailProductViewModel::class.java]
         preferences = PreferenceHelper(this)
@@ -61,6 +84,9 @@ class DetailProductActivity : AppCompatActivity() {
             getData()
             swipeRefreshLayout.isRefreshing = false
         }
+
+        setOtherProduct()
+        setHistoryProduct()
     }
 
     private fun formatRupiah(angka: Int): String {
@@ -202,23 +228,28 @@ class DetailProductActivity : AppCompatActivity() {
     }
 
 
-    private fun getBitmapFromView(bmp: Bitmap?): Uri? {
-        var bmpUri: Uri? = null
-        try {
-            val file = File(this.externalCacheDir, System.currentTimeMillis().toString() + ".jpg")
-
-            val out = FileOutputStream(file)
-            bmp?.compress(Bitmap.CompressFormat.JPEG, 90, out)
-            out.close()
-            bmpUri = Uri.fromFile(file)
-        } catch (e: IOException) {
-            e.printStackTrace()
+    private fun setOtherProduct(){
+        val idUser : Int = preferences.getPreference(Constant.ID)!!.toInt()
+        detailProductViewModel.setOtherProduct(idUser, this, preferences)
+        detailProductViewModel.getOtherProduct().observe(this){data ->
+            if (data != null){
+                adapterOtherProduct.setList(data)
+            }else{
+                Toast.makeText(this, "No Other Data Product", Toast.LENGTH_SHORT).show()
+            }
         }
-        return bmpUri
     }
 
-    fun setOtherProduct(){
-
+    private fun setHistoryProduct(){
+        val idUser : Int = preferences.getPreference(Constant.ID)!!.toInt()
+        detailProductViewModel.setHistoryProduct(idUser, this, preferences)
+        detailProductViewModel.getHistoryProduct().observe(this){data ->
+            if (data != null){
+                adapterHistoryProduct.setList(data)
+            }else{
+                Toast.makeText(this, "No History Data Product", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onPause() {

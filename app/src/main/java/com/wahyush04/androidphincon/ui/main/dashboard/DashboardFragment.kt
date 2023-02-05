@@ -63,18 +63,18 @@ class DashboardFragment : Fragment() {
         val isPhone = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK < Configuration.SCREENLAYOUT_SIZE_LARGE
 
         if (isPhone) {
-            binding.rvProductList?.layoutManager = LinearLayoutManager(context)
+            binding.rvProductList.layoutManager = LinearLayoutManager(context)
         }
-        binding.rvProductList?.setHasFixedSize(true)
-        binding.rvProductList?.adapter = adapter
+        binding.rvProductList.setHasFixedSize(true)
+        binding.rvProductList.adapter = adapter
 
         val id = sharedPreferences.getPreference(Constant.ID)
 
-        binding.febSort?.setOnClickListener {
+        binding.febSort.setOnClickListener {
             selectSorting()
         }
 
-        binding.svSearch?.doOnTextChanged { text, _, _, _ ->
+        binding.svSearch.doOnTextChanged { text, _, _, _ ->
             searchJob?.cancel()
             searchJob = coroutineScope.launch {
                 text?.let {
@@ -88,15 +88,15 @@ class DashboardFragment : Fragment() {
             }
         }
 
-        binding.rvProductList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvProductList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                binding.febSort?.hide()
-                    febJob?.cancel()
-                    febJob = coroutineScope.launch {
-                        delay(2500)
-                        binding.febSort?.show()
-                    }
+                binding.febSort.hide()
+                febJob?.cancel()
+                febJob = coroutineScope.launch {
+                    delay(2500)
+                    binding.febSort.show()
+                }
             }
         })
 
@@ -111,10 +111,6 @@ class DashboardFragment : Fragment() {
 
         adapter.setOnItemClickCallback(object : ProductFavoriteListAdapter.OnItemClickCallback{
             override fun onItemClicked(data: DataListProduct) {
-//                val view = view
-//                val toDetail = DashboardFragmentDirections.actionNavigationDashboardToDetailProductActivity(data.id.toString())
-//                view?.findNavController()?.navigate(toDetail)
-
                 val intent = Intent(getActivity(), DetailProductActivity::class.java)
                 intent.putExtra("id", data.id)
                 startActivity(intent)
@@ -135,13 +131,13 @@ class DashboardFragment : Fragment() {
             if (data != null) {
                 if (sort == "From A to Z"){
                     adapter.setList(data.sortedBy { it.name_product }.toList())
-                    binding.rvProductList?.visibility = View.VISIBLE
+                    binding.rvProductList.visibility = View.VISIBLE
                 } else if (sort == "From Z to A") {
                     adapter.setList(data.sortedByDescending { it.name_product }.toList())
-                    binding.rvProductList?.visibility = View.VISIBLE
+                    binding.rvProductList.visibility = View.VISIBLE
                 } else{
                     adapter.setList(data)
-                    binding.rvProductList?.visibility = View.VISIBLE
+                    binding.rvProductList.visibility = View.VISIBLE
                 }
                 showEmpty(false)
             }else{
@@ -169,13 +165,13 @@ class DashboardFragment : Fragment() {
 
     private fun showShimmer(state : Boolean){
         if (state){
-            binding.rvProductList?.visibility = View.GONE
-            binding.shimmerList?.visibility = View.VISIBLE
-            binding.shimmerList?.startShimmer()
+            binding.rvProductList.visibility = View.GONE
+            binding.shimmerList.visibility = View.VISIBLE
+            binding.shimmerList.startShimmer()
         }else{
-            binding.rvProductList?.visibility = View.VISIBLE
-            binding.shimmerList?.visibility = View.GONE
-            binding.shimmerList?.stopShimmer()
+            binding.rvProductList.visibility = View.VISIBLE
+            binding.shimmerList.visibility = View.GONE
+            binding.shimmerList.stopShimmer()
         }
     }
 
@@ -210,9 +206,9 @@ class DashboardFragment : Fragment() {
 
     private fun showEmpty(state : Boolean){
         if (state){
-            binding.emptyLayout?.emptyLayout?.visibility = View.VISIBLE
+            binding.emptyLayout.emptyLayout.visibility = View.VISIBLE
         } else {
-            binding.emptyLayout?.emptyLayout?.visibility = View.GONE
+            binding.emptyLayout.emptyLayout.visibility = View.GONE
         }
     }
 

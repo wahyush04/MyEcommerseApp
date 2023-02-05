@@ -69,7 +69,7 @@ class DetailProductViewModel(application: Application) : AndroidViewModel(applic
         })
     }
 
-    fun getHiProduct(): LiveData<ArrayList<DataListProduct>?>{
+    fun getHistoryProduct(): LiveData<ArrayList<DataListProduct>?>{
         return productHistoryResponse
     }
 

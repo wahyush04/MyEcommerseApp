@@ -85,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ScrollView
+            <me.didik.component.StickyNestedScrollView
                 android:id="@+id/scrollView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -110,8 +110,10 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="30dp"
                             android:layout_marginEnd="20dp"
-                            app:cardBackgroundColor="@color/primaryColor"
+                            app:cardBackgroundColor="@color/light_grey"
                             app:cardCornerRadius="10dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
 
                             <LinearLayout
@@ -226,9 +228,8 @@
                                 android:id="@+id/tv_detail_product"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
                                 android:layout_marginTop="10dp"
-                                android:text="Detail Product"
+                                android:text="@string/detail_product"
                                 android:textColor="@color/black"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
@@ -370,22 +371,102 @@
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
                         android:layout_marginTop="10dp"
-                        android:background="@android:color/darker_gray"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_detail_product" />
+                        android:background="@android:color/darker_gray"/>
 
-                    <include
-                        android:id="@+id/section_other_product"
+                    <FrameLayout
+                        android:id="@+id/section_other_product_header"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        layout="@layout/other_product" />
-                    <include
-                        android:id="@+id/section_search_product"
+                        android:background="@color/transparent"
+                        app:cardBackgroundColor="@color/transparent"
+                        android:backgroundTint="@color/transparent"
+                        android:tag="sticky">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_other_product"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/white"
+                                android:padding="14dp"
+                                android:elevation="4dp"
+                                android:text="Other Product"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                            <View
+                                android:id="@+id/line"
+                                android:layout_width="match_parent"
+                                android:layout_height="8dp"
+                                android:layout_marginTop="10dp"
+                                android:visibility="invisible"
+                                android:background="@android:color/darker_gray"/>
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_other_product"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:spanCount="2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        layout="@layout/search_history" />
+                        tools:listitem="@layout/list_product"/>
+
+                    <View
+                        android:id="@+id/section_line2"
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@android:color/darker_gray"/>
+
+                    <FrameLayout
+                        android:id="@+id/section_history_product_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        app:cardBackgroundColor="@color/transparent"
+                        android:backgroundTint="@color/transparent"
+                        android:layout_weight="100"
+                        android:tag="sticky">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_history_product"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/white"
+                                android:padding="14dp"
+                                android:elevation="4dp"
+                                android:text="Riwayat Pencarian"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                            <View
+                                android:id="@+id/line2"
+                                android:layout_width="match_parent"
+                                android:layout_height="8dp"
+                                android:layout_marginTop="10dp"
+                                android:visibility="invisible"
+                                android:background="@android:color/darker_gray"/>
+                        </LinearLayout>
+                    </FrameLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_search_history"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:spanCount="2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/list_product"/>
                 </LinearLayout>
-            </ScrollView>
+            </me.didik.component.StickyNestedScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

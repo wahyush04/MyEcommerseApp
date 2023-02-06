@@ -75,6 +75,7 @@ dependencies {
 
     //paging
     implementation "androidx.paging:paging-runtime-ktx:3.1.0"
+    implementation "androidx.gridlayout:gridlayout:1.0.0"
 
 
 

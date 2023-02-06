@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card_photo"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="300dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         app:cardBackgroundColor="@color/light_grey"
@@ -24,7 +24,8 @@
         android:id="@+id/card_price"
         android:layout_width="140dp"
         android:layout_height="35dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="32dp"
         app:cardBackgroundColor="@color/light_grey"
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="@id/card_photo"
@@ -34,23 +35,24 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_name"
-        android:layout_width="140dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="180dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
         app:cardBackgroundColor="@color/light_grey"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="50dp"
+        app:layout_constraintBottom_toBottomOf="@id/card_price"
         app:layout_constraintStart_toStartOf="@id/card_photo"
-        app:layout_constraintTop_toTopOf="@id/card_price"
-        app:layout_constraintBottom_toBottomOf="@id/card_price">
+        app:layout_constraintTop_toTopOf="@id/card_price">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_rate"
-        android:layout_width="110dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="180dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
         app:cardBackgroundColor="@color/light_grey"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="@id/card_photo"
@@ -60,10 +62,9 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_detail_product"
-        android:layout_width="110dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="160dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="32dp"
         app:cardBackgroundColor="@color/light_grey"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="@id/card_rate"
@@ -75,35 +76,31 @@
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginTop="32dp"
         android:background="@color/light_grey"
-        app:layout_constraintTop_toBottomOf="@id/card_detail_product" />
+        app:layout_constraintTop_toBottomOf="@id/card_detail_product"
+        tools:layout_editor_absoluteX="10dp" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_stock"
-        android:layout_width="80dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="32dp"
         app:cardBackgroundColor="@color/light_grey"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="50dp"
         app:layout_constraintStart_toStartOf="@id/card_detail_product"
-        app:layout_constraintTop_toBottomOf="@id/line">
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toBottomOf="@id/line" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_stock_value"
-        android:layout_width="80dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="40dp"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="32dp"
         app:cardBackgroundColor="@color/light_grey"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="50dp"
         app:layout_constraintStart_toEndOf="@id/card_stock"
-        app:layout_constraintTop_toBottomOf="@id/line">
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toBottomOf="@id/line" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="80dp"
@@ -117,77 +114,74 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_size"
-        android:layout_width="80dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="32dp"
         app:cardBackgroundColor="@color/light_grey"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="50dp"
         app:layout_constraintStart_toStartOf="@id/card_stock"
-        app:layout_constraintTop_toBottomOf="@id/card_stock">
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toBottomOf="@id/card_stock" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_size_value"
-        android:layout_width="80dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="40dp"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="32dp"
         app:cardBackgroundColor="@color/light_grey"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toEndOf="@id/card_size"
-        app:layout_constraintTop_toBottomOf="@id/card_stock_value">
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toBottomOf="@id/card_stock_value" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_weight"
-        android:layout_width="80dp"
-        android:layout_height="15dp"
-        android:layout_marginEnd="32dp"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="100dp"
         app:cardBackgroundColor="@color/light_grey"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="50dp"
         app:layout_constraintEnd_toStartOf="@+id/card_weight_value"
         app:layout_constraintTop_toTopOf="@+id/card_weight_value" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_weight_value"
-        android:layout_width="80dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="50dp"
         app:cardBackgroundColor="@color/light_grey"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/line" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_type"
-        android:layout_width="80dp"
-        android:layout_height="15dp"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="100dp"
         app:cardBackgroundColor="@color/light_grey"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="50dp"
         app:layout_constraintBottom_toBottomOf="@+id/card_type_value"
         app:layout_constraintEnd_toStartOf="@+id/card_type_value"
         app:layout_constraintTop_toBottomOf="@id/card_weight" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_type_value"
-        android:layout_width="80dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="32dp"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="50dp"
         app:cardBackgroundColor="@color/light_grey"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_weight_value" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_desc"
-        android:layout_width="80dp"
-        android:layout_height="15dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="32dp"
         app:cardBackgroundColor="@color/light_grey"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="@+id/card_size"
@@ -196,8 +190,8 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card_bottom"
         android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="30dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="32dp"
         app:cardBackgroundColor="@color/light_grey"
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="@id/card_price"

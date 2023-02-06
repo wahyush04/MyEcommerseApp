@@ -24,4 +24,14 @@
     <string name="password_not_match">Password tidak sama</string>
     <string name="register_success">Register Berhasil</string>
     <string name="choose_picture">Pilih gambar</string>
+    <string name="detail_product">Product Detail</string>
+    <string name="stock">Stok</string>
+    <string name="size">Ukuran</string>
+    <string name="weight">Berat</string>
+    <string name="type">Tipe</string>
+    <string name="description">Deskripsi</string>
+    <string name="image_product">image product</string>
+    <string name="other_product">Produk Lainnya</string>
+    <string name="search_history">Riwayat Pencarian</string>
+    <string name="buy">Beli</string>
 </resources>

@@ -2,7 +2,6 @@ package com.wahyush04.androidphincon.ui.main.home
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
 import com.wahyush04.androidphincon.paging.LoadingStateAdapter
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
@@ -20,7 +18,6 @@ import com.wahyush04.androidphincon.ui.main.adapter.ProductListAdapter
 import com.wahyush04.core.data.product.DataListProductPaging
 import com.wahyush04.core.helper.PreferenceHelper
 import kotlinx.coroutines.*
-
 
 class HomeFragment : Fragment() {
 
@@ -33,7 +30,6 @@ class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var adapter: ProductListAdapter
-//    private lateinit var adapter: ProductListAdapter
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
     private var searchJob: Job? = null
@@ -52,14 +48,6 @@ class HomeFragment : Fragment() {
 
 
         sharedPreferences = PreferenceHelper(requireContext())
-        val displayMetrics = resources.displayMetrics
-        val screenWidth = displayMetrics.widthPixels
-        val screenHeight = displayMetrics.heightPixels
-        val isPhone = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK < Configuration.SCREENLAYOUT_SIZE_LARGE
-
-        if (isPhone) {
-            binding.rvProductList.layoutManager = LinearLayoutManager(requireContext())
-        }
         binding.rvProductList.adapter = adapter
 
         val factory = ViewModelFactory(requireContext().applicationContext, sharedPreferences)
@@ -84,6 +72,7 @@ class HomeFragment : Fragment() {
         val swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
             getData(null)
+            binding.svSearch.text = null
             searchJob?.cancel()
             swipeRefreshLayout.isRefreshing = false
         }
@@ -146,31 +135,26 @@ class HomeFragment : Fragment() {
             }
         )
         adapter.addLoadStateListener { loadState ->
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount < 1) {
+                showEmpty(true)
+                showShimmer(false)
+            } else {
+                showEmpty(false)
+            }
             showShimmer(loadState.refresh is LoadState.Loading)
         }
 
         homeViewModel.productListPaging(search).observe(viewLifecycleOwner) {
             Log.d("showEmpty", it.toString())
-            if (it == null){
-                showEmpty(true)
-            }else{
-                adapter.submitData(lifecycle, it)
-                adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback {
-                    override fun onItemClicked(data: DataListProductPaging) {
-                        val intent = Intent(requireActivity(), DetailProductActivity::class.java)
-                        intent.putExtra("id", data.id)
-                        startActivity(intent)
-                    }
-                })
-            }
+            adapter.submitData(lifecycle, it)
+            adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback {
+                override fun onItemClicked(data: DataListProductPaging) {
+                    val intent =
+                        Intent(requireActivity(), DetailProductActivity::class.java)
+                    intent.putExtra("id", data.id)
+                    startActivity(intent)
+                }
+            })
         }
-
     }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-
-
 }

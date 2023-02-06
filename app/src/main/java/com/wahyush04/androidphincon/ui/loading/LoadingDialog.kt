@@ -6,7 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AlertDialog
 import com.wahyush04.androidphincon.R
 
-class LoadingDialog(val mActivity: Activity) {
+class LoadingDialog(private val mActivity: Activity) {
     private lateinit var isLoading: AlertDialog
 
     fun startLoading(){

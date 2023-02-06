@@ -33,4 +33,15 @@
     <string name="password_not_match">Password not match</string>
     <string name="register_success">Register Berhasil</string>
     <string name="choose_picture">Choose a Picture</string>
+    <string name="back_button">back button</string>
+    <string name="detail_product">Product Detail</string>
+    <string name="stock">Stock</string>
+    <string name="size">Size</string>
+    <string name="weight">Weight</string>
+    <string name="type">Type</string>
+    <string name="description">Description</string>
+    <string name="image_product">image product</string>
+    <string name="other_product">Other Product</string>
+    <string name="search_history">Search History</string>
+    <string name="buy">Buy</string>
 </resources>

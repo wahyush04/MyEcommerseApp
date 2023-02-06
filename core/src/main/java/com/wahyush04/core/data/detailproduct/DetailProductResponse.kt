@@ -16,7 +16,7 @@ data class Data(
 	val size: String? = null,
 	val rate: Int? = null,
 	val weight: String? = null,
-	val image_product: List<ImageProductItem?>? = null,
+	val image_product: List<ImageProductItem>,
 	val stock: Int? = null,
 	val type: String? = null,
 	val desc: String? = null,

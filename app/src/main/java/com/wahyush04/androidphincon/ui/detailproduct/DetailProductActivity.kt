@@ -12,12 +12,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.squareup.picasso.Picasso
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.ui.main.adapter.OtherProductAdapter
 import com.wahyush04.core.Constant
+import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.helper.PreferenceHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 
-class DetailProductActivity : AppCompatActivity() {
+class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageClickListener {
     private lateinit var binding : ActivityDetailProductBinding
     private lateinit var detailProductViewModel : DetailProductViewModel
     private lateinit var preferences: PreferenceHelper
@@ -33,6 +33,7 @@ class DetailProductActivity : AppCompatActivity() {
     private var idProduct : Int? = null
     private lateinit var adapterOtherProduct : OtherProductAdapter
     private lateinit var adapterHistoryProduct : OtherProductAdapter
+    private lateinit var viewPagerAdapter : ImageViewPagerAdapter
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 
 
@@ -49,20 +50,12 @@ class DetailProductActivity : AppCompatActivity() {
         adapterHistoryProduct = OtherProductAdapter()
         adapterHistoryProduct.notifyDataSetChanged()
 
-//        val displayMetrics = resources.displayMetrics
-//        val screenWidth = displayMetrics.widthPixels
-//        val screenHeight = displayMetrics.heightPixels
-//        val isPhone = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK < Configuration.SCREENLAYOUT_SIZE_LARGE
-//
-//        if (isPhone) {
-//
-//        }
-        binding.sectionOtherProduct.rvOtherProduct.layoutManager = LinearLayoutManager(this)
-        binding.sectionSearchProduct.rvSearchHistory.layoutManager = LinearLayoutManager(this)
-        binding.sectionOtherProduct.rvOtherProduct.setHasFixedSize(true)
-        binding.sectionOtherProduct.rvOtherProduct.adapter = adapterOtherProduct
-        binding.sectionSearchProduct.rvSearchHistory.setHasFixedSize(true)
-        binding.sectionSearchProduct.rvSearchHistory.adapter = adapterOtherProduct
+
+        binding.rvOtherProduct.setHasFixedSize(true)
+        binding.rvOtherProduct.adapter = adapterOtherProduct
+        binding.rvSearchHistory.setHasFixedSize(true)
+        binding.rvSearchHistory.adapter = adapterHistoryProduct
+
 
         detailProductViewModel =
             ViewModelProvider(this)[DetailProductViewModel::class.java]
@@ -87,6 +80,22 @@ class DetailProductActivity : AppCompatActivity() {
 
         setOtherProduct()
         setHistoryProduct()
+
+        adapterOtherProduct.setOnItemClickCallback(object : OtherProductAdapter.OnItemClickCallback{
+            override fun onItemClicked(data: DataListProduct) {
+                val intent = Intent(this@DetailProductActivity, DetailProductActivity::class.java)
+                intent.putExtra("id", data.id)
+                startActivity(intent)
+            }
+        })
+
+        adapterHistoryProduct.setOnItemClickCallback(object : OtherProductAdapter.OnItemClickCallback{
+            override fun onItemClicked(data: DataListProduct) {
+                val intent = Intent(this@DetailProductActivity, DetailProductActivity::class.java)
+                intent.putExtra("id", data.id)
+                startActivity(intent)
+            }
+        })
     }
 
     private fun formatRupiah(angka: Int): String {
@@ -112,7 +121,6 @@ class DetailProductActivity : AppCompatActivity() {
 
 
     private fun setData(){
-//        showShimmer(true)
         val idUser : Int = preferences.getPreference(Constant.ID)!!.toInt()
         detailProductViewModel.getDetailProduct().observe(this){ data ->
             val id = data.success!!.data!!.id!!.toInt()
@@ -133,7 +141,7 @@ class DetailProductActivity : AppCompatActivity() {
                 tvTypeValue.text = data.success?.data?.type
                 tvDescription.text = data.success?.data?.desc
                 ratingBar.rating = data.success?.data?.rate?.toFloat()!!
-                viewPager.adapter = ImageViwPagerAdapter(data.success!!.data?.image_product)
+                viewPager.adapter = ImageViewPagerAdapter(data.success!!.data!!.image_product, this@DetailProductActivity)
                 springDotsIndicator.attachTo(viewPager)
             }
 
@@ -171,6 +179,8 @@ class DetailProductActivity : AppCompatActivity() {
             binding.ivBack.setOnClickListener {
                 startActivity(Intent(this, MainActivity::class.java))
             }
+
+
             showShimmer(false)
         }
 
@@ -185,6 +195,8 @@ class DetailProductActivity : AppCompatActivity() {
             }
             binding.tbFav.isChecked = isChecked
         }
+
+
     }
 
     private fun getData(){
@@ -265,6 +277,13 @@ class DetailProductActivity : AppCompatActivity() {
             detailProductViewModel.setDetailProduct(preferences, this@DetailProductActivity, idProduct!!.toInt(), idUser)
         }
         setData()
+    }
+
+
+
+    override fun onClick(image: String) {
+        val imageDialog = ImageViewDialog(image)
+        imageDialog.show(supportFragmentManager, "bottomSheet")
     }
 
 }

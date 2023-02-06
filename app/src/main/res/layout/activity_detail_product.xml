@@ -19,12 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:contentScrim="@color/transparent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:statusBarScrim="@color/transparent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_collapseMode="parallax">
                 <!-- ToolBar widget -->
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar_layout"
@@ -45,7 +46,9 @@
                     android:src="@drawable/baseline_arrow_back_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_collapseMode="parallax"
+                    android:contentDescription="@string/back_button" />
 
                 <!-- Right most TextView -->
                 <TextView
@@ -55,7 +58,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="3dp"
                     android:maxLines="1"
-                    android:text="Nama Produk"
+                    tools:text="Nama Produk"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -68,12 +71,11 @@
                     android:id="@+id/btn_share"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/toolbar_layout"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/baseline_share_24" />
-
                 <!-- ImageView beside title of ToolBar -->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -94,6 +96,7 @@
             android:layout_height="match_parent">
 
             <me.didik.component.StickyNestedScrollView
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:id="@+id/scrollView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -108,6 +111,7 @@
                     android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/view_pager_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -116,7 +120,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
                             android:layout_marginStart="20dp"
-                            android:layout_marginTop="30dp"
+                            android:layout_marginTop="20dp"
                             android:layout_marginEnd="20dp"
                             app:cardBackgroundColor="@color/light_grey"
                             app:cardCornerRadius="10dp"
@@ -198,7 +202,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:gravity="end"
                             android:orientation="vertical">
 
@@ -233,9 +237,9 @@
                                 android:id="@+id/tv_detail_product"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
-                                android:text="Detail Product"
+                                android:text="@string/detail_product"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
@@ -268,9 +272,9 @@
                                 android:id="@+id/tv_stock"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
                                 android:layout_marginTop="12dp"
-                                android:text="Stock"
+                                android:text="@string/stock"
                                 android:textSize="12sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/line_detail_product" />
@@ -279,9 +283,9 @@
                                 android:id="@+id/tv_size"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
                                 android:layout_marginTop="12dp"
-                                android:text="Size"
+                                android:text="@string/size"
                                 android:textSize="12sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/tv_stock" />
@@ -290,9 +294,9 @@
                                 android:id="@+id/tv_weight"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
                                 android:layout_marginTop="12dp"
-                                android:text="Weight"
+                                android:text="@string/weight"
                                 android:textSize="12sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/tv_size" />
@@ -303,7 +307,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="12dp"
-                                android:text="Type"
+                                android:text="@string/type"
                                 android:textSize="12sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/tv_weight" />
@@ -314,7 +318,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="12dp"
-                                android:text="Description"
+                                android:text="@string/description"
                                 android:textSize="12sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/tv_type" />
@@ -375,7 +379,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="8dp"
-                                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                                 android:textSize="12sp"
                                 app:layout_constraintTop_toBottomOf="@id/tv_description"
                                 tools:layout_editor_absoluteX="10dp" />
@@ -397,7 +401,8 @@
                         android:layout_height="wrap_content"
                         android:background="@color/transparent"
                         app:cardBackgroundColor="@color/transparent"
-                        android:backgroundTint="@color/transparent">
+                        android:backgroundTint="@color/transparent"
+                        android:tag="sticky">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -409,7 +414,7 @@
                                 android:background="@color/white"
                                 android:padding="14dp"
                                 android:elevation="4dp"
-                                android:text="Other Product"
+                                android:text="@string/other_product"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -423,11 +428,14 @@
                         </LinearLayout>
                     </FrameLayout>
 
-                    <include
-                        android:id="@+id/section_other_product"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_other_product"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        layout="@layout/other_product" />
+                        tools:listitem="@layout/list_product"/>
 
                     <View
                         android:id="@+id/section_line2"
@@ -443,6 +451,7 @@
                         android:background="@color/transparent"
                         app:cardBackgroundColor="@color/transparent"
                         android:backgroundTint="@color/transparent"
+                        android:layout_weight="100"
                         android:tag="sticky">
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -468,11 +477,14 @@
                                 android:background="@android:color/darker_gray"/>
                         </LinearLayout>
                     </FrameLayout>
-                    <include
-                        android:id="@+id/section_search_product"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_search_history"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        layout="@layout/search_history" />
+                        tools:listitem="@layout/list_product"/>
 
 
                 </LinearLayout>

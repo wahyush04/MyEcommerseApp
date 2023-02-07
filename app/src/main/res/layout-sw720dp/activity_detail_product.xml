@@ -49,7 +49,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="3dp"
                 android:maxLines="1"
-                android:text="Nama Produk"
+                tools:text="Nama Produk"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -62,7 +62,7 @@
                 android:id="@+id/btn_share"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/toolbar_layout"
                 app:layout_constraintTop_toTopOf="parent"
@@ -193,7 +193,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="10dp"
                             android:gravity="end"
                             android:orientation="vertical">
 
@@ -273,7 +273,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_columnWeight="1"
-                                    android:text="Sock"
+                                    android:text="@string/stock"
                                     android:textSize="16sp" />
 
                                 <TextView
@@ -288,7 +288,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_columnWeight="1"
-                                    android:text="Size"
+                                    android:text="@string/size"
                                     android:textSize="16sp" />
 
                                 <TextView
@@ -303,7 +303,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_columnWeight="1"
                                     android:layout_marginTop="18dp"
-                                    android:text="Weight"
+                                    android:text="@string/weight"
                                     android:textSize="16sp" />
 
                                 <TextView
@@ -319,7 +319,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_columnWeight="1"
                                     android:layout_marginTop="18dp"
-                                    android:text="Type"
+                                    android:text="@string/type"
                                     android:textSize="16sp" />
 
                                 <TextView
@@ -335,7 +335,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_columnWeight="1"
                                     android:layout_marginTop="18dp"
-                                    android:text="Description :"
+                                    android:text="@string/description"
                                     android:textSize="16sp" />
                                 <TextView
                                     android:layout_columnWeight="1"
@@ -392,7 +392,7 @@
                                 android:background="@color/white"
                                 android:padding="14dp"
                                 android:elevation="4dp"
-                                android:text="Other Product"
+                                android:text="@string/other_product"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -443,7 +443,7 @@
                                 android:background="@color/white"
                                 android:padding="14dp"
                                 android:elevation="4dp"
-                                android:text="Riwayat Pencarian"
+                                android:text="@string/search_history"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -515,13 +515,13 @@
                 android:id="@+id/btn_trolley"
                 android:layout_width="wrap_content"
                 android:layout_height="39dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="30dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="30dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/bordered_botton"
-                android:text="+ Trolley"
+                android:text="@string/trolley_plus"
                 android:textAllCaps="false"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:textColor="@color/primaryColor"
                 android:textStyle="bold"/>
 
@@ -532,12 +532,12 @@
                 android:textColor="@color/white"
                 android:textAllCaps="false"
                 android:textStyle="bold"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
-                android:text="Buy"/>
+                android:text="@string/buy"/>
         </LinearLayout>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

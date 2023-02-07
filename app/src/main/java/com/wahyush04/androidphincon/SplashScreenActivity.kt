@@ -2,14 +2,11 @@ package com.wahyush04.androidphincon
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
-import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
-import com.wahyush04.core.helper.PreferenceHelper
+import androidx.appcompat.app.AppCompatActivity
 import com.wahyush04.androidphincon.ui.login.LoginActivity
-import com.wahyush04.androidphincon.ui.register.RegisterActivity
+import com.wahyush04.core.helper.PreferenceHelper
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {

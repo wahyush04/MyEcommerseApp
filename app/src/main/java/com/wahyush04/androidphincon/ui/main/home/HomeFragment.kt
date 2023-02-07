@@ -121,7 +121,6 @@ class HomeFragment : Fragment() {
         getData(null)
     }
 
-
     override fun onPause() {
         super.onPause()
         searchJob?.cancel()

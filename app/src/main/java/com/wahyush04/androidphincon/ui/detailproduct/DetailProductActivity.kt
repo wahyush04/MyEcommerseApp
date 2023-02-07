@@ -230,11 +230,11 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
             }
 
             override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                Log.v("IMG Downloader", "Bitmap Failed...");
+                Log.v("IMG Downloader", "Bitmap Failed...")
             }
 
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                Log.v("IMG Downloader", "Bitmap Preparing Load...");
+                Log.v("IMG Downloader", "Bitmap Preparing Load...")
             }
         })
     }

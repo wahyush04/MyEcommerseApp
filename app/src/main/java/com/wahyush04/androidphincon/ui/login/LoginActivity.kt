@@ -3,21 +3,22 @@ package com.wahyush04.androidphincon.ui.login
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
-import com.wahyush04.core.Constant
-import com.wahyush04.androidphincon.ui.main.MainActivity
+import com.google.firebase.messaging.FirebaseMessaging
 import com.wahyush04.androidphincon.databinding.ActivityLoginBinding
-import com.wahyush04.core.helper.PreferenceHelper
+import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.ui.register.RegisterActivity
+import com.wahyush04.core.Constant
+import com.wahyush04.core.helper.PreferenceHelper
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -76,6 +77,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
+            getTokenFirebase()
             showLoading(true)
             val email = binding.edtEmail.text.toString()
             val password = binding.edtPassword.text.toString()
@@ -143,5 +145,12 @@ class LoginActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         showLoading(false)
+    }
+
+    fun getTokenFirebase(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            val token = task.result
+            Log.d("tokenfirebase", token)
+        }
     }
 }

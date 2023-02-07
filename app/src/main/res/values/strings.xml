@@ -44,4 +44,24 @@
     <string name="other_product">Other Product</string>
     <string name="search_history">Search History</string>
     <string name="buy">Buy</string>
+    <string name="trolley">Trolley</string>
+    <string name="sellect_all">Sellect all</string>
+    <string name="total_price">Total Price</string>
+    <string name="trolley_plus">+ Trolley</string>
+    <string name="badge">badge</string>
+    <string name="your_order_is_successful">Your Order is Successful</string>
+    <string name="give_your_rating">Give Your Rating</string>
+    <string name="submit">Submit</string>
+    <string name="total">Total</string>
+    <string name="initiate_buy">0</string>
+    <string name="add_product_value">Add Product Value</string>
+    <string name="decrease_product_value">decrease product value</string>
+    <string name="remove_product_from_trolley">remove product from trolley</string>
+    <string name="empty_image">empty image</string>
+    <string name="empty_data">Empty Data</string>
+    <string name="search">Search</string>
+    <string name="sort_by">Sort By</string>
+    <string name="image_view">Image View</string>
+    <string name="retry">Retry</string>
+    <string name="id">ID</string>
 </resources>

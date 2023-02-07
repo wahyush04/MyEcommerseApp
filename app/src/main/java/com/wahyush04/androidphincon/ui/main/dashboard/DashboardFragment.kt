@@ -155,12 +155,6 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        febJob?.cancel()
-        searchJob?.cancel()
-    }
-
 
 
     private fun showShimmer(state : Boolean){
@@ -214,6 +208,12 @@ class DashboardFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        febJob?.cancel()
+        searchJob?.cancel()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
         febJob?.cancel()
         searchJob?.cancel()
     }

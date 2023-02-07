@@ -3,12 +3,13 @@ package com.wahyush04.androidphincon.ui.cart
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.core.data.ErrorResponse
-import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.data.updatestock.UpdateStockResponse
 import com.wahyush04.core.database.DataTrolley
@@ -17,8 +18,6 @@ import com.wahyush04.core.database.ProductDatabase
 import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.Event
 import com.wahyush04.core.helper.PreferenceHelper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback

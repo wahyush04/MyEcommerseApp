@@ -28,7 +28,8 @@
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/photo_profile" />
+            tools:src="@drawable/photo_profile"
+            android:contentDescription="@string/image_product" />
 
         <TextView
             android:id="@+id/tv_date"
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="03 Agustus 2022"
+            tools:text="03 Agustus 2022"
             android:textSize="11sp"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
@@ -61,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Rp. 10.000"
+            tools:text="Rp. 10.000"
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold"

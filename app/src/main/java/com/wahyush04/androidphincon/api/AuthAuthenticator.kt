@@ -1,7 +1,6 @@
 package com.wahyush04.androidphincon.api
 
 import android.util.Log
-import com.squareup.moshi.Moshi
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.refreshtoken.RefreshTokenResponse
 import com.wahyush04.core.helper.PreferenceHelper
@@ -10,7 +9,6 @@ import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 class AuthAuthenticator(
     private val preferences: PreferenceHelper

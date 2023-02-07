@@ -1,15 +1,11 @@
 package com.wahyush04.androidphincon.ui.cart
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
-import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.database.DataTrolley
 import com.wahyush04.core.database.ProductDao
 import com.wahyush04.core.database.ProductDatabase
 import com.wahyush04.core.database.ProductEntity
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 class CartRepository(application: Application) {
     private var productDao: ProductDao?

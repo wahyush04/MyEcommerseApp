@@ -1,9 +1,9 @@
 package com.wahyush04.androidphincon.ui.changepassword
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.wahyush04.androidphincon.databinding.ActivityChangePasswordBinding
 import com.wahyush04.core.Constant

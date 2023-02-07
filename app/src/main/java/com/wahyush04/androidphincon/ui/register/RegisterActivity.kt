@@ -1,25 +1,21 @@
 package com.wahyush04.androidphincon.ui.register
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -29,8 +25,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityRegisterBinding
 import com.wahyush04.androidphincon.ui.login.LoginActivity
-import com.wahyush04.core.Constant
-import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

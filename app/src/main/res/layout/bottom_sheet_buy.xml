@@ -17,7 +17,7 @@
             android:layout_width="110dp"
             android:layout_height="120dp"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             card_view:cardCornerRadius="10dp"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"
@@ -28,7 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/photo_profile"/>
+                android:src="@drawable/photo_profile"
+                android:contentDescription="@string/image_product" />
 
 
         </androidx.cardview.widget.CardView>
@@ -49,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Rp. 10.000"
+            tools:text="Rp. 10.000"
             android:textColor="@color/black"
             android:textSize="18sp"
             card_view:layout_constraintBottom_toTopOf="@+id/tv_stock_product"
@@ -74,7 +75,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                tools:ignore="UselessParent">
                 <LinearLayout
                     android:id="@+id/frame_layout"
                     android:layout_width="match_parent"
@@ -90,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:gravity="start"
-                        android:text="Total"
+                        android:text="@string/total"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -110,7 +112,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
-                        android:text="0"
+                        android:text="@string/initiate_buy"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -157,22 +159,9 @@
                             android:layout_gravity="center"
                             android:textColor="@color/white"
                             android:textStyle="bold"
-                            android:text="Buy now - 10000"/>
+                            tools:text="Buy now - 10000"/>
 
                     </androidx.cardview.widget.CardView>
-
-<!--                    <Button-->
-<!--                        android:id="@+id/button"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginStart="10dp"-->
-<!--                        android:layout_marginTop="10dp"-->
-<!--                        android:layout_marginEnd="10dp"-->
-<!--                        android:text="Buy now - 10.000"-->
-<!--                        android:textAllCaps="false"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:textStyle="bold" />-->
-
                     <View
                         android:id="@+id/line4"
                         android:layout_width="match_parent"
@@ -181,10 +170,7 @@
                         android:background="@android:color/darker_gray" />
 
                 </LinearLayout>
-
             </LinearLayout>
-
         </FrameLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

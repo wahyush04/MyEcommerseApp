@@ -8,19 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.BottomSheetBuyBinding
-import com.wahyush04.androidphincon.ui.main.dashboard.DashboardViewModel
 import com.wahyush04.androidphincon.ui.successpage.SuccessPageActivity
 import com.wahyush04.core.data.detailproduct.DetailProductResponse
 import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
 import java.text.DecimalFormat
-import kotlin.math.log
 
 
 class BottomSheet(private val data: DetailProductResponse, private val from : String): BottomSheetDialogFragment() {
@@ -76,7 +73,7 @@ class BottomSheet(private val data: DetailProductResponse, private val from : St
 
         bottomSheetViewModel.quantity.observe(requireActivity()) {
             binding?.tvCount?.text = it.toString()
-            if (it == data?.success?.data?.stock) {
+            if (it == data.success?.data?.stock) {
                 binding?.btnIncrement?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_rounded_disable)
                 binding?.btnDecrement?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_rounded_active)
             } else if (it == 1){
@@ -146,7 +143,7 @@ class BottomSheet(private val data: DetailProductResponse, private val from : St
         val totalHarga = price?.times(stockbuy)
         val image = data.success?.data?.image
         val product = ProductEntity(id!!.toInt(), productName!!, price!!, totalHarga!!.toInt(), stock, stockbuy, image.toString(), 0)
-        detailProductViewModel.insertTrolley(product as ProductEntity)
+        detailProductViewModel.insertTrolley(product)
         Toast.makeText(requireContext(), "Data Berhasil Ditambah ke Trolley", Toast.LENGTH_SHORT).show()
     }
 

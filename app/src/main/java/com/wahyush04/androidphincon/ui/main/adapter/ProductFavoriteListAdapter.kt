@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.androidphincon.databinding.ListProductBinding
+import com.wahyush04.core.data.product.DataListProduct
 import java.text.DecimalFormat
-import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ProductFavoriteListAdapter : RecyclerView.Adapter<ProductFavoriteListAdapter.ListViewHolder>() {
     private val listProduct = ArrayList<DataListProduct>()

@@ -30,7 +30,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/logo"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:contentDescription="@string/logo" />
 
                 <ImageView
                     android:id="@+id/ic_cart"
@@ -40,7 +41,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/baseline_shopping_cart_24" />
+                    app:srcCompat="@drawable/baseline_shopping_cart_24"
+                    android:contentDescription="@string/trolley" />
 
                 <ImageView
                     android:id="@+id/img_badges"
@@ -48,7 +50,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/icon_badge" />
+                    app:srcCompat="@drawable/icon_badge"
+                    android:contentDescription="@string/badge" />
 
                 <TextView
                     android:id="@+id/tv_badges_value"

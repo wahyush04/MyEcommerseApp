@@ -518,7 +518,7 @@
                 android:paddingEnd="30dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/bordered_botton"
-                android:text="+ Trolley"
+                android:text="@string/trolley_plus"
                 android:textAllCaps="false"
                 android:textSize="12sp"
                 android:textColor="@color/primaryColor"

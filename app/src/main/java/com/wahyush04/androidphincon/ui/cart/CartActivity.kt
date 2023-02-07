@@ -1,15 +1,12 @@
 package com.wahyush04.androidphincon.ui.cart
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.CompoundButton
-import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wahyush04.androidphincon.databinding.ActivityCartBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
@@ -17,12 +14,9 @@ import com.wahyush04.androidphincon.ui.successpage.SuccessPageActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
-import com.wahyush04.core.database.DataTrolley
 import com.wahyush04.core.database.ProductDao
-import com.wahyush04.core.database.ProductEntity
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.formatterIdr
-import kotlinx.coroutines.launch
 
 class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
@@ -184,8 +178,4 @@ class CartActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
 }

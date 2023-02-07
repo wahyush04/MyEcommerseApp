@@ -1,11 +1,9 @@
 package com.wahyush04.androidphincon.api
 
 import android.content.Context
-import android.util.Log
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

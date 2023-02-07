@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.core.data.updaterating.UpdateRatingResponse
-import com.wahyush04.core.data.updatestock.UpdateStockResponse
 import com.wahyush04.core.helper.PreferenceHelper
 import retrofit2.Call
 import retrofit2.Callback

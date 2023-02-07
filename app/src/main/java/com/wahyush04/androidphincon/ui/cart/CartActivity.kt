@@ -76,18 +76,10 @@ class CartActivity : AppCompatActivity() {
             }
 
             val listListRequestItem: List<DataStockItem> = mutableListItem.toList()
-            val idList = id.toIntArray()
-            val requestBody = UpdateStockRequestBody(listListRequestItem)
-            Log.d("checkedTrolley", requestBody.toString())
-            buyProduct(requestBody)
-            cartViewModel.deleteTrolleyChecked()
-            Toast.makeText(this, "Pembelian Berhasil", Toast.LENGTH_SHORT).show()
 
-            val intent = Intent(this, SuccessPageActivity::class.java)
-            intent.putExtra("data", idList)
-            startActivity(Intent(this, SuccessPageActivity::class.java))
-            startActivity(intent)
-            showLoading(false)
+            val requestBody = UpdateStockRequestBody(listListRequestItem)
+            buyProduct(requestBody)
+
         }
 
         val result = cartViewModel.getTotalHarga()
@@ -151,7 +143,20 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun buyProduct(requestBody : UpdateStockRequestBody){
-        cartViewModel.setBuyProduct(requestBody, preferences, this)
+        if (requestBody.data_stock.isEmpty()){
+            Toast.makeText(this, "Sialhkan Centang Produk terlebih dahulu", Toast.LENGTH_SHORT).show()
+            showLoading(false)
+        } else {
+            cartViewModel.deleteTrolleyChecked()
+            val idList = id.toIntArray()
+            cartViewModel.setBuyProduct(requestBody, preferences, this)
+            val intent = Intent(this, SuccessPageActivity::class.java)
+            intent.putExtra("data", idList)
+//            startActivity(Intent(this, SuccessPageActivity::class.java))
+            startActivity(intent)
+            showLoading(false)
+        }
+
     }
 
     private fun showLoading(state: Boolean){

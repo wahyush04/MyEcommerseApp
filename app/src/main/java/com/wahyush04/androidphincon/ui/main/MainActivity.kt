@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityMainBinding
 import com.wahyush04.androidphincon.ui.cart.CartActivity
@@ -154,6 +156,18 @@ class MainActivity : AppCompatActivity() {
                 tvBadgesValue.text = totalTrolley.toString()
             }
         }
+    }
+
+    fun getTokenFirebase(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            val token = task.result
+            Log.d("tokenfirebase", token)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        getTokenFirebase()
     }
 
 }

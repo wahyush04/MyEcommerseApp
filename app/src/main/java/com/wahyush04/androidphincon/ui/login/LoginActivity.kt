@@ -59,7 +59,6 @@ class LoginActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
         sharedPreferences = PreferenceHelper(this)
-        Log.e("tokenLogin", sharedPreferences.getPreference(Constant.TOKEN).toString())
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(

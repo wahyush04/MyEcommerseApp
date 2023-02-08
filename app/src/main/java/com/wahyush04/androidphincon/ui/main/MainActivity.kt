@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,10 +16,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.messaging.FirebaseMessaging
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityMainBinding
 import com.wahyush04.androidphincon.ui.cart.CartActivity
+import com.wahyush04.androidphincon.ui.notification.NotificationActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
 import java.util.*
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var idLocale: String = "en"
     private lateinit var mainViewModel: MainViewModel
     private var totalTrolley : Int? = 0
-
+    private var totalNotification : Int? =0
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -96,19 +95,12 @@ class MainActivity : AppCompatActivity() {
 //        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        totalTrolley = mainViewModel.countTrolley()
-        binding.apply {
-            if (totalTrolley == 0) {
-                tvBadgesValue.visibility = View.INVISIBLE
-                imgBadges.visibility = View.INVISIBLE
-            } else {
-                imgBadges.visibility = View.VISIBLE
-                tvBadgesValue.visibility = View.VISIBLE
-                tvBadgesValue.text = totalTrolley.toString()
-            }
-            icCart.setOnClickListener {
-                startActivity(Intent(this@MainActivity, CartActivity::class.java))
-            }
+        setIconBadges()
+        binding.icCart.setOnClickListener {
+            startActivity(Intent(this@MainActivity, CartActivity::class.java))
+        }
+        binding.icNotif.setOnClickListener {
+            startActivity(Intent(this@MainActivity, NotificationActivity::class.java))
         }
     }
 
@@ -145,7 +137,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        setIconBadges()
+    }
+
+    private fun setIconBadges(){
         totalTrolley = mainViewModel.countTrolley()
+        totalNotification = mainViewModel.countNotif()
         binding.apply {
             if (totalTrolley == 0) {
                 tvBadgesValue.visibility = View.INVISIBLE
@@ -155,19 +152,20 @@ class MainActivity : AppCompatActivity() {
                 tvBadgesValue.visibility = View.VISIBLE
                 tvBadgesValue.text = totalTrolley.toString()
             }
-        }
-    }
 
-    fun getTokenFirebase(){
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            val token = task.result
-            Log.d("tokenfirebase", token)
+            if (totalNotification == 0){
+                tvBadgesNotifValue.visibility = View.INVISIBLE
+                imgBadgesNotif.visibility = View.INVISIBLE
+            } else{
+                imgBadgesNotif.visibility = View.VISIBLE
+                tvBadgesNotifValue.visibility = View.VISIBLE
+                tvBadgesNotifValue.text = totalNotification.toString()
+            }
         }
     }
 
     override fun onStart() {
         super.onStart()
-        getTokenFirebase()
     }
 
 }

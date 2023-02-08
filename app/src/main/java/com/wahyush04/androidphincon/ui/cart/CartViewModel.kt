@@ -31,7 +31,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     private var _loginError = MutableLiveData<Event<ErrorResponse>>()
     val loginError: LiveData<Event<ErrorResponse>> = _loginError
     init {
-        favDao = ProductDatabase.getInstance(application).favoriteDao()
+        favDao = ProductDatabase.getInstance(application).productDao()
     }
 
     fun getTrolley(): LiveData<List<ProductEntity>>? {
@@ -59,8 +59,12 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         cartRepository.deleteTrolley(data)
     }
 
-    suspend fun totalTrolley() : Int? {
+    fun totalTrolley() : Int? {
         return cartRepository.countItems()
+    }
+
+    fun totalTrolleyCheck() : Int? {
+        return cartRepository.countItemsChecked()
     }
 
     fun getTotalHarga() : Int? {

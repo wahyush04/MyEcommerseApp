@@ -17,5 +17,6 @@
     <color name="secondaryTextColor">#ffffff</color>
     <color name="light_grey">#A4A4A4</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="blue">#A7CFFF</color>
 
 </resources>

@@ -12,7 +12,7 @@ class CartRepository(application: Application) {
     private var userDB: ProductDatabase? = ProductDatabase.getDatabase(application)
 
     init {
-        productDao = userDB?.favoriteDao()
+        productDao = userDB?.productDao()
     }
 
     fun getTrolley(): LiveData<List<ProductEntity>>?{
@@ -29,6 +29,10 @@ class CartRepository(application: Application) {
 
     fun countItems(): Int? {
         return productDao?.countItems()
+    }
+
+    fun countItemsChecked(): Int? {
+        return productDao?.countItemsCheck()
     }
 
     fun getTotalHarga(): Int? {

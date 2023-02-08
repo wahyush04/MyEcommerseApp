@@ -59,6 +59,7 @@ class SuccessPageActivity : AppCompatActivity() {
         successPageViewModel.getUpdateResponse().observe(this){data ->
             if (data.success.status == 201){
                 startActivity(Intent(this, MainActivity::class.java))
+                finish()
             }
         }
     }

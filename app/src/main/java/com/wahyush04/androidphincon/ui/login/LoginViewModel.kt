@@ -24,11 +24,11 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private var _loginError = MutableLiveData<Event<ErrorResponse>>()
     val loginError: LiveData<Event<ErrorResponse>> = _loginError
 
-    fun login(email: String, password:String) {
+    fun login(email: String, password:String, tokenFcm : String) {
         val request = LoginRequest()
         request.email = email
         request.password = password
-        val client = AuthApiConfig.getApiService().userLogin("TuIBt77u7tZHi8n7WqUC", email, password)
+        val client = AuthApiConfig.getApiService().userLogin("TuIBt77u7tZHi8n7WqUC", email, password, tokenFcm)
         client.enqueue(object : Callback <LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful){

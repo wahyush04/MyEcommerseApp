@@ -11,6 +11,7 @@ class Constant {
         const val IMAGE = "IMAGE"
         const val TOKEN = "ACCESS_TOKEN"
         const val REFRESH_TOKEN = "REFRESH_TOKEN"
+        const val TOKEN_FCM = "TOKEN_FCM"
         const val LOCALE = "LOCALE"
         const val APIKEY = "TuIBt77u7tZHi8n7WqUC"
         const val PREFKEY = "TuIBt77u7tZHi8n7WqUC"

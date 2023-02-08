@@ -33,6 +33,12 @@ class PreferenceHelper(context: Context) {
             .apply()
     }
 
+    fun putTokenFcm(key: String, tokenFcm : String){
+        editor.putString(key, tokenFcm)
+            .apply()
+    }
+
+
     fun putCheck(isChecked : Boolean){
         editor.putBoolean(Constant.ISCHECK, isChecked)
             .apply()

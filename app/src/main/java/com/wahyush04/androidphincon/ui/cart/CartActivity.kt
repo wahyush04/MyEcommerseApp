@@ -39,7 +39,6 @@ class CartActivity : AppCompatActivity() {
 
         cartViewModel = ViewModelProvider(this)[CartViewModel::class.java]
         doActionClicked()
-        initData()
 
 
         binding.btnBack.setOnClickListener {
@@ -47,10 +46,11 @@ class CartActivity : AppCompatActivity() {
         }
 
         binding.checkboxSelectAll.isChecked = preferences.getIsCheck(Constant.ISCHECK)
+        var checkAll = preferences.getIsCheck(Constant.ISCHECK)
 
-        binding.checkboxSelectAll.setOnCheckedChangeListener { _, p1 ->
-            Toast.makeText(this@CartActivity, p1.toString(), Toast.LENGTH_SHORT).show()
-            if (p1){
+        binding.checkboxSelectAll.setOnClickListener {
+            checkAll = !checkAll
+            if (checkAll){
                 preferences.putCheck(true)
                 cartViewModel.checkAll(1)
                 val result = cartViewModel.getTotalHarga()
@@ -61,10 +61,12 @@ class CartActivity : AppCompatActivity() {
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
             }
+            binding.checkboxSelectAll.isChecked = checkAll
         }
 
 
         binding.btnBuy.setOnClickListener {
+            val idUser =  preferences.getPreference(Constant.ID)
             showLoading(true)
             val result = cartViewModel.getTotalHarga()
             binding.tvTotalPrice.text = result.toString().formatterIdr()
@@ -77,8 +79,9 @@ class CartActivity : AppCompatActivity() {
 
             val listListRequestItem: List<DataStockItem> = mutableListItem.toList()
 
-            val requestBody = UpdateStockRequestBody(listListRequestItem)
+            val requestBody = UpdateStockRequestBody(idUser!!,listListRequestItem)
             buyProduct(requestBody)
+            finish()
 
         }
 
@@ -99,12 +102,14 @@ class CartActivity : AppCompatActivity() {
                 val result = cartViewModel.getTotalHarga()
                 Log.d("sampemana", "activity ini mah")
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
+                cekCheckBox()
             },
             {
                 val id = it.id
                 cartViewModel.updateCheck(id, 0)
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
+                cekCheckBox()
             },
             {
                 val id = it.id
@@ -124,6 +129,7 @@ class CartActivity : AppCompatActivity() {
             },
             this
         )
+        initData()
     }
 
     private fun initData() {
@@ -135,9 +141,9 @@ class CartActivity : AppCompatActivity() {
                 showEmpty(false)
                 adapter.setData(it)
             } else {
-                showEmpty(true)
                 binding.checkboxSelectAll.isChecked = false
                 cartViewModel.checkAll(0)
+                showEmpty(true)
             }
         }
     }
@@ -165,6 +171,12 @@ class CartActivity : AppCompatActivity() {
         }else{
             binding.loadingDialog.loadingLayout.visibility = View.GONE
         }
+    }
+
+    private fun cekCheckBox(){
+        val countCheck = cartViewModel.totalTrolleyCheck()
+        val countTrolley = cartViewModel.totalTrolley()
+        binding.checkboxSelectAll.isChecked = countCheck == countTrolley
     }
 
     private fun showEmpty(state : Boolean){

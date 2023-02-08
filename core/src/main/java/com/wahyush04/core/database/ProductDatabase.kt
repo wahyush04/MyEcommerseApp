@@ -6,11 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [ProductEntity::class],
+    entities = [ProductEntity::class, NotificationEntity::class],
     version = 1
 )
 abstract class ProductDatabase: RoomDatabase() {
-    abstract fun favoriteDao(): ProductDao
+    abstract fun productDao(): ProductDao
+    abstract fun NotificationDao(): NotificationDao
     companion object{
 
         @Volatile
@@ -25,7 +26,7 @@ abstract class ProductDatabase: RoomDatabase() {
         fun getDatabase(context: Context): ProductDatabase{
             if (INSTANCE==null){
                 synchronized(ProductDatabase::class){
-                    INSTANCE = Room.databaseBuilder(context.applicationContext, ProductDatabase::class.java, "db_product")
+                    INSTANCE = Room.databaseBuilder(context.applicationContext, ProductDatabase::class.java, "db_ecommerce")
                         .allowMainThreadQueries()
                         .fallbackToDestructiveMigration()
                         .build()
@@ -33,7 +34,7 @@ abstract class ProductDatabase: RoomDatabase() {
             }
             return INSTANCE as ProductDatabase
         }
-        fun getDatabaseOnFragment(appContext: Context): ProductDatabase{
+        private fun getDatabaseOnFragment(appContext: Context): ProductDatabase{
             if (INSTANCE==null){
                 synchronized(ProductDatabase::class){
                     INSTANCE = Room.databaseBuilder(appContext, ProductDatabase::class.java, "db_product")

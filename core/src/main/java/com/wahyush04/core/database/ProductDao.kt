@@ -2,7 +2,6 @@ package com.wahyush04.core.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.wahyush04.core.data.updatestock.DataStockItem
 
 @Dao
 interface ProductDao {
@@ -20,6 +19,9 @@ interface ProductDao {
 
     @Query("SELECT COUNT(*) FROM tbl_product")
     fun countItems(): Int
+
+    @Query("SELECT COUNT(*) FROM tbl_product WHERE is_checked = 1")
+    fun countItemsCheck(): Int
 
     @Query("UPDATE tbl_product SET stock_buy = :quantity, total_harga = :newTotalHarga WHERE id = :id")
     fun updateQuantity(quantity: Int, id: Int, newTotalHarga : Int): Int

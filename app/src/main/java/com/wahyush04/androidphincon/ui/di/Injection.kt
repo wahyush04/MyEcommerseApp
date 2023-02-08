@@ -2,6 +2,7 @@ package com.wahyush04.androidphincon.ui.di
 
 import android.content.Context
 import com.wahyush04.androidphincon.api.ApiConfig
+import com.wahyush04.core.database.ProductDatabase
 import com.wahyush04.core.helper.PreferenceHelper
 
 object Injection {
@@ -10,4 +11,5 @@ object Injection {
         val apiService = ApiConfig.getApiService(pref, context)
         return ProductRepository(apiService)
     }
+
 }

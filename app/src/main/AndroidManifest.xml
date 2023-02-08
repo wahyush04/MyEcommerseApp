@@ -19,7 +19,6 @@
         </intent>
     </queries>
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -32,6 +31,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.notification.NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.successpage.SuccessPageActivity"
             android:exported="false" />
         <activity
@@ -39,22 +41,30 @@
             android:exported="false" />
         <activity
             android:name=".ui.detailproduct.DetailProductActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https"
+
+                <data
                     android:host="wahyush04.com"
-                    android:pathPrefix="/deeplink" />
-                <data android:scheme="app" android:host="www.wahyush04.com" />
+                    android:pathPrefix="/deeplink"
+                    android:scheme="https" />
+                <data
+                    android:host="www.wahyush04.com"
+                    android:scheme="app" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http"
-                    android:host="wahyush04" />
+
+                <data
+                    android:host="wahyush04"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
         <activity
@@ -113,6 +123,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <service
             android:name="com.wahyush04.androidphincon.firebase.MyFirebaseMessagingService"
             android:exported="false">
@@ -121,4 +132,5 @@
             </intent-filter>
         </service>
     </application>
+
 </manifest>

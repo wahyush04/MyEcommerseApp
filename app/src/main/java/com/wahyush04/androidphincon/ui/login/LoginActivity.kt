@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
@@ -76,12 +75,13 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
-            getTokenFirebase()
             showLoading(true)
             val email = binding.edtEmail.text.toString()
             val password = binding.edtPassword.text.toString()
+            val tokenFcm = sharedPreferences.getPreference(Constant.TOKEN_FCM)
 
-            loginViewModel.login(email, password)
+
+            loginViewModel.login(email, password, tokenFcm!!)
             loginViewModel.getDetailLogin().observe(this){ data ->
                 val status = data.success.status
                 val accessToken = data.success.access_token
@@ -135,6 +135,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        getTokenFirebase()
         if (sharedPreferences.getIsLogin(Constant.IS_LOGIN)){
             startActivity(Intent(this, MainActivity::class.java))
             finish()
@@ -145,11 +146,11 @@ class LoginActivity : AppCompatActivity() {
         super.onPause()
         showLoading(false)
     }
-
-    fun getTokenFirebase(){
+    private fun getTokenFirebase(){
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            val token = task.result
-            Log.d("tokenfirebase", token)
+            val tokenFcm = task.result
+            sharedPreferences.putTokenFcm(Constant.TOKEN_FCM, tokenFcm)
         }
     }
+
 }

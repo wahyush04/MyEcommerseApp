@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.api.ApiConfig
 import com.wahyush04.androidphincon.ui.cart.CartRepository
+import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
@@ -58,7 +59,8 @@ class BuyBottomSheetViewModel(application: Application) : AndroidViewModel(appli
     }
 
     fun setBuyProduct(idProduct : String?, stock : Int, preferences : PreferenceHelper, context: Context){
-        val requestBody = UpdateStockRequestBody(listOf(DataStockItem(idProduct.toString(), stock)))
+        val idUser = preferences.getPreference(Constant.ID)
+        val requestBody = UpdateStockRequestBody(idUser!!,listOf(DataStockItem(idProduct.toString(), stock)))
         Log.d("requestBody",  requestBody.toString())
         val client = ApiConfig.getApiService(preferences, context).buyProduct(requestBody)
         client.enqueue(object : Callback <UpdateStockResponse>{

@@ -81,7 +81,6 @@ class CartActivity : AppCompatActivity() {
 
             val requestBody = UpdateStockRequestBody(idUser!!,listListRequestItem)
             buyProduct(requestBody)
-            finish()
 
         }
 
@@ -158,9 +157,9 @@ class CartActivity : AppCompatActivity() {
             cartViewModel.setBuyProduct(requestBody, preferences, this)
             val intent = Intent(this, SuccessPageActivity::class.java)
             intent.putExtra("data", idList)
-//            startActivity(Intent(this, SuccessPageActivity::class.java))
             startActivity(intent)
             showLoading(false)
+            finish()
         }
 
     }

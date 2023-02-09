@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.ui.login.LoginActivity
+import com.wahyush04.androidphincon.ui.notification.NotificationActivity
 import com.wahyush04.core.database.NotificationDao
 import com.wahyush04.core.database.NotificationEntity
 import com.wahyush04.core.database.ProductDatabase
@@ -35,10 +35,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val userDB: ProductDatabase = ProductDatabase.getDatabase(application)
         notifDao = userDB.NotificationDao()
         val timestamp = System.currentTimeMillis()
-        val data = NotificationEntity(0, title, messageBody,timestamp.toString(), 0)
+        val data = NotificationEntity(0, title, messageBody,timestamp.toString(), 0, 0)
         notifDao.insert(data)
 
-        val contentIntent = Intent(applicationContext, LoginActivity::class.java)
+        val contentIntent = Intent(applicationContext, NotificationActivity::class.java)
         val contentPendingIntent = PendingIntent.getActivity(
             applicationContext,
             NOTIFICATION_ID,

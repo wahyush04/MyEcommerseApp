@@ -29,6 +29,7 @@ data class ProductEntity (
         val is_checked : Int
 ) : Parcelable
 
+
 @Parcelize
 data class DataTrolley(
         @ColumnInfo(name = "id")

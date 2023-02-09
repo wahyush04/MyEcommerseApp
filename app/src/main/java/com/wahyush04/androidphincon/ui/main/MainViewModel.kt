@@ -22,6 +22,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun countNotif() = notifDao?.countItems()
 
+    fun deleteCheckedNotif(): Int?{
+        return notifDao?.deleteCheckedNotif()
+    }
+
+    fun readAllNotif(state :Int): Int?{
+        return notifDao?.readAll(state)
+    }
+
+    fun updateSceck(id : Int, state : Int): Int?{
+        return notifDao?.updateStatus(id, state)
+    }
+
+
+
 //    suspend fun totalTrolley() : Int? {
 //        return cartRepository.countItems()
 //    }

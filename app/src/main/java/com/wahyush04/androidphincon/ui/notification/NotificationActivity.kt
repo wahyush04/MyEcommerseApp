@@ -17,6 +17,7 @@ class NotificationActivity : AppCompatActivity() {
     private lateinit var adapter : NotificationListAdapter
     private lateinit var notificationViewModel: NotificationViewModel
     private lateinit var preferences : PreferenceHelper
+    private var toolbarState : Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNotificationBinding.inflate(layoutInflater)
@@ -25,14 +26,24 @@ class NotificationActivity : AppCompatActivity() {
 
         preferences = PreferenceHelper(this)
         notificationViewModel = ViewModelProvider(this)[NotificationViewModel::class.java]
-        initAdapter()
-
         binding.ivBack.setOnClickListener {
             startActivity(Intent(this@NotificationActivity, MainActivity::class.java))
         }
+
+        binding.ivDelete.setOnClickListener {
+            Toast.makeText(this@NotificationActivity, "Item Deleted", Toast.LENGTH_SHORT).show()
+            notificationViewModel.deleteCheckedNotif()
+        }
+
+        binding.ivReadAllNotif.setOnClickListener {
+            Toast.makeText(this@NotificationActivity, "All Notif readed", Toast.LENGTH_SHORT).show()
+            notificationViewModel.readAll()
+        }
+
+        setToolbar(toolbarState)
     }
 
-    private fun initAdapter(){
+    private fun initAdapter(state : Boolean){
         adapter = NotificationListAdapter(
             {
                 val id = it.id
@@ -49,6 +60,15 @@ class NotificationActivity : AppCompatActivity() {
                 val dialog = builder.create()
                 dialog.show()
             },
+            {
+                notificationViewModel.updateCheck(it.id, 1)
+                Toast.makeText(this, "Checked Item", Toast.LENGTH_SHORT).show()
+            },
+            {
+                notificationViewModel.updateCheck(it.id, 0)
+                Toast.makeText(this, "Unchecked item", Toast.LENGTH_SHORT).show()
+            },
+            state,
             this
         )
 
@@ -63,6 +83,47 @@ class NotificationActivity : AppCompatActivity() {
                 showEmpty(true)
             }
         }
+    }
+
+
+    private fun setToolbar(state: Boolean){
+        binding.apply {
+        if (!state){
+            ivChecckbox.visibility = View.VISIBLE
+            ivReadAllNotif.visibility = View.GONE
+            ivDelete.visibility = View.GONE
+            ivChecckbox.setOnClickListener {
+                setToolbar(true)
+            }
+            ivBack.setOnClickListener {
+                startActivity(Intent(this@NotificationActivity, MainActivity::class.java))
+                finish()
+            }
+            tvTitleAppbar.text = "Notification"
+            initAdapter(state)
+            toolbarState = !toolbarState
+
+        }else{
+            ivChecckbox.visibility = View.GONE
+            ivReadAllNotif.visibility = View.VISIBLE
+            ivDelete.visibility = View.VISIBLE
+            ivBack.setOnClickListener {
+                notificationViewModel.unCheckAll()
+                setToolbar(false)
+            }
+            ivDelete.setOnClickListener {
+                Toast.makeText(this@NotificationActivity, "Item Deleted", Toast.LENGTH_SHORT).show()
+                notificationViewModel.deleteCheckedNotif()
+            }
+            ivReadAllNotif.setOnClickListener {
+                Toast.makeText(this@NotificationActivity, "All Notif readed", Toast.LENGTH_SHORT).show()
+                notificationViewModel.readAll()
+            }
+            tvTitleAppbar.text = "Multi Select"
+            initAdapter(state)
+            toolbarState = !toolbarState
+        }
+    }
     }
 
     private fun showEmpty(state : Boolean){

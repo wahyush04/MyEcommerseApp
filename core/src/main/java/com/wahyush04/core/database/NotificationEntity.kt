@@ -20,5 +20,7 @@ data class NotificationEntity(
     @ColumnInfo(name = "date")
     val date: String?,
     @ColumnInfo(name = "status")
-    val status: Int
+    val status: Int,
+    @ColumnInfo(name = "isCheck")
+    val isCheck: Int
 ) : Parcelable

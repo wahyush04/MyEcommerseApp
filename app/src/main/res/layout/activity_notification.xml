@@ -36,6 +36,8 @@
                     android:src="@drawable/baseline_arrow_back_24"/>
 
                 <TextView
+
+                    android:id="@+id/tv_title_appbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
@@ -43,6 +45,35 @@
                     android:textSize="18sp"
                     android:fontFamily="@font/poppins_medium"
                     android:textColor="@color/black"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="end"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_checckbox"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/baseline_library_add_check_24_black"/>
+
+                <ImageView
+                    android:id="@+id/iv_readAllNotif"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/baseline_check_box_24_black"/>
+
+                <ImageView
+                    android:id="@+id/iv_delete"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/baseline_delete_24"/>
 
             </LinearLayout>
 

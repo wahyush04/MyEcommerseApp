@@ -27,7 +27,21 @@ class NotificationViewModel(application: Application) : AndroidViewModel(applica
         notificationRepository.deleteNotif(data)
     }
 
+    fun deleteCheckedNotif(){
+        notificationRepository.deleteCheckedNotif()
+    }
+
+    fun unCheckAll(){
+        notificationRepository.unCheckAll()
+    }
+
     fun updateStatus(id : Int, status : Int) {
         notificationRepository.updateStatus(id, status)
+    }
+    fun updateCheck(id : Int, status : Int) {
+        notificationRepository.updateCheck(id, status)
+    }
+    fun readAll() {
+        notificationRepository.readAllNotif()
     }
 }

@@ -26,7 +26,22 @@ class NotificationRepository(application: Application) {
         notifDao?.delete(data)
     }
 
+    fun deleteCheckedNotif(){
+        notifDao?.deleteCheckedNotif()
+    }
+
+    fun unCheckAll(){
+        notifDao?.unCheckAll()
+    }
+
     fun updateStatus(id : Int, status : Int): Int {
         return notifDao!!.updateStatus(id, status)
+    }
+    fun updateCheck(id : Int, status : Int): Int {
+        return notifDao!!.updateCheck(id, status)
+    }
+
+    fun readAllNotif(): Int {
+        return notifDao!!.readAll(1)
     }
 }

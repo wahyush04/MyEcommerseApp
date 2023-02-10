@@ -122,6 +122,7 @@ class NotificationActivity : AppCompatActivity() {
             ivReadAllNotif.setOnClickListener {
                 Toast.makeText(this@NotificationActivity, "All Notif readed", Toast.LENGTH_SHORT).show()
                 notificationViewModel.updateStatusChecked()
+                notificationViewModel.unCheckAll()
                 setToolbar(false)
             }
             tvTitleAppbar.text = "Multi Select"

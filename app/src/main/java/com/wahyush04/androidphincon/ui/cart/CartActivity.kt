@@ -113,8 +113,14 @@ class CartActivity : AppCompatActivity() {
             {
                 val id = it.id
                 val quantity = it.stockbuy
+                val maxquantity = it.stock
                 val newTotalHarga = it.total_harga + it.harga
-                cartViewModel.updateQuantity((quantity + 1), id,newTotalHarga)
+                if (quantity == maxquantity){
+                    Toast.makeText(this@CartActivity, "Out of Stock", Toast.LENGTH_SHORT).show()
+                }else{
+                    cartViewModel.updateQuantity((quantity + 1), id,newTotalHarga)
+                }
+
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
             },
@@ -122,7 +128,11 @@ class CartActivity : AppCompatActivity() {
                 val id = it.id
                 val quantity = it.stockbuy
                 val newTotalHarga = it.total_harga - it.harga
-                cartViewModel.updateQuantity((quantity - 1), id, newTotalHarga)
+                if (quantity == 1){
+                    Toast.makeText(this@CartActivity, "Quantity  cannot reduce", Toast.LENGTH_SHORT).show()
+                }else{
+                    cartViewModel.updateQuantity((quantity - 1), id, newTotalHarga)
+                }
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
             },

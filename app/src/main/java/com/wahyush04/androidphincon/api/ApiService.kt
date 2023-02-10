@@ -81,6 +81,12 @@ interface ApiService {
         @Query("id_user") id_user : Int
     ) : Call<ProductResponse>
 
+    @GET("training_android/public/api/ecommerce/get_list_product_favorite")
+    suspend fun getFavoriteProduct(
+        @Query("search") search : String?,
+        @Query("id_user") id_user : Int
+    ) : ProductResponse
+
     @GET("training_android/public/api/ecommerce/get_detail_product")
     fun getDetailProduct(
         @Query("id_product") id_product : Int,

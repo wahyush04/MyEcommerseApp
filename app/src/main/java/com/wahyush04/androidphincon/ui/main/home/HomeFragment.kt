@@ -43,7 +43,6 @@ class HomeFragment : Fragment() {
 
         adapter = ProductListAdapter()
 
-
         sharedPreferences = PreferenceHelper(requireContext())
         binding.rvProductList.adapter = adapter
 
@@ -85,7 +84,6 @@ class HomeFragment : Fragment() {
 
         return root
     }
-
 
     private fun showShimmer(state : Boolean){
         if (state){

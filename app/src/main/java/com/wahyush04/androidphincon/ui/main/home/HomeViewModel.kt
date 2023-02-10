@@ -5,14 +5,14 @@ import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.wahyush04.androidphincon.ui.di.Injection
-import com.wahyush04.androidphincon.ui.di.ProductRepository
+import com.wahyush04.androidphincon.paging.ECommerseRepository
 import com.wahyush04.core.data.product.DataListProductPaging
 import com.wahyush04.core.helper.PreferenceHelper
 
-class HomeViewModel(private val productRepository: ProductRepository) : ViewModel() {
+class HomeViewModel(private val ECommerseRepository: ECommerseRepository) : ViewModel() {
 
     fun productListPaging(search: String?): LiveData<PagingData<DataListProductPaging>> =
-        productRepository.getProduct(search).cachedIn(viewModelScope)
+        ECommerseRepository.getProduct(search).cachedIn(viewModelScope)
 
 }
 

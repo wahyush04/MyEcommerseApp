@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wahyush04.androidphincon.databinding.ActivityNotificationBinding
@@ -30,15 +31,17 @@ class NotificationActivity : AppCompatActivity() {
             startActivity(Intent(this@NotificationActivity, MainActivity::class.java))
         }
 
-        binding.ivDelete.setOnClickListener {
-            Toast.makeText(this@NotificationActivity, "Item Deleted", Toast.LENGTH_SHORT).show()
-            notificationViewModel.deleteCheckedNotif()
-        }
-
-        binding.ivReadAllNotif.setOnClickListener {
-            Toast.makeText(this@NotificationActivity, "All Notif readed", Toast.LENGTH_SHORT).show()
-            notificationViewModel.readAll()
-        }
+//        binding.ivDelete.setOnClickListener {
+//            Toast.makeText(this@NotificationActivity, "Item Deleted", Toast.LENGTH_SHORT).show()
+//            setToolbar(true)
+//            notificationViewModel.deleteCheckedNotif()
+//        }
+//
+//        binding.ivReadAllNotif.setOnClickListener {
+//            Toast.makeText(this@NotificationActivity, "All Notif readed", Toast.LENGTH_SHORT).show()
+//            notificationViewModel.updateStatusChecked()
+//            setToolbar(false)
+//        }
 
         setToolbar(toolbarState)
     }
@@ -78,13 +81,14 @@ class NotificationActivity : AppCompatActivity() {
         notificationViewModel.getNotification()?.observe(this@NotificationActivity){
             if (it.isNotEmpty()){
                 showEmpty(false)
+                binding.ivChecckbox.isGone = !toolbarState
                 adapter.setData(it)
             }else{
+                binding.ivChecckbox.isGone = true
                 showEmpty(true)
             }
         }
     }
-
 
     private fun setToolbar(state: Boolean){
         binding.apply {
@@ -102,7 +106,6 @@ class NotificationActivity : AppCompatActivity() {
             tvTitleAppbar.text = "Notification"
             initAdapter(state)
             toolbarState = !toolbarState
-
         }else{
             ivChecckbox.visibility = View.GONE
             ivReadAllNotif.visibility = View.VISIBLE
@@ -114,10 +117,12 @@ class NotificationActivity : AppCompatActivity() {
             ivDelete.setOnClickListener {
                 Toast.makeText(this@NotificationActivity, "Item Deleted", Toast.LENGTH_SHORT).show()
                 notificationViewModel.deleteCheckedNotif()
+                setToolbar(false)
             }
             ivReadAllNotif.setOnClickListener {
                 Toast.makeText(this@NotificationActivity, "All Notif readed", Toast.LENGTH_SHORT).show()
-                notificationViewModel.readAll()
+                notificationViewModel.updateStatusChecked()
+                setToolbar(false)
             }
             tvTitleAppbar.text = "Multi Select"
             initAdapter(state)

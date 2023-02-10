@@ -35,6 +35,10 @@ class NotificationViewModel(application: Application) : AndroidViewModel(applica
         notificationRepository.unCheckAll()
     }
 
+    fun updateStatusChecked(){
+        notificationRepository.updateStatusChecked()
+    }
+
     fun updateStatus(id : Int, status : Int) {
         notificationRepository.updateStatus(id, status)
     }

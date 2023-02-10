@@ -33,5 +33,8 @@ interface NotificationDao {
     @Query("UPDATE tbl_notification SET isCheck = 0")
     fun unCheckAll() : Int
 
+    @Query("UPDATE tbl_notification SET status = 1 WHERE isCheck = 1")
+    fun updateStatusChecked() : Int
+
 
 }

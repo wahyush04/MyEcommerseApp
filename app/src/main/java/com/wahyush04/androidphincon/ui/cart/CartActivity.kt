@@ -157,9 +157,10 @@ class CartActivity : AppCompatActivity() {
             cartViewModel.setBuyProduct(requestBody, preferences, this)
             val intent = Intent(this, SuccessPageActivity::class.java)
             intent.putExtra("data", idList)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
             showLoading(false)
-            finish()
+//            finish()
         }
 
     }

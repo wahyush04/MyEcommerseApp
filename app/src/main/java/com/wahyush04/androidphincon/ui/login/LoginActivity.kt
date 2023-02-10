@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
@@ -149,6 +150,7 @@ class LoginActivity : AppCompatActivity() {
     private fun getTokenFirebase(){
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             val tokenFcm = task.result
+            Log.d("tokenFcm", tokenFcm)
             sharedPreferences.putTokenFcm(Constant.TOKEN_FCM, tokenFcm)
         }
     }

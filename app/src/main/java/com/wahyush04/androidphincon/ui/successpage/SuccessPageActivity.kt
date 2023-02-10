@@ -20,6 +20,7 @@ class SuccessPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySuccessPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         successPageViewModel = ViewModelProvider(this)[SuccessPageViewModel::class.java]
         preferences = PreferenceHelper(this)
@@ -43,7 +44,9 @@ class SuccessPageActivity : AppCompatActivity() {
                 }
                 successPageViewModel.getUpdateResponse().observe(this){data ->
                     if (data.success.status == 201){
-                        startActivity(Intent(this, MainActivity::class.java))
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
                     }
                 }
             } else {

@@ -34,6 +34,10 @@ class NotificationRepository(application: Application) {
         notifDao?.unCheckAll()
     }
 
+    fun updateStatusChecked(){
+        notifDao?.updateStatusChecked()
+    }
+
     fun updateStatus(id : Int, status : Int): Int {
         return notifDao!!.updateStatus(id, status)
     }

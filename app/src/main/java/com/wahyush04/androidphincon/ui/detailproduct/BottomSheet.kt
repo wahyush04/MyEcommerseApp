@@ -120,6 +120,7 @@ class BottomSheet(private val data: DetailProductResponse, private val from : St
                     val intent = Intent(requireContext(), SuccessPageActivity::class.java)
                     Log.d("idIntentbs", id!!)
                     intent.putExtra("data", id)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                 }else{
                     Toast.makeText(requireContext(), "Gagal Melakukan Pembelian", Toast.LENGTH_SHORT).show()

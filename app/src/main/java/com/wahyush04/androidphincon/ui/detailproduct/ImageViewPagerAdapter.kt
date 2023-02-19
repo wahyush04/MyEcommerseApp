@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.wahyush04.androidphincon.R
 import com.wahyush04.core.data.detailproduct.ImageProductItem
 
-class ImageViewPagerAdapter(private val images: List<ImageProductItem>, private val listener: OnPageClickListener) : PagerAdapter() {
+class ImageViewPagerAdapter(private val images: List<ImageProductItem>?, private val listener: OnPageClickListener) : PagerAdapter() {
 
     @SuppressLint("MissingInflatedId")
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -20,13 +20,13 @@ class ImageViewPagerAdapter(private val images: List<ImageProductItem>, private 
         val imageView = view.findViewById<ImageView>(R.id.iv_detail_product)
         val titleView = view.findViewById<TextView>(R.id.tv_detail_image)
         Glide.with(container.context)
-            .load(images[position].image_product)
+            .load(images?.get(position)?.image_product)
             .centerCrop()
             .into(imageView)
-        titleView.text = images[position].title_product
+        titleView.text = images?.get(position)?.title_product ?: "Foto"
 
         view.setOnClickListener {
-            images[position].image_product?.let { it1 -> listener.onClick(it1) }
+            images?.get(position)?.image_product?.let { it1 -> listener.onClick(it1) }
         }
         container.addView(view)
         return view
@@ -37,7 +37,7 @@ class ImageViewPagerAdapter(private val images: List<ImageProductItem>, private 
     }
 
     override fun getCount(): Int {
-        return images.size
+        return images?.size ?: 0
     }
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {

@@ -21,33 +21,42 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.customview.CustomSpinnerAdapter
 import com.wahyush04.androidphincon.databinding.FragmentProfileBinding
 import com.wahyush04.androidphincon.ui.changepassword.ChangePasswordActivity
+import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.login.LoginActivity
 import com.wahyush04.core.Constant
+import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONObject
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
-
     private var _binding: FragmentProfileBinding? = null
     private var getFile: File? = null
     private var imageMultipart : MultipartBody.Part? = null
     private lateinit var currentPhotoPath: String
-    private lateinit var sharedPreferences: PreferenceHelper
-    private lateinit var profileViewModel: ProfileViewModel
+    @Inject
+    lateinit var preferences: PreferenceHelper
+    private lateinit var loadingDialog: LoadingDialog
+    private val profileViewModel: ProfileViewModel by viewModels()
     private var isUserAction = false
     private val arrLanguage = arrayOf("IN","EN","ID")
     private val arrFlag = intArrayOf(R.drawable.united_nations, R.drawable.united_states, R.drawable.indonesia)
@@ -60,23 +69,21 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        profileViewModel =
-            ViewModelProvider(this)[ProfileViewModel::class.java]
-
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        sharedPreferences = PreferenceHelper(requireContext())
-
-        val image : String? = sharedPreferences.getToken(Constant.IMAGE)
-        val name : String? = sharedPreferences.getToken(Constant.NAME)
-        val email : String? = sharedPreferences.getToken(Constant.EMAIL)
-        val localeID : String? = sharedPreferences.getToken(Constant.LOCALE)
+        loadingDialog = LoadingDialog(requireActivity())
+        val image : String? = preferences.getToken(Constant.IMAGE)
+        val name : String? = preferences.getToken(Constant.NAME)
+        val email : String? = preferences.getToken(Constant.EMAIL)
+        val localeID : String? = preferences.getToken(Constant.LOCALE)
 
         binding.tvName.text = name
         binding.tvEmail.text = email
 
         Glide.with(this)
             .load(image)
+            .placeholder(R.drawable.ic_baseline_person_24)
+            .centerCrop()
             .into(binding.ivPhotoProfile)
 
         binding.cvChangePassword.setOnClickListener {
@@ -117,12 +124,12 @@ class ProfileFragment : Fragment() {
                     if (position == 2) {
                         setLocate("in")
                         Log.d("language", position.toString())
-                        sharedPreferences.putLocale(position.toString())
+                        preferences.putLocale(position.toString())
                         activity!!.recreate()
                     } else if (position == 1){
                         setLocate("en")
                         Log.d("language", position.toString())
-                        sharedPreferences.putLocale(position.toString())
+                        preferences.putLocale(position.toString())
                         activity!!.recreate()
                     }
                 } else {
@@ -193,7 +200,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun logout(){
-        sharedPreferences.clear()
+        preferences.clear()
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
@@ -274,24 +281,62 @@ class ProfileFragment : Fragment() {
             requestImageFIle
         )
 
-        val id = sharedPreferences.getToken(Constant.ID)!!
+        val id = preferences.getToken(Constant.ID)!!
 
-        profileViewModel.changeImage( id, imageMultipart!!, sharedPreferences, requireContext().applicationContext)
-        profileViewModel.getChangeImageResponse().observe(this){ data ->
-            val status = data.success.status
-            if (status == 200){
-                kotlin.run {
-                    sharedPreferences.changeImage(data.success.path)
+        profileViewModel.changeImage(id, imageMultipart!!).observe(viewLifecycleOwner){
+            when (it) {
+                is Resource.Loading -> {
+                    loadingDialog.startLoading()
                 }
-                Log.d("newimage : ", "preference"+sharedPreferences.getPreference(Constant.IMAGE).toString())
-                Log.d("newimage : ", "newimage"+data.success.path)
+                is Resource.Success -> {
+                    loadingDialog.stopLoading()
+                    it.data?.success?.let { it1 -> preferences.changeImage(it1.path) }
+                    val dataMessages = it.data?.success?.message
+                    AlertDialog.Builder(requireActivity())
+                        .setTitle("Change Image Success")
+                        .setMessage(dataMessages)
+                        .setPositiveButton("Ok") { _, _ ->
+                        }
+                        .show()
 
-                Glide.with(this)
-                    .load(data.success.path)
-                    .into(binding.ivPhotoProfile)
+                    Glide.with(this)
+                        .load(it.data?.success?.path)
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_baseline_person_24)
+                        .into(binding.ivPhotoProfile)
+                }
+                is Resource.Error -> {
+                    loadingDialog.stopLoading()
+                    try {
+                        val err = it.errorBody?.string()
+                            ?.let { it1 -> JSONObject(it1).toString() }
+                        val gson = Gson()
+                        val jsonObject = gson.fromJson(err, JsonObject::class.java)
+                        val errorResponse =
+                            gson.fromJson(jsonObject, ErrorResponse::class.java)
+                        val messageErr = errorResponse.error.message
+                        AlertDialog.Builder(requireActivity())
+                            .setTitle("Change Image Failed")
+                            .setMessage(messageErr)
+                            .setPositiveButton("Ok") { _, _ ->
+                            }
+                            .show()
+                    } catch (e: java.lang.Exception) {
+                        loadingDialog.stopLoading()
+                        val err = it.errorCode
+                        Log.d("ErrorCode", "$err")
+                    }
+
+                }
+                is Resource.Empty -> {
+                    loadingDialog.stopLoading()
+                    Log.d("Empty Data", "Empty")
+                }
+                else -> {
+                    loadingDialog.stopLoading()
+                    Toast.makeText(requireContext(), "Oops, Something when wrong!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
-
-
 }

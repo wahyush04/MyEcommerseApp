@@ -7,8 +7,9 @@ import com.wahyush04.core.helper.PreferenceHelper
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
+import javax.inject.Inject
 
-class AuthBadResponse(
+class AuthBadResponse @Inject constructor(
     private val preferences: PreferenceHelper,
     private val context: Context
 ): Interceptor {

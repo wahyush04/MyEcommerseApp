@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
 import com.wahyush04.androidphincon.paging.LoadingStateAdapter
@@ -17,17 +17,15 @@ import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.androidphincon.ui.main.adapter.ProductListAdapter
 import com.wahyush04.core.data.product.DataListProductPaging
 import com.wahyush04.core.helper.PreferenceHelper
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
-
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var sharedPreferences: PreferenceHelper
-
-    private lateinit var homeViewModel: HomeViewModel
+    private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var adapter: ProductListAdapter
-
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
     private var searchJob: Job? = null
 
@@ -37,17 +35,13 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         adapter = ProductListAdapter()
 
-        sharedPreferences = PreferenceHelper(requireContext())
         binding.rvProductList.adapter = adapter
 
-        val factory = ViewModelFactory(requireContext().applicationContext, sharedPreferences)
-        homeViewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
 
         getData(null)
 

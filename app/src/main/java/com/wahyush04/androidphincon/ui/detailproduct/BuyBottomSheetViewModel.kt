@@ -17,12 +17,15 @@ import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.data.updatestock.UpdateStockResponse
 import com.wahyush04.core.helper.Event
 import com.wahyush04.core.helper.PreferenceHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class BuyBottomSheetViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class BuyBottomSheetViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
     val updateStockResponse = MutableLiveData<UpdateStockResponse>()
 
     private var _loginError = MutableLiveData<Event<ErrorResponse>>()

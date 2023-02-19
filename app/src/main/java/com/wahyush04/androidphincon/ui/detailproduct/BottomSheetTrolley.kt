@@ -87,7 +87,7 @@ class BottomSheetTrolley(private val data: DetailProductResponse, private val fr
             if (isTrolley == 1){
                 Toast.makeText(requireContext(), "Product Already in Trolley", Toast.LENGTH_SHORT).show()
             } else{
-                addToTrolley()
+//                addToTrolley()
             }
 
         }
@@ -108,18 +108,18 @@ class BottomSheetTrolley(private val data: DetailProductResponse, private val fr
         }
     }
 
-    private fun addToTrolley(){
-        val id = data.success?.data?.id
-        val productName = data.success?.data?.name_product
-        val price = data.success?.data?.harga?.toInt()
-        val stock = data.success!!.data!!.stock!!.toInt()
-        val stockbuy = binding?.tvCount?.text.toString().toInt()
-        val totalHarga = price?.times(stockbuy)
-        val image = data.success?.data?.image
-        val product = ProductEntity(id!!.toInt(), productName!!, price!!, totalHarga!!.toInt(), stock, stockbuy, image.toString(), 0)
-        detailProductViewModel.insertTrolley(product)
-        Toast.makeText(requireContext(), "Data Berhasil Ditambah ke Trolley", Toast.LENGTH_SHORT).show()
-    }
+//    private fun addToTrolley(){
+//        val id = data.success?.data?.id
+//        val productName = data.success?.data?.name_product
+//        val price = data.success?.data?.harga?.toInt()
+//        val stock = data.success!!.data!!.stock!!.toInt()
+//        val stockbuy = binding?.tvCount?.text.toString().toInt()
+//        val totalHarga = price?.times(stockbuy)
+//        val image = data.success?.data?.image
+//        val product = ProductEntity(id!!.toInt(), productName!!, price!!, totalHarga!!.toInt(), stock, stockbuy, image.toString(), 0)
+//        detailProductViewModel.insertTrolley(product)
+//        Toast.makeText(requireContext(), "Data Berhasil Ditambah ke Trolley", Toast.LENGTH_SHORT).show()
+//    }
 
 
     override fun onDestroy() {

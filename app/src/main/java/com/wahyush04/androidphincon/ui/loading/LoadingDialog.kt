@@ -5,8 +5,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AlertDialog
 import com.wahyush04.androidphincon.R
+import javax.inject.Inject
 
-class LoadingDialog(private val mActivity: Activity) {
+class LoadingDialog(
+    private val mActivity: Activity
+    ) {
     private lateinit var isLoading: AlertDialog
 
     fun startLoading(){
@@ -20,7 +23,7 @@ class LoadingDialog(private val mActivity: Activity) {
         isLoading.show()
     }
 
-    fun isDismiss(){
+    fun stopLoading(){
         isLoading.dismiss()
     }
 }

@@ -9,8 +9,9 @@ import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class AuthAuthenticator(
+class AuthAuthenticator @Inject constructor(
     private val preferences: PreferenceHelper
 ): Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {

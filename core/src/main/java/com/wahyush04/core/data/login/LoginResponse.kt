@@ -1,10 +1,14 @@
 package com.wahyush04.core.data.login
 
+import com.squareup.moshi.JsonClass
 
+
+@JsonClass(generateAdapter = true)
 data class LoginResponse (
     val success : Success
 )
 
+@JsonClass(generateAdapter = true)
 data class Success(
     val status : Int,
     val data_user : DataUser,
@@ -13,6 +17,7 @@ data class Success(
     val message : String
 )
 
+@JsonClass(generateAdapter = true)
 data class DataUser(
     val id : Int,
     val name : String,

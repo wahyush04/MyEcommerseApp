@@ -1,6 +1,6 @@
 package com.wahyush04.core.data.favorite
 
-data class FavoriteResponse(
+data class AddRemoveFavResponse(
 	val success: Success? = null
 )
 

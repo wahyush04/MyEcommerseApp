@@ -6,24 +6,33 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.databinding.ActivityLoginBinding
+import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.ui.register.RegisterActivity
 import com.wahyush04.core.Constant
+import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.core.helper.PreferenceHelper
+import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONObject
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var loginViewModel: LoginViewModel
-    private lateinit var sharedPreferences: PreferenceHelper
+    private val loginViewModel: LoginViewModel by viewModels()
+    @Inject lateinit var preferences: PreferenceHelper
+    private lateinit var loadingDialog: LoadingDialog
 
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
@@ -58,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.hide()
-        sharedPreferences = PreferenceHelper(this)
+        loadingDialog = LoadingDialog(this@LoginActivity)
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(
@@ -68,45 +77,58 @@ class LoginActivity : AppCompatActivity() {
             )
         }
 
-
-        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-
         binding.edtEmail.doOnTextChanged { _, _, _, _ ->
             setEmailEditText()
         }
 
         binding.btnLogin.setOnClickListener {
-            showLoading(true)
             val email = binding.edtEmail.text.toString()
             val password = binding.edtPassword.text.toString()
-            val tokenFcm = sharedPreferences.getPreference(Constant.TOKEN_FCM)
+            val tokenFcm = preferences.getPreference(Constant.TOKEN_FCM)
 
-
-            loginViewModel.login(email, password, tokenFcm!!)
-            loginViewModel.getDetailLogin().observe(this){ data ->
-                val status = data.success.status
-                val accessToken = data.success.access_token
-                val refreshToken =  data.success.refresh_token
-                val id = data.success.data_user.id
-                val name = data.success.data_user.name
-                val emailUser = data.success.data_user.email
-                val phone = data.success.data_user.phone
-                val gender = data.success.data_user.gender
-                val image =  data.success.data_user.path
-                if (status == 200){
-                    sharedPreferences.put(accessToken, refreshToken, id, name, emailUser, phone, gender, image)
-                    sharedPreferences.putLogin(Constant.IS_LOGIN, true)
-                    Toast.makeText(this,data.success.message,Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                }
-            }
-
-            loginViewModel.loginError.observe(this){
-                it.getContentIfNotHandled()?.let {
-                    showLoading(false)
-                    Toast.makeText(applicationContext, it.error.message, Toast.LENGTH_SHORT).show()
+            loginViewModel.login(email, password, tokenFcm).observe(this){
+                when (it){
+                    is Resource.Loading -> {
+                        loadingDialog.startLoading()
+                    }
+                    is Resource.Success -> {
+                        loadingDialog.stopLoading()
+                        val status = it.data?.success?.status
+                        val accessToken = it.data?.success?.access_token
+                        val refreshToken =  it.data?.success?.refresh_token
+                        val id = it.data?.success?.data_user?.id
+                        val name = it.data?.success?.data_user?.name
+                        val emailUser = it.data?.success?.data_user?.email
+                        val phone = it.data?.success?.data_user?.phone
+                        val gender = it.data?.success?.data_user?.gender
+                        val image =  it.data?.success?.data_user?.path
+                        val successMessage = it.data?.success?.message
+                        if (status == 200){
+                            preferences.put(accessToken, refreshToken, id, name, emailUser, phone, gender, image)
+                            preferences.putLogin(Constant.IS_LOGIN, true)
+                            Toast.makeText(this,successMessage,Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                        }
+                    }
+                    is Resource.Error -> {
+                        loadingDialog.stopLoading()
+                        val err = it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
+                        val gson = Gson()
+                        val jsonObject = gson.fromJson(err, JsonObject::class.java)
+                        val errorResponse = gson.fromJson(jsonObject, ErrorResponse::class.java)
+                        val messageErr = errorResponse.error.message
+                        Toast.makeText(this@LoginActivity, messageErr, Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Empty -> {
+                        loadingDialog.stopLoading()
+                        Log.d("Empty Data", "Empty")
+                    }
+                    else -> {
+                        loadingDialog.stopLoading()
+                        Toast.makeText(this@LoginActivity, "Oops, Something went wrong", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -117,13 +139,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun showLoading(state: Boolean){
-        if (state){
-            binding.loadingDialog.loadingLayout.visibility = View.VISIBLE
-        }else{
-            binding.loadingDialog.loadingLayout.visibility = View.GONE
-        }
-    }
 
     private fun setEmailEditText() {
         val email = binding.edtEmail.text.toString()
@@ -137,7 +152,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         getTokenFirebase()
-        if (sharedPreferences.getIsLogin(Constant.IS_LOGIN)){
+        if (preferences.getIsLogin(Constant.IS_LOGIN)){
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
@@ -145,13 +160,13 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        showLoading(false)
+        loadingDialog.stopLoading()
     }
     private fun getTokenFirebase(){
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             val tokenFcm = task.result
             Log.d("tokenFcm", tokenFcm)
-            sharedPreferences.putTokenFcm(Constant.TOKEN_FCM, tokenFcm)
+            preferences.putTokenFcm(Constant.TOKEN_FCM, tokenFcm)
         }
     }
 

@@ -67,7 +67,6 @@ class CartActivity : AppCompatActivity() {
 
         binding.btnBuy.setOnClickListener {
             val idUser =  preferences.getPreference(Constant.ID)
-            showLoading(true)
             val result = cartViewModel.getTotalHarga()
             binding.tvTotalPrice.text = result.toString().formatterIdr()
 
@@ -160,7 +159,6 @@ class CartActivity : AppCompatActivity() {
     private fun buyProduct(requestBody : UpdateStockRequestBody){
         if (requestBody.data_stock.isEmpty()){
             Toast.makeText(this, "Sialhkan Centang Produk terlebih dahulu", Toast.LENGTH_SHORT).show()
-            showLoading(false)
         } else {
             cartViewModel.deleteTrolleyChecked()
             val idList = id.toIntArray()
@@ -169,19 +167,12 @@ class CartActivity : AppCompatActivity() {
             intent.putExtra("data", idList)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
-            showLoading(false)
+
 //            finish()
         }
 
     }
 
-    private fun showLoading(state: Boolean){
-        if (state){
-            binding.loadingDialog.loadingLayout.visibility = View.VISIBLE
-        }else{
-            binding.loadingDialog.loadingLayout.visibility = View.GONE
-        }
-    }
 
     private fun cekCheckBox(){
         val countCheck = cartViewModel.totalTrolleyCheck()

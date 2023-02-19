@@ -2,6 +2,7 @@ package com.wahyush04.core
 
 class Constant {
     companion object{
+        const val PREFERENCES= "ecommercePreference"
         const val IS_LOGIN = "IS_LOGIN"
         const val ID = "ID"
         const val NAME = "NAME"

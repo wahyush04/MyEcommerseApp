@@ -1,11 +1,13 @@
 package com.wahyush04.core.helper
 
+import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import android.view.inputmethod.InputMethodManager
 import java.io.*
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -69,5 +71,10 @@ fun String.formatterIdr() : String {
 fun formatRupiah(angka: Int): String {
     val formatRupiah = DecimalFormat("Rp #,###")
     return formatRupiah.format(angka)
+}
+
+fun hideKeyboard(activity: Activity) {
+    val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 }
 

@@ -8,7 +8,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
 import com.wahyush04.androidphincon.api.ApiService
-import com.wahyush04.core.data.Result
+import com.wahyush04.androidphincon.core.data.source.Result
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.data.product.DataListProductPaging
 

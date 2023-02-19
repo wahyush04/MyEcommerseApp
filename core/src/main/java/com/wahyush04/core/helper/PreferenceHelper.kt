@@ -4,16 +4,19 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import com.wahyush04.core.Constant
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PreferenceHelper(context: Context) {
-    private val PREF = "loginData"
-    private val pref : SharedPreferences = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-    val editor : SharedPreferences.Editor = pref.edit()
+@Singleton
+class PreferenceHelper @Inject constructor(@ApplicationContext context: Context) {
+    private val pref : SharedPreferences = context.getSharedPreferences(Constant.PREFERENCES, Context.MODE_PRIVATE)
+    private val editor : SharedPreferences.Editor = pref.edit()
     private val appContext = context.applicationContext
     private val preference: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(appContext)
 
-    fun put(access_token : String,refresh_token : String ,id : Int, name: String, email: String, phone: String, gender: Int, image: String? ){
+    fun put(access_token : String?, refresh_token : String? ,id : Int?, name: String?, email: String?, phone: String?, gender: Int?, image: String? ){
         editor.apply{
             putString(Constant.TOKEN, access_token)
             putString(Constant.REFRESH_TOKEN, refresh_token)

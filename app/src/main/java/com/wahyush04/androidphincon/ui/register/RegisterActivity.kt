@@ -11,33 +11,43 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Patterns
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityRegisterBinding
+import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.login.LoginActivity
+import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.io.File
 
+
+@AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
-    private lateinit var registerViewModel: RegisterViewModel
+    private val registerViewModel: RegisterViewModel by viewModels()
     private var getFile: File? = null
     private var imageMultipart : MultipartBody.Part? = null
     private lateinit var currentPhotoPath: String
+    private lateinit var loadingDialog: LoadingDialog
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -67,8 +77,8 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.hide()
+        loadingDialog = LoadingDialog(this@RegisterActivity)
 
-        registerViewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(
                 this,
@@ -92,14 +102,6 @@ class RegisterActivity : AppCompatActivity() {
         binding.btnToLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-        }
-    }
-
-    private fun showLoading(state: Boolean){
-        if (state){
-            binding.loadingDialog.loadingLayout.visibility = View.VISIBLE
-        }else{
-            binding.loadingDialog.loadingLayout.visibility = View.GONE
         }
     }
 
@@ -225,7 +227,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun register(){
-        showLoading(true)
+        loadingDialog.stopLoading()
         if (getFile != null) {
             val file = reduceFileImage(getFile as File)
             val requestImageFile = file.asRequestBody("image/jpg".toMediaTypeOrNull())
@@ -235,38 +237,60 @@ class RegisterActivity : AppCompatActivity() {
                 requestImageFile
             )
         }
-        val name = binding.edtName.text.toString()
-        val email = binding.edtEmail.text.toString()
+        val name = binding.edtName.text.toString().toRequestBody()
+        val email = binding.edtEmail.text.toString().toRequestBody()
         val password = binding.edtPassword.text.toString()
         val confirmPassword = binding.edtPasswordConfirm.text.toString()
-        val phone = binding.edtPhone.text.toString()
+        val phone = binding.edtPhone.text.toString().toRequestBody()
         val genderId = if (binding.rbMale.isChecked){ 0 }else{ 1 }
 
-
         if (password == confirmPassword){
-            registerViewModel.register(name, email, password, phone, genderId, imageMultipart)
-            registerViewModel.getRegisterResponse().observe(this){ data ->
-                val status = data.success.status
-                if (status == 201){
-                    showLoading(false)
-                    AlertDialog.Builder(this)
-                        .setTitle(R.string.register_success)
-                        .setMessage("Register is successfully")
-                        .setPositiveButton(R.string.login) { _, _ ->
-                            Toast.makeText(this,getString(R.string.register_success),Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this, LoginActivity::class.java))
-                            finish()
-                        }
-                        .show()
-                }
-            }
-            registerViewModel.registerError.observe(this){
-                it.getContentIfNotHandled()?.let {
-                    showLoading(false)
-                    Toast.makeText(applicationContext, it.error.message, Toast.LENGTH_SHORT).show()
+            registerViewModel.register(name, email, password.toRequestBody(), phone, genderId, imageMultipart).observe(this@RegisterActivity){
+                when (it) {
+                    is Resource.Loading -> {
+                        loadingDialog.startLoading()
+                    }
+                    is Resource.Success -> {
+                        loadingDialog.stopLoading()
+                        val dataMessages = it.data?.success?.message
+                        AlertDialog.Builder(this@RegisterActivity)
+                            .setTitle("Register Success")
+                            .setMessage(dataMessages)
+                            .setPositiveButton("Ok") { _, _ ->
+                                Toast.makeText(this,getString(R.string.register_success),Toast.LENGTH_SHORT).show()
+                                startActivity(Intent(this, LoginActivity::class.java))
+                                finish()
+                            }
+                            .show()
+
+                    }
+                    is Resource.Error -> {
+                        loadingDialog.stopLoading()
+                        val err =
+                            it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
+                        val gson = Gson()
+                        val jsonObject = gson.fromJson(err, JsonObject::class.java)
+                        val errorResponse = gson.fromJson(jsonObject, ErrorResponse::class.java)
+                        val messageErr = errorResponse.error.message
+                        AlertDialog.Builder(this@RegisterActivity)
+                            .setTitle("Gagal")
+                            .setMessage(messageErr)
+                            .setPositiveButton("Ok") { _, _ ->
+                            }
+                            .show()
+                        val errCode = it.errorCode
+                        Log.d("errorCode", "$errCode")
+                    }
+                    is Resource.Empty -> {
+                        Log.d("Empty Data", "Empty")
+                    }
+                    else -> {
+
+                    }
                 }
             }
         }else{
+            loadingDialog.stopLoading()
             binding.passwordedtlayout.error = getString(R.string.password_not_match)
             binding.passwordconfirmedtlayout.error = getString(R.string.password_not_match)
             Toast.makeText(applicationContext, getString(R.string.password_not_match), Toast.LENGTH_SHORT).show()
@@ -275,6 +299,6 @@ class RegisterActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        showLoading(false)
+        loadingDialog.stopLoading()
     }
 }

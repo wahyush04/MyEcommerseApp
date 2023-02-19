@@ -1,42 +1,47 @@
 package com.wahyush04.androidphincon.ui.main.dashboard
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.databinding.FragmentDashboardBinding
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.androidphincon.ui.main.adapter.ProductFavoriteListAdapter
 import com.wahyush04.core.Constant
+import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.helper.PreferenceHelper
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import org.json.JSONObject
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
-    private lateinit var dashboardViewModel: DashboardViewModel
-    private lateinit var sharedPreferences: PreferenceHelper
+    private val dashboardViewModel: DashboardViewModel by viewModels()
+    @Inject
+    lateinit var preferences: PreferenceHelper
     private lateinit var adapter: ProductFavoriteListAdapter
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
     private var searchJob: Job? = null
     private var febJob: Job? = null
+    private var query: String? = null
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -44,32 +49,15 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        dashboardViewModel =
-            ViewModelProvider(this)[DashboardViewModel::class.java]
-
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         adapter = ProductFavoriteListAdapter()
         adapter.notifyDataSetChanged()
-
-        val activity = requireActivity()
-        val context = activity.applicationContext
-        sharedPreferences = PreferenceHelper(context)
-
-        val displayMetrics = resources.displayMetrics
-        val screenWidth = displayMetrics.widthPixels
-        val screenHeight = displayMetrics.heightPixels
-        val isPhone = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK < Configuration.SCREENLAYOUT_SIZE_LARGE
-
-        if (isPhone) {
-            binding.rvProductList.layoutManager = LinearLayoutManager(context)
-        }
         binding.rvProductList.setHasFixedSize(true)
         binding.rvProductList.adapter = adapter
 
-        val id = sharedPreferences.getPreference(Constant.ID)
-
+        getData(null, null)
         binding.febSort.setOnClickListener {
             selectSorting()
         }
@@ -80,9 +68,10 @@ class DashboardFragment : Fragment() {
                 text?.let {
                     delay(2000)
                     if (it.isEmpty()) {
-                        getFavoriteProduct(null, id!!.toInt(), sharedPreferences)
+                        getData(null, null)
                     } else {
-                        getFavoriteProduct(text.toString(), id!!.toInt(), sharedPreferences)
+                        query = text.toString()
+                        getData(text.toString(), null)
                     }
                 }
             }
@@ -102,8 +91,7 @@ class DashboardFragment : Fragment() {
 
         val swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
-            val id_user = sharedPreferences.getPreference(Constant.ID)
-            getFavoriteProduct(null,id_user!!.toInt(), sharedPreferences)
+            getData(null, null)
             binding.svSearch.text = null
             binding.swipeRefreshLayout.isRefreshing = false
             searchJob?.cancel()
@@ -120,42 +108,70 @@ class DashboardFragment : Fragment() {
         return root
     }
 
-    private fun getFavoriteProduct(search : String?, id : Int, preferences: PreferenceHelper){
-        showShimmer(true)
-        dashboardViewModel.getFavoriteProduct(search, id, requireContext().applicationContext, preferences)
-    }
 
-    private fun setData(sort : String?){
-        showShimmer(true)
-        dashboardViewModel.getFavoriteProductData().observe(viewLifecycleOwner){ data ->
-            if (data != null) {
-                if (sort == "From A to Z"){
-                    adapter.setList(data.sortedBy { it.name_product }.toList())
-                    binding.rvProductList.visibility = View.VISIBLE
-                } else if (sort == "From Z to A") {
-                    adapter.setList(data.sortedByDescending { it.name_product }.toList())
-                    binding.rvProductList.visibility = View.VISIBLE
-                } else{
-                    adapter.setList(data)
-                    binding.rvProductList.visibility = View.VISIBLE
+    private fun getData(search: String?, sort: String?){
+        val idUser = preferences.getPreference(Constant.ID)
+        dashboardViewModel.getFavProduct(idUser!!.toInt(), search).observe(viewLifecycleOwner) { data ->
+            when (data) {
+                is Resource.Loading -> {
+                    showEmpty(false)
+                    showShimmer(true)
                 }
-                showEmpty(false)
-            }else{
-                showEmpty(true)
-                Toast.makeText(requireContext().applicationContext, "No Data", Toast.LENGTH_SHORT).show()
-            }
+                is Resource.Success -> {
+                    if (data.data?.success?.data?.isNotEmpty() == true) {
+                        showShimmer(false)
+                        if (sort == "From A to Z"){
+                            data.data?.success?.data?.sortedBy { it.name_product }
+                                ?.let { adapter.setList(it.toList()) }
+                            binding.rvProductList.visibility = View.VISIBLE
+                        } else if (sort == "From Z to A") {
+                            data.data?.success?.data?.sortedByDescending { it.name_product }
+                                ?.let { adapter.setList(it.toList()) }
+                            binding.rvProductList.visibility = View.VISIBLE
+                        } else{
+                            adapter.setList(data.data?.success?.data!!)
+                            binding.rvProductList.visibility = View.VISIBLE
+                        }
+                        showEmpty(false)
+                        adapter.setList(data.data!!.success.data)
+                    } else {
+                        showShimmer(false)
+                        showEmpty(true)
+                    }
+                    showEmpty(false)
+                    showShimmer(false)
+                }
+                is Resource.Error -> {
+                    showEmpty(false)
+                    showShimmer(false)
+                    binding.febSort.visibility = View.GONE
+                    try {
+                        val err = data.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
+                        val gson = Gson()
+                        val jsonObject = gson.fromJson(err, JsonObject::class.java)
+                        val errorResponse = gson.fromJson(jsonObject, ErrorResponse::class.java)
+                        val messageErr = errorResponse.error.message
+                        AlertDialog.Builder(requireActivity()).setTitle("Oops, Something when wrong")
+                            .setMessage(messageErr).setPositiveButton("Ok") { _, _ ->
+                            }.show()
+                    } catch (e: java.lang.Exception) {
+                        val err = data.errorCode
+                        Log.d("ErrorCode", "$err")
+                    }
+                }
+                is Resource.Empty -> {
+                    binding.apply {
+                        showEmpty(true)
+                    }
+                    showShimmer(false)
+                }
+                else -> {
 
-            if (data != null) {
-                if (data.isEmpty()){
-                    showEmpty(true)
-                    Toast.makeText(requireContext().applicationContext, "No Data", Toast.LENGTH_SHORT).show()
+                    showShimmer(false)
                 }
             }
-            showShimmer(false)
         }
     }
-
-
 
     private fun showShimmer(state : Boolean){
         if (state){
@@ -179,8 +195,8 @@ class DashboardFragment : Fragment() {
             }
             .setPositiveButton("OK"){_,_ ->
                 when (selectedOption){
-                    "From A to Z" -> setData("From A to Z")
-                    "From Z to A" -> setData("From Z to A")
+                    "From A to Z" -> getData(query,"From A to Z")
+                    "From Z to A" -> getData(query,"From Z to A")
                 }
 
             }
@@ -228,11 +244,6 @@ class DashboardFragment : Fragment() {
         super.onStart()
         febJob?.cancel()
         searchJob?.cancel()
-        val activity = requireActivity()
-        val context = activity.applicationContext
-        sharedPreferences = PreferenceHelper(context)
-        dashboardViewModel.getFavoriteProduct(null, sharedPreferences.getPreference(Constant.ID)!!.toInt(),requireContext().applicationContext, sharedPreferences)
-        setData(null)
     }
 
 }

@@ -3,7 +3,7 @@ package com.wahyush04.androidphincon.api
 import com.wahyush04.core.data.changeimage.ChangeImageResponse
 import com.wahyush04.core.data.changepassword.ChangePasswordResponse
 import com.wahyush04.core.data.detailproduct.DetailProductResponse
-import com.wahyush04.core.data.favorite.FavoriteResponse
+import com.wahyush04.core.data.favorite.AddRemoveFavResponse
 import com.wahyush04.core.data.login.LoginResponse
 import com.wahyush04.core.data.product.ProductResponse
 import com.wahyush04.core.data.product.ProductResponsePaging
@@ -21,42 +21,45 @@ import retrofit2.http.*
 interface ApiService {
     @FormUrlEncoded
     @POST("training_android/public/api/ecommerce/authentication")
-    fun userLogin(
-        @Header("apikey") apikey : String,
+    suspend fun userLogin(
         @Field("email") email : String,
         @Field("password") password : String,
-        @Field("token_fcm") token_fcm : String
-    ): Call<LoginResponse>
+        @Field("token_fcm") token_fcm : String?
+    ): LoginResponse
 
     @Multipart
     @POST("training_android/public/api/ecommerce/registration")
-    fun userRegister(
-        @Header("apikey") apikey : String,
+    suspend fun userRegister(
         @Part("name") name : RequestBody,
         @Part("email") email : RequestBody,
         @Part("password") password: RequestBody,
         @Part("phone") phone : RequestBody,
         @Part("gender") gender : Int,
         @Part image : MultipartBody.Part? = null
-    ): Call<RegisterResponse>
+    ): RegisterResponse
 
-//    @Headers(*["apikey:TuIBt77u7tZHi8n7WqUC"])
+    @GET("training_android/public/api/ecommerce/get_list_product_paging")
+    suspend fun getProductPaging(
+        @Query("search") search : String?,
+        @Query("offset") offset : Int?
+    ) : ProductResponsePaging
+
     @FormUrlEncoded
     @PUT("training_android/public/api/ecommerce/change-password/{id}")
-    fun userChangePassword(
+    suspend fun userChangePassword(
         @Path("id") id : String,
         @Field("password") password : String,
         @Field("new_password") new_Password : String,
         @Field("confirm_password") confirm_password : String,
-    ): Call<ChangePasswordResponse>
+    ): ChangePasswordResponse
 
     //change Image
     @Multipart
     @POST("training_android/public/api/ecommerce/change-image")
-    fun changeImage(
+    suspend fun changeImage(
         @Part("id") id : RequestBody,
         @Part image : MultipartBody.Part
-    ) : Call<ChangeImageResponse>
+    ) : ChangeImageResponse
 
     //Refresh Token
     @FormUrlEncoded
@@ -68,18 +71,18 @@ interface ApiService {
         @Field("refresh_token") refresh_token : String?
     ) : Response<RefreshTokenResponse>
 
-
-    @GET("training_android/public/api/ecommerce/get_list_product")
-    fun getProduct(
-        @Query("search") search : String?
-    ) : Call<ProductResponse>
+    @GET("training_android/public/api/ecommerce/get_detail_product")
+    suspend fun getDetailProduct(
+        @Query("id_product") id_product : Int,
+        @Query("id_user") id_user : Int
+    ) : DetailProductResponse
 
 
     @GET("training_android/public/api/ecommerce/get_list_product_favorite")
-    fun getFavorite(
+    suspend fun getFavorite(
         @Query("search") search : String?,
         @Query("id_user") id_user : Int
-    ) : Call<ProductResponse>
+    ) : ProductResponse
 
     @GET("training_android/public/api/ecommerce/get_list_product_favorite")
     suspend fun getFavoriteProduct(
@@ -87,25 +90,40 @@ interface ApiService {
         @Query("id_user") id_user : Int
     ) : ProductResponse
 
-    @GET("training_android/public/api/ecommerce/get_detail_product")
-    fun getDetailProduct(
-        @Query("id_product") id_product : Int,
-        @Query("id_user") id_user : Int
-    ) : Call<DetailProductResponse>
-
     @FormUrlEncoded
     @POST("training_android/public/api/ecommerce/add_favorite")
-    fun addFavorite(
-        @Field("id_product") id_product : Int,
-        @Field("id_user") id_user : Int,
-    ) : Call<FavoriteResponse>
+    suspend fun addFavorite(
+        @Field("id_product")
+        id_product : Int,
+        @Field("id_user")
+        id_user : Int,
+    ) : AddRemoveFavResponse
 
     @FormUrlEncoded
     @POST("training_android/public/api/ecommerce/remove_favorite")
-    fun removeFavorite(
-        @Field("id_product") id_product : Int,
-        @Field("id_user") id_user : Int,
-    ) : Call<FavoriteResponse>
+    suspend fun removeFavorite(
+        @Field("id_product")
+        id_product : Int,
+        @Field("id_user")
+        id_user : Int,
+    ) : AddRemoveFavResponse
+
+    @GET("training_android/public/api/ecommerce/get_list_product_other")
+    suspend fun getOtherProducts(
+        @Query("id_user")
+        iduser: Int?
+    ) : ProductResponse
+
+    @GET("training_android/public/api/ecommerce/get_list_product_riwayat")
+    suspend fun getProductSearchHistory(
+        @Query("id_user")
+        iduser: Int?
+    ) : ProductResponse
+
+
+
+
+
 
     @POST("training_android/public/api/ecommerce/update-stock")
     fun buyProduct(
@@ -119,20 +137,6 @@ interface ApiService {
         @Field("rate") rate : String
     ) : Call <UpdateRatingResponse>
 
-    @GET("training_android/public/api/ecommerce/get_list_product_paging")
-     suspend fun getProductPaging(
-        @Query("search") search : String?,
-        @Query("offset") offset : Int?
-    ) : ProductResponsePaging
 
-    @GET("training_android/public/api/ecommerce/get_list_product_other")
-    fun getOtherProducts(
-        @Query("id_user") iduser: Int?
-    ) : Call<ProductResponse>
-
-    @GET("training_android/public/api/ecommerce/get_list_product_riwayat")
-    fun getProductSearchHistory(
-        @Query("id_user") iduser: Int?
-    ) : Call<ProductResponse>
 
 }

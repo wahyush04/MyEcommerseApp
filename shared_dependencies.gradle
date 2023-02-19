@@ -77,6 +77,10 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:3.1.0"
     implementation "androidx.gridlayout:gridlayout:1.0.0"
 
+    //hilt dagger
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.44"
+
 
 
 }

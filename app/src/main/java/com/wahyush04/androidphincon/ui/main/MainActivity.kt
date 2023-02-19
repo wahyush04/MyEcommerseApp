@@ -22,9 +22,11 @@ import com.wahyush04.androidphincon.ui.cart.CartActivity
 import com.wahyush04.androidphincon.ui.notification.NotificationActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: PreferenceHelper
@@ -72,8 +74,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
         mainViewModel =
             ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application))[MainViewModel::class.java]
 
@@ -81,7 +81,6 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences = PreferenceHelper(this)
         setLocate()
-//        setAppBar()
 
         val navView: BottomNavigationView = binding.navView
 
@@ -162,10 +161,6 @@ class MainActivity : AppCompatActivity() {
                 tvBadgesNotifValue.text = totalNotification.toString()
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
 }

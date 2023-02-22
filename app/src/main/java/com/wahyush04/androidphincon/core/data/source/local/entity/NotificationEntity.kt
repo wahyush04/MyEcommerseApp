@@ -1,4 +1,4 @@
-package com.wahyush04.core.database
+package com.wahyush04.androidphincon.core.data.source.local.entity
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

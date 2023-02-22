@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.FragmentDashboardBinding
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.androidphincon.ui.main.adapter.ProductFavoriteListAdapter
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,6 +56,7 @@ class DashboardFragment : Fragment() {
         adapter.notifyDataSetChanged()
         binding.rvProductList.setHasFixedSize(true)
         binding.rvProductList.adapter = adapter
+        binding.febSort.visibility = View.GONE
 
         getData(null, null)
         binding.febSort.setOnClickListener {
@@ -115,35 +116,38 @@ class DashboardFragment : Fragment() {
             when (data) {
                 is Resource.Loading -> {
                     showEmpty(false)
-                    showShimmer(true)
+                    binding.shimmerList.visibility = View.VISIBLE
+                    binding.shimmerList.startShimmer()
                 }
                 is Resource.Success -> {
                     if (data.data?.success?.data?.isNotEmpty() == true) {
-                        showShimmer(false)
-                        if (sort == "From A to Z"){
-                            data.data?.success?.data?.sortedBy { it.name_product }
-                                ?.let { adapter.setList(it.toList()) }
-                            binding.rvProductList.visibility = View.VISIBLE
-                        } else if (sort == "From Z to A") {
-                            data.data?.success?.data?.sortedByDescending { it.name_product }
-                                ?.let { adapter.setList(it.toList()) }
-                            binding.rvProductList.visibility = View.VISIBLE
-                        } else{
-                            adapter.setList(data.data?.success?.data!!)
-                            binding.rvProductList.visibility = View.VISIBLE
-                        }
+                        binding.shimmerList.visibility = View.GONE
+                        binding.shimmerList.stopShimmer()
                         showEmpty(false)
-                        adapter.setList(data.data!!.success.data)
+                        adapter.setList(data.data.success.data)
+                        binding.rvProductList.visibility = View.VISIBLE
+                        when (sort) {
+                            "From A to Z" -> {
+                                data.data.success.data.sortedBy { it.name_product }.let { adapter.setList(it.toList()) }
+                                binding.rvProductList.visibility = View.VISIBLE
+                            }
+                            "From Z to A" -> {
+                                data.data.success.data.sortedByDescending { it.name_product }.let { adapter.setList(it.toList()) }
+                                binding.rvProductList.visibility = View.VISIBLE
+                            }
+                        }
                     } else {
-                        showShimmer(false)
+                        binding.shimmerList.visibility = View.GONE
+                        binding.shimmerList.stopShimmer()
                         showEmpty(true)
+                        binding.rvProductList.visibility = View.GONE
+                        binding.febSort.visibility = View.GONE
                     }
-                    showEmpty(false)
-                    showShimmer(false)
                 }
                 is Resource.Error -> {
                     showEmpty(false)
-                    showShimmer(false)
+                    binding.shimmerList.visibility = View.GONE
+                    binding.shimmerList.stopShimmer()
                     binding.febSort.visibility = View.GONE
                     try {
                         val err = data.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
@@ -163,11 +167,9 @@ class DashboardFragment : Fragment() {
                     binding.apply {
                         showEmpty(true)
                     }
-                    showShimmer(false)
-                }
-                else -> {
-
-                    showShimmer(false)
+                    binding.rvProductList.visibility = View.GONE
+                    binding.shimmerList.visibility = View.GONE
+                    binding.shimmerList.stopShimmer()
                 }
             }
         }
@@ -222,6 +224,11 @@ class DashboardFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        getData(null, null)
+    }
+
     override fun onPause() {
         super.onPause()
         febJob?.cancel()
@@ -239,11 +246,11 @@ class DashboardFragment : Fragment() {
         febJob?.cancel()
         searchJob?.cancel()
     }
-
-    override fun onStart() {
-        super.onStart()
-        febJob?.cancel()
-        searchJob?.cancel()
-    }
+//
+//    override fun onStart() {
+//        super.onStart()
+//        febJob?.cancel()
+//        searchJob?.cancel()
+//    }
 
 }

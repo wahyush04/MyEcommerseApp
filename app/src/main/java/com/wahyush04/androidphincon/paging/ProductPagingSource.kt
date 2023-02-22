@@ -5,7 +5,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wahyush04.androidphincon.api.ApiService
 import com.wahyush04.core.data.product.DataListProductPaging
-import javax.inject.Inject
 
 class ProductPagingSource(
     private val search: String?,

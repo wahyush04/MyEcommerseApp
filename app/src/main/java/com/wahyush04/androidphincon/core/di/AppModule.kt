@@ -1,21 +1,23 @@
 package com.wahyush04.androidphincon.core.di
 
-import android.app.Activity
 import android.content.Context
+import androidx.room.Room
 import com.wahyush04.androidphincon.api.ApiService
 import com.wahyush04.androidphincon.api.AuthAuthenticator
 import com.wahyush04.androidphincon.api.AuthBadResponse
 import com.wahyush04.androidphincon.api.HeaderInterceptor
+import com.wahyush04.androidphincon.core.data.source.local.LocalDataSource
+import com.wahyush04.androidphincon.core.data.source.local.room.NotificationDao
+import com.wahyush04.androidphincon.core.data.source.local.room.ProductDao
+import com.wahyush04.androidphincon.core.data.source.local.room.ProductDatabase
+import com.wahyush04.androidphincon.core.data.source.remote.RemoteDataSource
 import com.wahyush04.androidphincon.core.repository.IRepository
 import com.wahyush04.androidphincon.core.repository.Repository
-import com.wahyush04.androidphincon.paging.ProductPagingSource
-import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.core.Constant.Companion.BASE_URL
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Authenticator
@@ -23,7 +25,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -46,9 +47,9 @@ object AppModule{
             .addInterceptor(headerInterceptor) //header
             .addInterceptor(authBadResponse) // 401 bad response
             .authenticator(authAuthenticator) // get refresh token
-            .readTimeout(10, TimeUnit.SECONDS)
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .connectTimeout(120, TimeUnit.SECONDS)
+            .writeTimeout(120, TimeUnit.SECONDS)
             .build()
     }
 
@@ -102,7 +103,33 @@ object AppModule{
 
     @Singleton
     @Provides
-    fun provideRepository(apiserice: ApiService): IRepository =
-        Repository(apiserice)
+    fun provideDatabase(@ApplicationContext context: Context): ProductDatabase =
+        Room.databaseBuilder(
+        context,
+        ProductDatabase::class.java, "moystuff.db"
+    ).fallbackToDestructiveMigration()
+        .allowMainThreadQueries()
+            .build()
+
+    @Provides
+    fun provideProductDao(database: ProductDatabase): ProductDao = database.productDao()
+
+    @Provides
+    fun provideNotificationDao(database: ProductDatabase): NotificationDao = database.notificationDao()
+
+    @Singleton
+    @Provides
+    fun provideLocalDataSource(cartDao: ProductDao, notificationDao: NotificationDao): LocalDataSource =
+        LocalDataSource(cartDao, notificationDao)
+
+    @Singleton
+    @Provides
+    fun provideRemoteDataSource(apiservice: ApiService): RemoteDataSource =
+        RemoteDataSource(apiservice)
+
+    @Singleton
+    @Provides
+    fun provideRepository(remoteDataSource: RemoteDataSource, localDataSource: LocalDataSource): IRepository =
+        Repository(remoteDataSource, localDataSource)
 
 }

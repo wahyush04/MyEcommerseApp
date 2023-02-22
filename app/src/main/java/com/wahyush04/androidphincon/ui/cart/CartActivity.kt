@@ -5,52 +5,61 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.wahyush04.androidphincon.R
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityCartBinding
+import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.main.MainActivity
+import com.wahyush04.androidphincon.ui.paymentmethod.PaymentMethodActivity
 import com.wahyush04.androidphincon.ui.successpage.SuccessPageActivity
 import com.wahyush04.core.Constant
+import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.core.data.remoteconfig.DataItem
 import com.wahyush04.core.data.updatestock.DataStockItem
 import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
-import com.wahyush04.core.database.ProductDao
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.formatterIdr
+import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONObject
 
+@AndroidEntryPoint
 class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
     private lateinit var adapter: CartListAdapter
-    private lateinit var favDao: ProductDao
-    private lateinit var cartViewModel : CartViewModel
-    private var totalPrice : Int? = 0
+    private val cartViewModel : CartViewModel by viewModels()
     private lateinit var preferences : PreferenceHelper
     private lateinit var mutableListItem : MutableList<DataStockItem>
     private lateinit var id : MutableList<Int>
+    private lateinit var loadingDialog : LoadingDialog
+    private var paymentMethod : DataItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
 
+        paymentMethod = intent.getParcelableExtra<DataItem>("payment_method")
+        loadingDialog = LoadingDialog(this@CartActivity)
         preferences = PreferenceHelper(this)
         mutableListItem = mutableListOf()
         id = mutableListOf<Int>()
 
-        cartViewModel = ViewModelProvider(this)[CartViewModel::class.java]
         doActionClicked()
-
 
         binding.btnBack.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
 
         binding.checkboxSelectAll.isChecked = preferences.getIsCheck(Constant.ISCHECK)
-        var checkAll = preferences.getIsCheck(Constant.ISCHECK)
 
         binding.checkboxSelectAll.setOnClickListener {
-            checkAll = !checkAll
-            if (checkAll){
+            if (!cekCheckBox()){
                 preferences.putCheck(true)
                 cartViewModel.checkAll(1)
                 val result = cartViewModel.getTotalHarga()
@@ -61,25 +70,95 @@ class CartActivity : AppCompatActivity() {
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
             }
-            binding.checkboxSelectAll.isChecked = checkAll
+            binding.checkboxSelectAll.isChecked = cekCheckBox()
+            preferences.putCheck(cekCheckBox())
+        }
+
+        if (paymentMethod != null){
+            binding.sectionPaymentMethod.visibility = View.VISIBLE
+            when (paymentMethod!!.id){
+                "va_bca" ->
+                    Glide.with(this)
+                        .load(R.drawable.bca)
+                        .fitCenter()
+                        .into(binding.ivPaymentMethod)
+                "va_mandiri" ->
+                    Glide.with(this)
+                        .load(R.drawable.mandiri)
+                        .fitCenter()
+                        .into(binding.ivPaymentMethod)
+                "va_bri" ->
+                    Glide.with(this)
+                        .load(R.drawable.bri)
+                        .fitCenter()
+                        .into(binding.ivPaymentMethod)
+                "va_bni" ->
+                    Glide.with(this)
+                        .load(R.drawable.bni)
+                        .fitCenter()
+                        .into(binding.ivPaymentMethod)
+                "va_btn" ->
+                    Glide.with(this)
+                        .load(R.drawable.btn)
+                        .fitCenter()
+                        .into(binding.ivPaymentMethod)
+                "va_danamon" ->
+                    Glide.with(this)
+                        .load(R.drawable.danamon)
+                        .fitCenter()
+                        .into(binding.ivPaymentMethod)
+                "ewallet_gopay" ->
+                    Glide.with(this)
+                        .load(R.drawable.gopay)
+                        .fitCenter()
+                        .into(binding.ivPaymentMethod)
+                "ewallet_ovo" ->
+                    Glide.with(this)
+                        .load(R.drawable.ovo)
+                        .fitCenter()
+                        .into(binding.ivPaymentMethod)
+                "ewallet_dana" ->
+                    Glide.with(this)
+                        .load(R.drawable.dana)
+                        .fitCenter()
+                        .into(binding.ivPaymentMethod)
+            }
         }
 
 
-        binding.btnBuy.setOnClickListener {
-            val idUser =  preferences.getPreference(Constant.ID)
-            val result = cartViewModel.getTotalHarga()
-            binding.tvTotalPrice.text = result.toString().formatterIdr()
-
-            val checkedTrolley =  cartViewModel.getTrolleyChecked()
-            for (item in checkedTrolley!!){
-                mutableListItem.add(DataStockItem(item.id.toString(), item.stock_buy))
-                id.add(item.id)
+        if (paymentMethod != null){
+            binding.ivPaymentMethod.visibility = View.VISIBLE
+            binding.sectionPaymentMethod.setOnClickListener {
+                val intent = Intent(this, PaymentMethodActivity::class.java)
+                intent.putExtra("isFrom", "trolley")
+                startActivity(intent)
             }
+            binding.tvPaymentMethod.text = paymentMethod!!.name
+            binding.btnBuy.setOnClickListener {
+                val idUser =  preferences.getPreference(Constant.ID)
+                val result = cartViewModel.getTotalHarga()
+                binding.tvTotalPrice.text = result.toString().formatterIdr()
 
-            val listListRequestItem: List<DataStockItem> = mutableListItem.toList()
+                val checkedTrolley =  cartViewModel.getTrolleyChecked()
+                for (item in checkedTrolley){
+                    mutableListItem.add(DataStockItem(item.id.toString(), item.stock_buy))
+                    id.add(item.id)
+                }
 
-            val requestBody = UpdateStockRequestBody(idUser!!,listListRequestItem)
-            buyProduct(requestBody)
+                val listListRequestItem: List<DataStockItem> = mutableListItem.toList()
+
+                val requestBody = UpdateStockRequestBody(idUser!!,listListRequestItem)
+                buyProduct(requestBody)
+                showEmpty(false)
+                preferences.putCheck(false)
+
+            }
+        }else{
+            binding.btnBuy.setOnClickListener {
+                val intent = Intent(this, PaymentMethodActivity::class.java)
+                intent.putExtra("isFrom", "trolley")
+                startActivity(intent)
+            }
 
         }
 
@@ -93,6 +172,7 @@ class CartActivity : AppCompatActivity() {
             { cartViewModel.deleteCart(it)
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
+                cekCheckBox()
             },
             {
                 val id = it.id
@@ -112,9 +192,9 @@ class CartActivity : AppCompatActivity() {
             {
                 val id = it.id
                 val quantity = it.stockbuy
-                val maxquantity = it.stock
+                val maxQuantity = it.stock
                 val newTotalHarga = it.total_harga + it.harga
-                if (quantity == maxquantity){
+                if (quantity == maxQuantity){
                     Toast.makeText(this@CartActivity, "Out of Stock", Toast.LENGTH_SHORT).show()
                 }else{
                     cartViewModel.updateQuantity((quantity + 1), id,newTotalHarga)
@@ -144,40 +224,69 @@ class CartActivity : AppCompatActivity() {
         binding.rvCart.adapter = adapter
         binding.rvCart.layoutManager = LinearLayoutManager(this@CartActivity)
         binding.rvCart.setHasFixedSize(true)
-        cartViewModel.getTrolley()?.observe(this@CartActivity) {
+        cartViewModel.getTrolley().observe(this@CartActivity) {
             if (it.isNotEmpty()) {
                 showEmpty(false)
                 adapter.setData(it)
             } else {
                 binding.checkboxSelectAll.isChecked = false
+                preferences.putCheck(false)
                 cartViewModel.checkAll(0)
                 showEmpty(true)
             }
         }
     }
 
-    private fun buyProduct(requestBody : UpdateStockRequestBody){
-        if (requestBody.data_stock.isEmpty()){
-            Toast.makeText(this, "Sialhkan Centang Produk terlebih dahulu", Toast.LENGTH_SHORT).show()
+    private fun buyProduct(requestBody : UpdateStockRequestBody) {
+        if (requestBody.data_stock.isEmpty()) {
+            Toast.makeText(this, "Sialahkan Centang Produk terlebih dahulu", Toast.LENGTH_SHORT)
+                .show()
         } else {
-            cartViewModel.deleteTrolleyChecked()
             val idList = id.toIntArray()
-            cartViewModel.setBuyProduct(requestBody, preferences, this)
-            val intent = Intent(this, SuccessPageActivity::class.java)
-            intent.putExtra("data", idList)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-
-//            finish()
+            cartViewModel.buyProduct(requestBody).observe(this@CartActivity) {
+                when (it) {
+                    is Resource.Loading -> {
+                        loadingDialog.startLoading()
+                    }
+                    is Resource.Success -> {
+                        loadingDialog.stopLoading()
+                        val totalHarga = cartViewModel.getTotalHarga()
+                        val intent = Intent(this, SuccessPageActivity::class.java)
+                        intent.putExtra("data", idList)
+                        intent.putExtra("totalHarga", totalHarga)
+                        intent.putExtra("idPayment", paymentMethod?.id)
+                        intent.putExtra("namePayment", paymentMethod?.name)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                    }
+                    is Resource.Error -> {
+                        loadingDialog.stopLoading()
+                        val err = it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
+                        val gson = Gson()
+                        val jsonObject = gson.fromJson(err, JsonObject::class.java)
+                        val errorResponse = gson.fromJson(jsonObject, ErrorResponse::class.java)
+                        val messageErr = errorResponse.error.message
+                        Toast.makeText(this@CartActivity, messageErr, Toast.LENGTH_SHORT).show()
+                        if (it.errorCode == 429){
+                            Toast.makeText(this, "Too Many Request", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    else -> {
+                        loadingDialog.stopLoading()
+                        Toast.makeText(this, "Oops, Something when wrong", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
-
     }
 
 
-    private fun cekCheckBox(){
-        val countCheck = cartViewModel.totalTrolleyCheck()
+    private fun cekCheckBox() : Boolean{
+        val countCheck = cartViewModel.countItemsCheckedTrolley()
         val countTrolley = cartViewModel.totalTrolley()
         binding.checkboxSelectAll.isChecked = countCheck == countTrolley
+        preferences.putCheck(countCheck == countTrolley)
+        return countCheck == countTrolley
     }
 
     private fun showEmpty(state : Boolean){

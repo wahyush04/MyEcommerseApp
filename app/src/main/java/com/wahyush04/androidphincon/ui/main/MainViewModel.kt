@@ -1,45 +1,17 @@
 package com.wahyush04.androidphincon.ui.main
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import com.wahyush04.androidphincon.ui.cart.CartRepository
-import com.wahyush04.core.database.NotificationDao
-import com.wahyush04.core.database.ProductDao
-import com.wahyush04.core.database.ProductDatabase
+import androidx.lifecycle.ViewModel
+import com.wahyush04.androidphincon.core.repository.IRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-    private var favDao: ProductDao?
-    private var notifDao: NotificationDao?
-    private val cartRepository : CartRepository = CartRepository(application)
-    private var db: ProductDatabase? = ProductDatabase.getDatabase(application)
-    init {
-        favDao = db?.productDao()
-        notifDao = db?.NotificationDao()
-    }
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val repository: IRepository
+) : ViewModel() {
+    fun countTrolley() = repository.countItemsTrolley()
 
-    fun countTrolley() = favDao?.countItems()
-
-    fun countNotif() = notifDao?.countItems()
-
-    fun deleteCheckedNotif(): Int?{
-        return notifDao?.deleteCheckedNotif()
-    }
-
-    fun readAllNotif(state :Int): Int?{
-        return notifDao?.readAll(state)
-    }
-
-    fun updateSceck(id : Int, state : Int): Int?{
-        return notifDao?.updateStatus(id, state)
-    }
-
-
-
-//    suspend fun totalTrolley() : Int? {
-//        return cartRepository.countItems()
-//    }
-
-//    val countAllCart: Int? = cartRepository.countItems()
+    fun countNotif() = repository.countNotif()
 
 }

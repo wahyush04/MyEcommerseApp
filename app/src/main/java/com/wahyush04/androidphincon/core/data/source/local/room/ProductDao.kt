@@ -1,4 +1,4 @@
-package com.wahyush04.core.database
+package com.wahyush04.androidphincon.core.data.source.local.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -6,16 +6,16 @@ import androidx.room.*
 @Dao
 interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(user: ProductEntity)
+    fun insert(user: com.wahyush04.androidphincon.core.data.source.local.entity.ProductEntity)
 
     @Delete
-    fun delete(data : ProductEntity)
+    fun delete(data : com.wahyush04.androidphincon.core.data.source.local.entity.ProductEntity)
 
     @Query("SELECT * FROM tbl_product")
-    fun getProduct(): LiveData<List<ProductEntity>>
+    fun getProduct(): LiveData<List<com.wahyush04.androidphincon.core.data.source.local.entity.ProductEntity>>
 
     @Query("SELECT id,stock_buy FROM tbl_product WHERE is_checked = 1")
-    fun getTrolleyChecked(): List<DataTrolley>
+    fun getTrolleyChecked(): List<com.wahyush04.androidphincon.core.data.source.local.entity.DataTrolley>
 
     @Query("SELECT COUNT(*) FROM tbl_product")
     fun countItems(): Int
@@ -35,7 +35,7 @@ interface ProductDao {
     fun getTotalHargaChecked() : Int
 
     @Query("SELECT id,stock_buy FROM tbl_product WHERE is_checked = 1")
-    fun getDataTrolley() : LiveData<List<DataTrolley>>
+    fun getDataTrolley() : LiveData<List<com.wahyush04.androidphincon.core.data.source.local.entity.DataTrolley>>
 
     @Query("DELETE FROM tbl_product WHERE is_checked = 1")
     fun deleteTrolley() : Int

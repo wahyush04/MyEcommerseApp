@@ -27,6 +27,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.R
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.customview.CustomSpinnerAdapter
 import com.wahyush04.androidphincon.databinding.FragmentProfileBinding
 import com.wahyush04.androidphincon.ui.changepassword.ChangePasswordActivity
@@ -34,7 +35,6 @@ import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.login.LoginActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile

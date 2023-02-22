@@ -17,6 +17,9 @@ import com.wahyush04.core.data.login.LoginResponse
 import com.wahyush04.core.data.product.DataListProductPaging
 import com.wahyush04.core.data.product.ProductResponse
 import com.wahyush04.core.data.register.RegisterResponse
+import com.wahyush04.core.data.updaterating.UpdateRatingResponse
+import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
+import com.wahyush04.core.data.updatestock.UpdateStockResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaType
@@ -25,9 +28,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class RemoteDataSource @Inject constructor(
     private val apiService: ApiService
 ) {
@@ -59,6 +60,7 @@ class RemoteDataSource @Inject constructor(
                 } catch (t: HttpException) {
                     when (t.code()) {
                         400 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                        429 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
                     }
                 }
             } catch (t: HttpException) {
@@ -309,7 +311,63 @@ class RemoteDataSource @Inject constructor(
             emit(Resource.Loading())
             try {
                 try {
-                    val response = apiService.getOtherProducts(idUser)
+                    val response = apiService.getProductSearchHistory(idUser)
+                    emit(Resource.Success(response))
+                } catch (t: HttpException) {
+                    when (t.code()) {
+                        401 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                        429 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    }
+                }
+            } catch (t: HttpException) {
+                when (t.code()) {
+                    400 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    401 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    404 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    500 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    else -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                }
+            }
+        }
+    }
+
+    fun buyProduct(
+        requestBody: UpdateStockRequestBody
+    ): Flow<Resource<UpdateStockResponse>> {
+        return flow {
+            emit(Resource.Loading())
+            try {
+                try {
+                    val response = apiService.buyProduct(requestBody)
+                    emit(Resource.Success(response))
+                } catch (t: HttpException) {
+                    when (t.code()) {
+                        400 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                        401 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                        429 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    }
+                }
+            } catch (t: HttpException) {
+                when (t.code()) {
+                    400 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    401 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    404 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    500 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                    else -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
+                }
+            }
+        }
+    }
+
+    fun updateRating(
+        id : Int,
+        rate : String
+    ): Flow<Resource<UpdateRatingResponse>> {
+        return flow {
+            emit(Resource.Loading())
+            try {
+                try {
+                    val response = apiService.updateRating(id, rate)
                     emit(Resource.Success(response))
                 } catch (t: HttpException) {
                     when (t.code()) {

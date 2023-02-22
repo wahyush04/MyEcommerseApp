@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.wahyush04.androidphincon.*
 
-class CustomSpinnerAdapter(internal var context: Context, internal var images: IntArray, internal var languages: Array<String>):  BaseAdapter() {
+class CustomSpinnerAdapter(internal var context: Context, private var images: IntArray, private var languages: Array<String>):  BaseAdapter() {
 
     private var inflater: LayoutInflater = LayoutInflater.from(context)
 

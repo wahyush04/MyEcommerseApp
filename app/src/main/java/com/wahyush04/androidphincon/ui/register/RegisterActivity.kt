@@ -24,11 +24,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.R
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityRegisterBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.login.LoginActivity
 import com.wahyush04.core.data.ErrorResponse
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,9 +45,10 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private val registerViewModel: RegisterViewModel by viewModels()
     private var getFile: File? = null
-    private var imageMultipart : MultipartBody.Part? = null
+    private var imageMultipart: MultipartBody.Part? = null
     private lateinit var currentPhotoPath: String
     private lateinit var loadingDialog: LoadingDialog
+
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -77,7 +78,7 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.hide()
-        loadingDialog = LoadingDialog(this@RegisterActivity)
+        loadingDialog = LoadingDialog(this)
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(
@@ -96,7 +97,40 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnRegister.setOnClickListener {
-            register()
+            val email = binding.edtEmail.text.toString()
+            val password = binding.edtPassword.text.toString()
+            val confirmPassword = binding.edtPasswordConfirm.text.toString()
+            val name = binding.edtName.text.toString()
+            val phone = binding.edtPhone.text.toString()
+            binding.emailedtlayout.isErrorEnabled = false
+            binding.passwordedtlayout.isErrorEnabled = false
+            binding.passwordconfirmedtlayout.isErrorEnabled = false
+            binding.nameeditLayout.isErrorEnabled = false
+            binding.phoneLayout.isErrorEnabled = false
+            when {
+                email.isEmpty() -> {
+                    binding.emailedtlayout.error = "Email is Empty"
+                }
+                password.isEmpty() -> {
+                    binding.passwordedtlayout.error = "password is Empty"
+                }
+                confirmPassword.isEmpty() -> {
+                    binding.passwordconfirmedtlayout.error = "password is Empty"
+                }
+                password != confirmPassword -> {
+                    binding.passwordedtlayout.error = "Password not match"
+                    binding.passwordconfirmedtlayout.error = "Password not match"
+                }
+                name.isEmpty() -> {
+                    binding.nameeditLayout.error = "password is Empty"
+                }
+                phone.isEmpty() -> {
+                    binding.phoneLayout.error = "password is Empty"
+                }
+                else -> {
+                    register()
+                }
+            }
         }
 
         binding.btnToLogin.setOnClickListener {
@@ -107,9 +141,9 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun setEmailEditText() {
         val email = binding.edtEmail.text.toString()
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.emailedtlayout.error = getString(R.string.wrong_email_format)
-        }else{
+        } else {
             binding.emailedtlayout.error = null
         }
     }
@@ -118,8 +152,8 @@ class RegisterActivity : AppCompatActivity() {
         val items = arrayOf(getString(R.string.camera), getString(R.string.galllery))
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.select_image))
-            .setItems(items){ _, which ->
-                when(which){
+            .setItems(items) { _, which ->
+                when (which) {
                     0 -> startTakePhoto()
                     1 -> startGallery()
                 }
@@ -190,7 +224,6 @@ class RegisterActivity : AppCompatActivity() {
     }
 
 
-
     private fun checkPermission(permission: String): Boolean {
         return ContextCompat.checkSelfPermission(
             this,
@@ -226,8 +259,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun register(){
-        loadingDialog.stopLoading()
+    private fun register() {
         if (getFile != null) {
             val file = reduceFileImage(getFile as File)
             val requestImageFile = file.asRequestBody("image/jpg".toMediaTypeOrNull())
@@ -242,10 +274,21 @@ class RegisterActivity : AppCompatActivity() {
         val password = binding.edtPassword.text.toString()
         val confirmPassword = binding.edtPasswordConfirm.text.toString()
         val phone = binding.edtPhone.text.toString().toRequestBody()
-        val genderId = if (binding.rbMale.isChecked){ 0 }else{ 1 }
+        val genderId = if (binding.rbMale.isChecked) {
+            0
+        } else {
+            1
+        }
 
-        if (password == confirmPassword){
-            registerViewModel.register(name, email, password.toRequestBody(), phone, genderId, imageMultipart).observe(this@RegisterActivity){
+        if (password == confirmPassword) {
+            registerViewModel.register(
+                name,
+                email,
+                password.toRequestBody(),
+                phone,
+                genderId,
+                imageMultipart
+            ).observe(this@RegisterActivity) {
                 when (it) {
                     is Resource.Loading -> {
                         loadingDialog.startLoading()
@@ -257,7 +300,11 @@ class RegisterActivity : AppCompatActivity() {
                             .setTitle("Register Success")
                             .setMessage(dataMessages)
                             .setPositiveButton("Ok") { _, _ ->
-                                Toast.makeText(this,getString(R.string.register_success),Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    getString(R.string.register_success),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 startActivity(Intent(this, LoginActivity::class.java))
                                 finish()
                             }
@@ -289,16 +336,16 @@ class RegisterActivity : AppCompatActivity() {
                     }
                 }
             }
-        }else{
+        } else {
             loadingDialog.stopLoading()
             binding.passwordedtlayout.error = getString(R.string.password_not_match)
             binding.passwordconfirmedtlayout.error = getString(R.string.password_not_match)
-            Toast.makeText(applicationContext, getString(R.string.password_not_match), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                applicationContext,
+                getString(R.string.password_not_match),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        loadingDialog.stopLoading()
-    }
 }

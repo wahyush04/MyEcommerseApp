@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AlertDialog
 import com.wahyush04.androidphincon.R
-import javax.inject.Inject
 
 class LoadingDialog(
     private val mActivity: Activity

@@ -13,12 +13,13 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.picasso.Picasso
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.ui.main.adapter.OtherProductAdapter
 import com.wahyush04.core.Constant
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.core.data.product.DataListProduct
+import com.wahyush04.core.data.remoteconfig.DataItem
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,7 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
     private lateinit var adapterHistoryProduct : OtherProductAdapter
     private lateinit var viewPagerAdapter : ImageViewPagerAdapter
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
+    private var paymentMethod : DataItem? = null
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -55,11 +57,13 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
         adapterHistoryProduct = OtherProductAdapter()
         adapterHistoryProduct.notifyDataSetChanged()
 
-
         binding.rvOtherProduct.setHasFixedSize(true)
         binding.rvOtherProduct.adapter = adapterOtherProduct
         binding.rvSearchHistory.setHasFixedSize(true)
         binding.rvSearchHistory.adapter = adapterHistoryProduct
+
+        paymentMethod = intent.getParcelableExtra<DataItem>("payment_method")
+        Log.d("paymentMethod", paymentMethod.toString())
 
 
         val intentID = intent.getIntExtra("id", 0)
@@ -97,6 +101,8 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                 startActivity(intent)
             }
         })
+
+        setData()
     }
 
     private fun formatRupiah(angka: Int): String {
@@ -147,7 +153,12 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                             tvProductTitle.text = productName
                             tvProductName.text = productName
                             tvProductPrice.text = price?.let { it1 -> formatRupiah(it1) }
-                            tvStockValue.text = stock.toString()
+                            if (stock == 1){
+                                tvStockValue.text = "Out of Stock"
+                            }else{
+                                tvStockValue.text = stock.toString()
+                            }
+
                             tvSizeValue.text = size
                             tvWeightValue.text = weight
                             tvTypeValue.text = type
@@ -163,7 +174,7 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                         CoroutineScope(Dispatchers.IO).launch {
                             withContext(Dispatchers.Main){
                                 if (data.data!!.success?.data?.isFavorite != null){
-                                    if (data.data!!.success?.data?.isFavorite == true){
+                                    if (data.data.success?.data?.isFavorite == true){
                                         binding.tbFav.isChecked = true
                                         isChecked = true
                                     }else{
@@ -174,14 +185,19 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                             }
                         }
 
+                        if (paymentMethod !== null){
+                            val bottomSheet = BottomSheetBuy(data.data, paymentMethod)
+                            bottomSheet.show(supportFragmentManager, "bottomSheet")
+                        }
+
                         binding.btnBuy.setOnClickListener {
-                            data.data?.let { it1 -> BottomSheet(it1, "buy") }
-                                ?.show(supportFragmentManager, "bottomSheet")
+                            val bottomSheet = BottomSheetBuy(data.data, paymentMethod)
+                            bottomSheet.show(supportFragmentManager, "bottomSheet")
                         }
 
 
                         binding.btnTrolley.setOnClickListener {
-                            data.data?.let { it1 -> BottomSheetTrolley(it1, "trolley") }
+                            data.data?.let { it1 -> BottomSheetTrolley(it1) }
                                 ?.show(supportFragmentManager, "bottomSheet")
 
                         }
@@ -193,10 +209,9 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                         binding.ivBack.setOnClickListener {
                             startActivity(Intent(this, MainActivity::class.java))
                         }
-
                     }
                     else -> {
-                        Toast.makeText(this@DetailProductActivity, "Ooops, Something when wrong", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@DetailProductActivity, "Oops, Something when wrong", Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -206,16 +221,40 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
         binding.tbFav.setOnClickListener {
             isChecked = !isChecked
             if (isChecked){
-                idProduct?.let { it1 -> detailProductViewModel.addFavorite(it1, idUser) }
-                Toast.makeText(this, "Produk Berhasil Ditambah ke Favorite", Toast.LENGTH_SHORT).show()
+                idProduct?.let { it1 ->
+                    detailProductViewModel.addFavorite(it1, idUser).observe(this){ data ->
+                        when (data) {
+                            is Resource.Success -> {
+                                Toast.makeText(this, "Produk Berhasil Ditambahkan ke Favorite", Toast.LENGTH_SHORT).show()
+                            }
+                            is Resource.Error -> {
+                                Toast.makeText(this, "Oops, Something when wrong", Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
+                }
             }else{
-                idProduct?.let { it1 -> detailProductViewModel.removeFavorite(it1, idUser) }
-                Toast.makeText(this, "Produk berhasil dihapus dari Favorite", Toast.LENGTH_SHORT).show()
+                idProduct?.let { it1 ->
+                    detailProductViewModel.removeFavorite(it1, idUser).observe(this){ data ->
+                        when (data) {
+                            is Resource.Success -> {
+                                Toast.makeText(this, "Produk Berhasil dihapus dari Favorite", Toast.LENGTH_SHORT).show()
+                            }
+                            is Resource.Error -> {
+                                Toast.makeText(this, "Oops, Something when wrong", Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
+                }
             }
             binding.tbFav.isChecked = isChecked
         }
-
-
     }
 
 

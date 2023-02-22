@@ -20,7 +20,7 @@ class SplashScreenActivity : AppCompatActivity() {
         sharedPreferences = PreferenceHelper(this)
 
         img = findViewById(R.id.iv_logo)
-        img.animate().setDuration(2000).translationY(-1000f).withEndAction{
+        img.animate().setDuration(1500).translationY(-800f).withEndAction{
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()

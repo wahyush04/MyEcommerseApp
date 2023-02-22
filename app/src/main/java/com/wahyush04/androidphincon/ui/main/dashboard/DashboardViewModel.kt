@@ -3,7 +3,6 @@ package com.wahyush04.androidphincon.ui.main.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.wahyush04.androidphincon.core.repository.IRepository
-import com.wahyush04.androidphincon.core.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

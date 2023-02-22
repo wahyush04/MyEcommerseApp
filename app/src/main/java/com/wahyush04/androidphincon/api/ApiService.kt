@@ -14,7 +14,6 @@ import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.data.updatestock.UpdateStockResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -120,22 +119,17 @@ interface ApiService {
         iduser: Int?
     ) : ProductResponse
 
-
-
-
-
-
     @POST("training_android/public/api/ecommerce/update-stock")
-    fun buyProduct(
+    suspend fun buyProduct(
         @Body requestBody : UpdateStockRequestBody
-    ) : Call <UpdateStockResponse>
+    ) : UpdateStockResponse
 
     @FormUrlEncoded
     @PUT("training_android/public/api/ecommerce/update_rate/{id}")
-    fun updateRating(
+    suspend fun updateRating(
         @Path("id") id : Int,
         @Field("rate") rate : String
-    ) : Call <UpdateRatingResponse>
+    ) : UpdateRatingResponse
 
 
 

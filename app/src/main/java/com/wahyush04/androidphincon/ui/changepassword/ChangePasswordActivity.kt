@@ -8,12 +8,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityChangePasswordBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
@@ -46,63 +46,86 @@ class ChangePasswordActivity : AppCompatActivity() {
             val password = binding.edtOldPassword.text.toString()
             val newPassword = binding.edtNewPassword.text.toString()
             val confirmPassword = binding.edtConfirmNewPassword.text.toString()
-            changePasswordViewModel.changePassword(
-                id.toInt(),
-                password,
-                newPassword,
-                confirmPassword)
-                .observe(this){
-                    when (it){
-                        is Resource.Loading -> {
-                            loadingDialog.startLoading()
-                        }
-                        is Resource.Success -> {
-                            loadingDialog.stopLoading()
-                            val data = it.data?.success?.message
-                            AlertDialog.Builder(this)
-                                .setTitle("Change Password Success")
-                                .setMessage(data)
-                                .setPositiveButton("Ok") { _, _ ->
-                                    val intent = Intent(
-                                        this@ChangePasswordActivity,
-                                        MainActivity::class.java)
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                    startActivity(intent)
-                                }
-                                .show()
-                        }
-                        is Resource.Error -> {
-                            loadingDialog.stopLoading()
-                            try {
-                                val err = it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
-                                val gson = Gson()
-                                val jsonObject = gson.fromJson(err, JsonObject::class.java)
-                                val errorResponse =
-                                    gson.fromJson(jsonObject, ErrorResponse::class.java)
-                                val messageErr = errorResponse.error.message
-                                AlertDialog.Builder(this)
-                                    .setTitle("Change Password Failed")
-                                    .setMessage(messageErr)
-                                    .setPositiveButton("Ok") { _, _ ->
-                                    }
-                                    .show()
-                            } catch (e: java.lang.Exception) {
-                                val err = it.errorCode
-                                Log.d("ErrorCode", "$err")
+            binding.oldpasswordedtlayout.isErrorEnabled = false
+            binding.newpasswordedtlayout.isErrorEnabled = false
+            binding.confirmpasswordedtlayout.isErrorEnabled = false
+            when {
+                password.isEmpty() -> {
+                    binding.oldpasswordedtlayout.error = "Old Password is Empty"
+                }
+                newPassword.isEmpty() -> {
+                    binding.newpasswordedtlayout.error = "Old Password is Empty"
+                }
+                confirmPassword.isEmpty() -> {
+                    binding.confirmpasswordedtlayout.error = "Old Password is Empty"
+                }
+                newPassword != confirmPassword -> {
+                    binding.oldpasswordedtlayout.error = "Old Password is Empty"
+                    binding.confirmpasswordedtlayout.error = "Old Password is Empty"
+                }else ->{
+                changePassword(id, password, newPassword, confirmPassword)
+                }
+            }
+        }
+    }
+
+    private fun changePassword(id : String, password: String, newPassword: String, confirmPassword : String){
+        changePasswordViewModel.changePassword(
+            id.toInt(),
+            password,
+            newPassword,
+            confirmPassword)
+            .observe(this){
+                when (it){
+                    is Resource.Loading -> {
+                        loadingDialog.startLoading()
+                    }
+                    is Resource.Success -> {
+                        loadingDialog.stopLoading()
+                        val data = it.data?.success?.message
+                        AlertDialog.Builder(this)
+                            .setTitle("Change Password Success")
+                            .setMessage(data)
+                            .setPositiveButton("Ok") { _, _ ->
+                                val intent = Intent(
+                                    this@ChangePasswordActivity,
+                                    MainActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                startActivity(intent)
                             }
-                        }
-                        else -> {
-                            loadingDialog.stopLoading()
+                            .show()
+                    }
+                    is Resource.Error -> {
+                        loadingDialog.stopLoading()
+                        try {
+                            val err = it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
+                            val gson = Gson()
+                            val jsonObject = gson.fromJson(err, JsonObject::class.java)
+                            val errorResponse =
+                                gson.fromJson(jsonObject, ErrorResponse::class.java)
+                            val messageErr = errorResponse.error.message
                             AlertDialog.Builder(this)
-                                .setTitle("Oops, Something when wrong")
-                                .setMessage("Please cek your internet connection")
+                                .setTitle("Change Password Failed")
+                                .setMessage(messageErr)
                                 .setPositiveButton("Ok") { _, _ ->
                                 }
                                 .show()
+                        } catch (e: java.lang.Exception) {
+                            val err = it.errorCode
+                            Log.d("ErrorCode", "$err")
                         }
                     }
+                    else -> {
+                        loadingDialog.stopLoading()
+                        AlertDialog.Builder(this)
+                            .setTitle("Oops, Something when wrong")
+                            .setMessage("Please cek your internet connection")
+                            .setPositiveButton("Ok") { _, _ ->
+                            }
+                            .show()
+                    }
                 }
-        }
+            }
     }
 
 

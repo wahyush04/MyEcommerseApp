@@ -16,7 +16,6 @@ import com.wahyush04.androidphincon.paging.LoadingStateAdapter
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.androidphincon.ui.main.adapter.ProductListAdapter
 import com.wahyush04.core.data.product.DataListProductPaging
-import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 

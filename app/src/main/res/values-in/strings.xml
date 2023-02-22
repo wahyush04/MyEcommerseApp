@@ -16,9 +16,9 @@
     <string name="confirm_new_password">Konfirmasi kata sandi baru</string>
     <string name="new_password">password baru</string>
     <string name="save">Simpan</string>
-    <string name="change_language">ganti bahasa</string>
+    <string name="change_language">Ganti bahasa</string>
     <string name="change_password">Ganti Kata sandi</string>
-    <string name="logout">keluar</string>
+    <string name="logout">Keluar</string>
     <string name="wrong_email_format">Format Email Salah</string>
     <string name="camera">Kamera</string>
     <string name="galllery">Galeri</string>

@@ -28,13 +28,12 @@ class SuccessPageActivity : AppCompatActivity() {
     private lateinit var loadingDialog: LoadingDialog
     private val formatRupiah = DecimalFormat("Rp #,###")
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySuccessPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
-
-        successPageViewModel.deleteTrolleyChecked()
 
         loadingDialog = LoadingDialog(this@SuccessPageActivity)
         val idListIntArray = intent.extras?.getIntArray("data")
@@ -136,5 +135,7 @@ class SuccessPageActivity : AppCompatActivity() {
             }
 
         }
+        successPageViewModel.deleteTrolleyChecked()
+
     }
 }

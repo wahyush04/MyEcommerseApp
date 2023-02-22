@@ -127,4 +127,14 @@ class NotificationActivity : AppCompatActivity() {
             binding.rvNotification.visibility = View.VISIBLE
         }
     }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (!toolbarState){
+            onBackPressed()
+        }else{
+            setToolbar(false)
+        }
+    }
 }

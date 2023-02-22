@@ -1,4 +1,4 @@
-package com.wahyush04.androidphincon.ui.main.adapter
+package com.wahyush04.androidphincon.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -102,7 +102,7 @@ class ProductFavoriteListAdapter : RecyclerView.Adapter<ProductFavoriteListAdapt
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ProductFavoriteListAdapter.ListViewHolder {
+    ): ListViewHolder {
         val view = ListProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ListViewHolder(view)
     }
@@ -112,7 +112,6 @@ class ProductFavoriteListAdapter : RecyclerView.Adapter<ProductFavoriteListAdapt
             binding.root.setOnClickListener {
                 onItemClickCallback?.onItemClicked(data)
             }
-            val harga = data.harga
             binding.apply {
                 Glide.with(itemView)
                     .load(data.image)
@@ -124,10 +123,11 @@ class ProductFavoriteListAdapter : RecyclerView.Adapter<ProductFavoriteListAdapt
                 ratingBar.rating = data.rate.toFloat()
                 tbFav.isChecked = true
             }
+            binding.tbFav.isEnabled = false
         }
     }
 
-    override fun onBindViewHolder(holder: ProductFavoriteListAdapter.ListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         holder.bind(listProduct[position])
     }
 
@@ -150,4 +150,6 @@ class ProductFavoriteListAdapter : RecyclerView.Adapter<ProductFavoriteListAdapt
         return dateFormat.format(inputDate!!)
 
     }
+
+
 }

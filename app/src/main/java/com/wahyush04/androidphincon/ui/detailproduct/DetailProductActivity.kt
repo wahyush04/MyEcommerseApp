@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
-import com.wahyush04.androidphincon.ui.main.adapter.OtherProductAdapter
+import com.wahyush04.androidphincon.ui.adapter.OtherProductAdapter
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.data.remoteconfig.DataItem

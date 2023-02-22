@@ -8,13 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import com.wahyush04.androidphincon.ui.login.LoginActivity
 import com.wahyush04.core.helper.PreferenceHelper
 
+
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {
     private lateinit var img : ImageView
     private lateinit var sharedPreferences: PreferenceHelper
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
+
 
         supportActionBar?.hide()
         sharedPreferences = PreferenceHelper(this)
@@ -25,6 +28,11 @@ class SplashScreenActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        firebaseAnalytics.onLoadScreen("Splash Screen",this.javaClass.simpleName)
     }
 
 }

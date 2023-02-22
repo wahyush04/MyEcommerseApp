@@ -173,7 +173,6 @@ class BottomSheetBuy(private val data: DetailProductResponse?, private val payme
                 }else{
                     buyProduct()
                 }
-
             }
         }
     }

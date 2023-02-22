@@ -18,7 +18,7 @@ import com.google.gson.JsonObject
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.FragmentDashboardBinding
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
-import com.wahyush04.androidphincon.ui.main.adapter.ProductFavoriteListAdapter
+import com.wahyush04.androidphincon.ui.adapter.ProductFavoriteListAdapter
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.product.DataListProduct

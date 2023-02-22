@@ -3,9 +3,7 @@ package com.wahyush04.androidphincon.ui.register
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -23,6 +21,7 @@ import androidx.core.widget.doOnTextChanged
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityRegisterBinding
@@ -30,6 +29,7 @@ import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.login.LoginActivity
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.helper.reduceFileImage
+import com.wahyush04.core.helper.rotateBitmap
 import com.wahyush04.core.helper.uriToFile
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -48,6 +48,8 @@ class RegisterActivity : AppCompatActivity() {
     private var imageMultipart: MultipartBody.Part? = null
     private lateinit var currentPhotoPath: String
     private lateinit var loadingDialog: LoadingDialog
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
+    var isFrom : String? = null
 
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
@@ -93,6 +95,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnAddImage.setOnClickListener {
+            firebaseAnalytics.onClickCameraIcon()
             selectImageFrom()
         }
 
@@ -134,6 +137,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnToLogin.setOnClickListener {
+            firebaseAnalytics.onClickToLogin()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
@@ -190,16 +194,18 @@ class RegisterActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == RESULT_OK) {
+
             val myFile = File(currentPhotoPath)
 
-            getFile = myFile
+            getFile = reduceFileImage(myFile)
 
             Log.e("IntentCamera", getFile.toString())
 
             val result = BitmapFactory.decodeFile(myFile.path)
 
             val rotatedimage = rotateBitmap(result)
-
+            isFrom = "camera"
+            firebaseAnalytics.onChangeImage("camera")
             binding.ivPhotoProfile.setImageBitmap(rotatedimage)
         }
     }
@@ -212,9 +218,9 @@ class RegisterActivity : AppCompatActivity() {
 
             val myFile = uriToFile(selectedImg, this@RegisterActivity)
 
-            getFile = myFile
-            Log.e("IntentGallery", getFile.toString())
-
+            getFile = reduceFileImage(myFile)
+            isFrom = "gallery"
+            firebaseAnalytics.onChangeImage("gallery")
             binding.ivPhotoProfile.setImageURI(selectedImg)
         }
     }
@@ -231,37 +237,11 @@ class RegisterActivity : AppCompatActivity() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun rotateBitmap(bitmap: Bitmap, isBackCamera: Boolean = false): Bitmap {
-        val matrix = Matrix()
-        return if (isBackCamera) {
-            matrix.postRotate(180f)
-            Bitmap.createBitmap(
-                bitmap,
-                0,
-                0,
-                bitmap.width,
-                bitmap.height,
-                matrix,
-                true
-            )
-        } else {
-            matrix.postRotate(90f)
-            matrix.postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
-            Bitmap.createBitmap(
-                bitmap,
-                0,
-                0,
-                bitmap.width,
-                bitmap.height,
-                matrix,
-                true
-            )
-        }
-    }
 
     private fun register() {
+
         if (getFile != null) {
-            val file = reduceFileImage(getFile as File)
+            val file = getFile as File
             val requestImageFile = file.asRequestBody("image/jpg".toMediaTypeOrNull())
             imageMultipart = MultipartBody.Part.createFormData(
                 "image",
@@ -269,6 +249,7 @@ class RegisterActivity : AppCompatActivity() {
                 requestImageFile
             )
         }
+
         val name = binding.edtName.text.toString().toRequestBody()
         val email = binding.edtEmail.text.toString().toRequestBody()
         val password = binding.edtPassword.text.toString()
@@ -281,6 +262,21 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         if (password == confirmPassword) {
+            var gender : String? = null
+            gender = if (genderId == 0){
+                "male"
+            } else {
+                "female"
+            }
+            isFrom?.let {
+                firebaseAnalytics.onClickButtonSignUp(
+                    it,
+                    email.toString(),
+                    name.toString(),
+                    phone.toString(),
+                    gender.toString())
+            }
+            firebaseAnalytics.onClickButtonSignUp()
             registerViewModel.register(
                 name,
                 email,
@@ -346,6 +342,11 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        firebaseAnalytics.onLoadScreen("Sign Up", this.javaClass.simpleName)
     }
 
 }

@@ -19,5 +19,17 @@ class Constant {
         const val BASE_URL = "https://portlan.id/"
         const val ISCHECK = "is_check"
 
+        //Firebase Param Key
+        const val FK_EMAIL = "email"
+        const val BUTTON_NAME = "button_name"
+        const val FK_IMAGE = "image"
+        const val FK_NAME = "name"
+        const val FK_PHONE = "phone"
+        const val FK_GENDER = "gender"
+
+        //Firebase Event Key
+        const val BUTTON_CLICK = "button_click"
+        const val SELECT_ITEM = "select_item"
+
     }
 }

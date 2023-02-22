@@ -1,9 +1,9 @@
-package com.wahyush04.androidphincon.ui.main.adapter
+package com.wahyush04.androidphincon.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wahyush04.androidphincon.databinding.ListProductBinding
@@ -12,7 +12,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class OtherProductAdapter : RecyclerView.Adapter<OtherProductAdapter.ListViewHolder>() {
+class SearchHistoryProductAdapter : RecyclerView.Adapter<SearchHistoryProductAdapter.ListViewHolder>() {
     private val listProduct = ArrayList<DataListProduct>()
     private var onItemClickCallback: OnItemClickCallback? = null
 
@@ -30,7 +30,7 @@ class OtherProductAdapter : RecyclerView.Adapter<OtherProductAdapter.ListViewHol
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): OtherProductAdapter.ListViewHolder {
+    ): ListViewHolder {
         val view = ListProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ListViewHolder(view)
     }
@@ -40,6 +40,7 @@ class OtherProductAdapter : RecyclerView.Adapter<OtherProductAdapter.ListViewHol
             binding.root.setOnClickListener {
                 onItemClickCallback?.onItemClicked(data)
             }
+            val harga = data.harga
             binding.apply {
                 Glide.with(itemView)
                     .load(data.image)
@@ -49,12 +50,12 @@ class OtherProductAdapter : RecyclerView.Adapter<OtherProductAdapter.ListViewHol
                 tvPrice.text = formatRupiah(data.harga.toInt())
                 tvDate.text = formatDate(data.date)
                 ratingBar.rating = data.rate.toFloat()
-                tbFav.isVisible = false
+                tbFav.visibility = View.GONE
             }
         }
     }
 
-    override fun onBindViewHolder(holder: OtherProductAdapter.ListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         holder.bind(listProduct[position])
     }
 

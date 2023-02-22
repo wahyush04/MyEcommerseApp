@@ -15,6 +15,7 @@ import androidx.core.widget.doOnTextChanged
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityLoginBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
@@ -32,6 +33,7 @@ import javax.inject.Inject
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private val loginViewModel: LoginViewModel by viewModels()
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
 
     @Inject
     lateinit var preferences: PreferenceHelper
@@ -99,6 +101,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                     else -> {
                         if (tokenFcm != null) {
+                            firebaseAnalytics.onClickButtonLogin(binding.edtEmail.text.toString())
                             login(email, password, tokenFcm)
                         } else {
                             Toast.makeText(this, "Oops, Something when wrong", Toast.LENGTH_SHORT)
@@ -106,8 +109,6 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
                 }
-
-
             } else {
                 Toast.makeText(this, "No Internet Connections", Toast.LENGTH_SHORT).show()
             }
@@ -115,6 +116,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnToSignup.setOnClickListener {
+            firebaseAnalytics.onClickButtonSignUp()
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
@@ -210,6 +212,11 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        firebaseAnalytics.onLoadScreen("Login", this.javaClass.simpleName)
     }
 
 }

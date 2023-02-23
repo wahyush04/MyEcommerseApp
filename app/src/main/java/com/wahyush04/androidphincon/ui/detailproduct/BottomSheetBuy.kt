@@ -18,6 +18,7 @@ import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.BottomSheetBuyBinding
@@ -52,6 +53,7 @@ class BottomSheetBuy(private val data: DetailProductResponse?, private val payme
     private var dataRemoteConfig: String? = null
     private val remoteConfig : FirebaseRemoteConfig = Firebase.remoteConfig
     private lateinit var id : MutableList<Int>
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
 
     override fun getTheme(): Int {
         return R.style.NoBackgroundDialogTheme
@@ -104,6 +106,11 @@ class BottomSheetBuy(private val data: DetailProductResponse?, private val payme
 
         if (payment == null){
             binding?.cvBuyButton?.setOnClickListener {
+                //GA Slide 17 onCLickButtonBuyNowForPayment
+                firebaseAnalytics.onClickButton(
+                    "Detail Product",
+                    binding!!.tvBuyButton.text.toString()
+                )
                 val intent = Intent(requireContext(), PaymentMethodActivity::class.java)
                 intent.putExtra("id", data?.success?.data?.id?.toInt())
                 intent.putExtra("isFrom", "bottomsheet")
@@ -112,6 +119,11 @@ class BottomSheetBuy(private val data: DetailProductResponse?, private val payme
             }
         }else{
             binding?.sectionPaymentMethod?.setOnClickListener {
+                //GA Slide 18  onClickIconBank
+                firebaseAnalytics.onClickButton(
+                    "Detail Product",
+                    binding!!.tvPaymentMethod.text.toString()
+                )
                 val intent = Intent(requireContext(), PaymentMethodActivity::class.java)
                 intent.putExtra("id", data?.success?.data?.id?.toInt())
                 intent.putExtra("isFrom", "bottomsheet")
@@ -183,20 +195,47 @@ class BottomSheetBuy(private val data: DetailProductResponse?, private val payme
             val sum = binding!!.tvCount.text.toString()
             totalHarga = (sum.toInt() * data?.success?.data?.harga!!.toInt())
             binding!!.tvBuyButton.text = "Buy Now - " + formatRupiah.format(totalHarga)
+            //GA Slide 17 onCLickButtonPlusMinus
+            firebaseAnalytics.onClickPlusMinus(
+                "Detail Product",
+                "-",
+                binding?.tvCount?.text.toString().toInt(),
+                data.success?.data?.id!!.toInt(),
+                data.success?.data?.name_product.toString()
+            )
         }
         binding?.btnIncrement?.setOnClickListener {
             viewModel.increaseQuantity(data?.success?.data?.stock)
             val sum = binding!!.tvCount.text.toString()
             totalHarga = (sum.toInt() * data?.success?.data?.harga!!.toInt())
             binding!!.tvBuyButton.text = "Buy Now - " + formatRupiah.format(totalHarga)
+            //GA Slide 17 onCLickButtonPlusMinus
+            firebaseAnalytics.onClickPlusMinus(
+                "Detail Product",
+                "+",
+                binding?.tvCount?.text.toString().toInt(),
+                data.success?.data?.id!!.toInt(),
+                data.success?.data?.name_product.toString()
+            )
         }
     }
 
     private fun buyProduct(){
         val sum = binding!!.tvCount.text.toString()
         totalHarga = (sum.toInt() * data?.success?.data?.harga!!.toInt())
+        //GA Slide 18 onClickButtonBuyNow
+        firebaseAnalytics.onClickIconBuyNow(
+            "Detail Product",
+            binding?.tvBuyButton?.text.toString(),
+            data.success?.data?.id!!.toInt(),
+            data.success!!.data?.name_product.toString(),
+            data.success!!.data?.harga!!.toInt(),
+            binding?.tvCount?.text.toString().toInt(),
+            totalHarga!!.toDouble(),
+            payment?.name.toString()
+
+            )
         val idProduk = data.success?.data?.id
-        Log.d("idProdukBottomSheet", idProduk.toString())
         if (idProduk != null) {
             id.add(idProduk.toInt())
         }
@@ -259,5 +298,15 @@ class BottomSheetBuy(private val data: DetailProductResponse?, private val payme
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //GA Slide 17 on Show Popup
+        firebaseAnalytics.onPopupShow(
+            "Detail Product",
+            "show",
+            data?.success?.data?.id!!.toInt(),
+        )
     }
 }

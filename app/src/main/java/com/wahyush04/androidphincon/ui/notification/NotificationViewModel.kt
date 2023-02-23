@@ -34,4 +34,6 @@ class NotificationViewModel @Inject constructor(
     fun updateCheck(id: Int, status: Int) =
         repository.updateCheckNotif(id, status)
 
+    fun countCheckedNotif() : Int =
+        repository.countCheckedNotif()
 }

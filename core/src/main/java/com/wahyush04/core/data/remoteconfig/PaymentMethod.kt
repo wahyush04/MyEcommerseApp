@@ -20,3 +20,8 @@ data class DataItem(
 	val status: Boolean? = null
 ) : Parcelable
 
+@Parcelize
+data class BankType(
+	val type: String? = null
+) : Parcelable
+

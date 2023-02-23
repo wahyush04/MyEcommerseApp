@@ -133,6 +133,7 @@ interface IRepository {
     fun getNotification(): LiveData<List<NotificationEntity>>
 
     fun countNotif() : Int
+    fun countCheckedNotif() : Int
 
 
     fun deleteCheckedNotif()

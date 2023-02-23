@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.PaymentMethodBinding
 import com.wahyush04.androidphincon.databinding.PaymentMethodListBinding
+import com.wahyush04.core.data.remoteconfig.BankType
 import com.wahyush04.core.data.remoteconfig.DataItem
 import com.wahyush04.core.data.remoteconfig.PaymentMethod
 import java.util.*
@@ -159,6 +160,7 @@ class PaymentMethodAdapterHeader(
             binding.apply {
                 tvHeaderPaymentMethod.text = data.type.toString()
                 val sort = data.data as List<DataItem>
+                val bankType= BankType(data.type)
                 val paymentAdapter = PaymentMethodAdapter(
                     {
                         onItemClick.invoke(it)

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivitySuccessPageBinding
@@ -27,6 +28,7 @@ class SuccessPageActivity : AppCompatActivity() {
     private var id : Int = 0
     private lateinit var loadingDialog: LoadingDialog
     private val formatRupiah = DecimalFormat("Rp #,###")
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,6 +103,12 @@ class SuccessPageActivity : AppCompatActivity() {
 
         binding.btnSubmitRating.setOnClickListener {
             val rating =  binding.ratingBar.rating
+            //GA Slide 25 onClickButtonSubmit
+            firebaseAnalytics.onClickButtonSubmit(
+                "Success",
+                "Submit",
+                rating.toInt()
+            )
             Log.d("idSuccess", id.toString())
             if (idList !== null){
                 Log.d("idSuccess", id.toString())
@@ -133,9 +141,16 @@ class SuccessPageActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this@SuccessPageActivity, "No data", Toast.LENGTH_SHORT).show()
             }
-
         }
         successPageViewModel.deleteTrolleyChecked()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        //GA Slide 25 onLoadScreen
+        firebaseAnalytics.onLoadScreen(
+            "Success",
+            this.javaClass.simpleName
+        )
     }
 }

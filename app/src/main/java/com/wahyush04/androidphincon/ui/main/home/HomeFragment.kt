@@ -11,6 +11,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
 import com.wahyush04.androidphincon.paging.LoadingStateAdapter
 import com.wahyush04.androidphincon.ui.adapter.ProductListAdapter
@@ -27,6 +28,7 @@ class HomeFragment : Fragment() {
     private lateinit var adapter: ProductListAdapter
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
     private var searchJob: Job? = null
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -41,7 +43,6 @@ class HomeFragment : Fragment() {
 
         binding.rvProductList.adapter = adapter
 
-
         getData(null)
 
         binding.svSearch.doOnTextChanged { text, start, before, count ->
@@ -52,6 +53,8 @@ class HomeFragment : Fragment() {
                     if (it.isEmpty()) {
                         getData(null)
                     } else {
+                        //GA Slide 9 onSearch
+                        firebaseAnalytics.onSearch("Home", text.toString())
                         getData(text.toString())
                     }
                 }
@@ -105,6 +108,8 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        //GA Slide 9 OnLoadScreen
+        firebaseAnalytics.onLoadScreen("Home", this.javaClass.simpleName)
         searchJob?.cancel()
         getData(null)
     }
@@ -136,6 +141,14 @@ class HomeFragment : Fragment() {
             adapter.submitData(lifecycle, it)
             adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback {
                 override fun onItemClicked(data: DataListProductPaging) {
+                    //GA Slide 9 onClickProduct
+                    firebaseAnalytics.onClickProduct(
+                        "Home",
+                        data.nameProduct,
+                        data.harga!!.toDouble(),
+                        data.rate!!,
+                        data.id!!
+                    )
                     val intent =
                         Intent(requireActivity(), DetailProductActivity::class.java)
                     intent.putExtra("id", data.id)
@@ -144,4 +157,5 @@ class HomeFragment : Fragment() {
             })
         }
     }
+
 }

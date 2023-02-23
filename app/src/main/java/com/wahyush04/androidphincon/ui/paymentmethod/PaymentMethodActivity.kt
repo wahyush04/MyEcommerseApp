@@ -11,6 +11,7 @@ import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.databinding.ActivityPaymentMethodBinding
 import com.wahyush04.androidphincon.ui.cart.CartActivity
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
@@ -23,6 +24,7 @@ class PaymentMethodActivity : AppCompatActivity() {
     private val remoteConfig : FirebaseRemoteConfig = Firebase.remoteConfig
     private var dataList : List<PaymentMethod>? = null
     private var isFrom : String? = null
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +36,21 @@ class PaymentMethodActivity : AppCompatActivity() {
         isFrom = intent.getStringExtra("isFrom")
 
         binding.ivBack.setOnClickListener {
+            //GA Slide 20 onClickBackIcon
+            firebaseAnalytics.onClickButton("Pilih Metode Pembayaran", "Back Icon")
             onBackPressed()
         }
 
         initRemoteConfig()
         adapter = PaymentMethodAdapterHeader(
             {
+                //GA Slide 20 onClickBank
+                val type = if (it.name!!.contains("Virtual")) "Virtual Account" else "E-Wallet"
+                firebaseAnalytics.onClickBank(
+                    "Pilih Metode Pembayaran",
+                    type,
+                    it.name.toString()
+                )
                 if (isFrom == "bottomsheet"){
                     val intent = Intent(this@PaymentMethodActivity, DetailProductActivity::class.java)
                     intent.putExtra("payment_method", it)
@@ -87,5 +98,11 @@ class PaymentMethodActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //GA Slide 20 onLoad Screen
+        firebaseAnalytics.onLoadScreen("Pilih Metode Pembayaran", this.javaClass.simpleName)
     }
 }

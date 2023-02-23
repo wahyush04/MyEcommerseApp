@@ -13,10 +13,11 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.picasso.Picasso
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
-import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.ui.adapter.OtherProductAdapter
+import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.product.DataListProduct
 import com.wahyush04.core.data.remoteconfig.DataItem
@@ -37,11 +38,13 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
     lateinit var preferences: PreferenceHelper
     private var isChecked = true
     private var idProduct : Int? = null
+    private var product_name : String? = null
     private lateinit var adapterOtherProduct : OtherProductAdapter
     private lateinit var adapterHistoryProduct : OtherProductAdapter
     private lateinit var viewPagerAdapter : ImageViewPagerAdapter
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
     private var paymentMethod : DataItem? = null
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -139,6 +142,7 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                         showShimmer(false)
                         val id = data.data?.success?.data?.id?.toInt()
                         val productName =  data.data?.success?.data?.name_product.toString()
+                        product_name =  data.data?.success?.data?.name_product.toString()
                         val stock =  data.data?.success?.data?.stock
                         val weight : String? =  data.data?.success?.data?.weight
                         val type : String? =  data.data?.success?.data?.type
@@ -191,22 +195,39 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                         }
 
                         binding.btnBuy.setOnClickListener {
+                            //GA Slide 16 onClickButtonBuy
+                            firebaseAnalytics.onClickButton("Detail Product", "Buy")
                             val bottomSheet = BottomSheetBuy(data.data, paymentMethod)
                             bottomSheet.show(supportFragmentManager, "bottomSheet")
                         }
 
 
                         binding.btnTrolley.setOnClickListener {
+                            //GA Slide 16 onCLickButton+Trolley
+                            firebaseAnalytics.onClickButton("Detail Product", "+ Trolley")
                             data.data?.let { it1 -> BottomSheetTrolley(it1) }
                                 ?.show(supportFragmentManager, "bottomSheet")
 
                         }
 
                         binding.btnShare.setOnClickListener {
+                            //GA Slide 16 onClickShareProduct
+                            firebaseAnalytics.onClickShareProduct(
+                                "Detail Product",
+                                productName,
+                                price!!.toDouble(),
+                                id!!.toInt(),
+                                "Share Product"
+                            )
                             shareDeepLink(productName, stock.toString(), weight.toString(), size.toString(), "https://wahyush04.com/deeplink?id=$id", image)
                         }
 
                         binding.ivBack.setOnClickListener {
+                            //GA Slide 16 onClickBackIcon
+                            firebaseAnalytics.onClickButton(
+                                "Detail Product",
+                                "Back Icon"
+                            )
                             startActivity(Intent(this, MainActivity::class.java))
                         }
                     }
@@ -222,6 +243,14 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
             isChecked = !isChecked
             if (isChecked){
                 idProduct?.let { it1 ->
+                    //GA Slide 16 onClickLove Icon
+                    firebaseAnalytics.onCLickLoveIcon(
+                        "Detail Prodcut",
+                        "Love Icon",
+                        it1,
+                        product_name.toString(),
+                        "true"
+                    )
                     detailProductViewModel.addFavorite(it1, idUser).observe(this){ data ->
                         when (data) {
                             is Resource.Success -> {
@@ -238,6 +267,14 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                 }
             }else{
                 idProduct?.let { it1 ->
+                    //GA Slide 16 onClickLove Icon
+                    firebaseAnalytics.onCLickLoveIcon(
+                        "Detail Prodcut",
+                        "Love Icon",
+                        it1,
+                        product_name.toString(),
+                        "false"
+                    )
                     detailProductViewModel.removeFavorite(it1, idUser).observe(this){ data ->
                         when (data) {
                             is Resource.Success -> {
@@ -331,6 +368,12 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
     override fun onStart() {
         super.onStart()
         setData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //GA Slide 16 onLoadScreen
+        firebaseAnalytics.onLoadScreen("Detail Product", this.javaClass.simpleName)
     }
 
     override fun onClick(image: String) {

@@ -32,7 +32,10 @@ class SplashScreenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        firebaseAnalytics.onLoadScreen("Splash Screen",this.javaClass.simpleName)
+        //GAS Slide 3 onLoadScreen
+        firebaseAnalytics.onLoadScreen(
+            "Splash Screen",
+            this.javaClass.simpleName)
     }
 
 }

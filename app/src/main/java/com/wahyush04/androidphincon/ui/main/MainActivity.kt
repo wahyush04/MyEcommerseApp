@@ -16,6 +16,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityMainBinding
 import com.wahyush04.androidphincon.ui.cart.CartActivity
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     private var totalTrolley : Int? = 0
     private var totalNotification : Int? =0
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -93,15 +95,19 @@ class MainActivity : AppCompatActivity() {
 
         setIconBadges()
         binding.icCart.setOnClickListener {
+            //GA Slide 9 & 11 onCLickTrolleyIcon
+            firebaseAnalytics.onClickButton("Home", "Trolley Icon")
             startActivity(Intent(this@MainActivity, CartActivity::class.java))
         }
         binding.icNotif.setOnClickListener {
+            //GA Slide 9 & 11 onClickNotifIcon
+            firebaseAnalytics.onClickButton("Home", "Notif Icon")
             startActivity(Intent(this@MainActivity, NotificationActivity::class.java))
         }
     }
 
     private fun setLocate() {
-        val localeID : String? = sharedPreferences.getPreference(Constant.LOCALE).toString()
+        val localeID : String = sharedPreferences.getPreference(Constant.LOCALE).toString()
         if (localeID == null){
             idLocale = "en"
             sharedPreferences.putLocale("1")

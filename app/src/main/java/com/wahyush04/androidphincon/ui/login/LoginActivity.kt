@@ -101,7 +101,12 @@ class LoginActivity : AppCompatActivity() {
                     }
                     else -> {
                         if (tokenFcm != null) {
-                            firebaseAnalytics.onClickButtonLogin(binding.edtEmail.text.toString())
+                            //GA Slide 5 onClickButtonLogin
+                            firebaseAnalytics.onClickButtonLogin(
+                                "Login",
+                                email,
+                                "Login"
+                            )
                             login(email, password, tokenFcm)
                         } else {
                             Toast.makeText(this, "Oops, Something when wrong", Toast.LENGTH_SHORT)
@@ -116,7 +121,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnToSignup.setOnClickListener {
-            firebaseAnalytics.onClickButtonSignUp()
+            //GA Slide 5 OnClickButtonSignUp
+            firebaseAnalytics.onClickButtonSignUp(
+                "Login",
+                "Signup"
+            )
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
@@ -216,7 +225,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        firebaseAnalytics.onLoadScreen("Login", this.javaClass.simpleName)
+        //GA Slide 5 OnLoadScreen
+        firebaseAnalytics.onLoadScreen(
+            "Login",
+            this.javaClass.simpleName)
     }
 
 }

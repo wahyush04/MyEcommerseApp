@@ -76,6 +76,7 @@ class LocalDataSource @Inject constructor(
         notificationDao.getNotification()
 
     fun countNotif() = notificationDao.countItems()
+    fun countCheckedNotif() = notificationDao.countItemsChecked()
 
     fun deleteCheckedNotif() {
         return notificationDao.deleteCheckedNotif()

@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.core.data.source.local.entity.ProductEntity
 import com.wahyush04.androidphincon.databinding.BottomSheetBuyBinding
@@ -26,8 +27,8 @@ class BottomSheetTrolley(private val data: DetailProductResponse): BottomSheetDi
     private var totalHarga : Int? = 0
     private val formatRupiah = DecimalFormat("Rp #,###")
     private lateinit var sharedPreferences: PreferenceHelper
-
     private val viewModel: DetailProductViewModel by viewModels()
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
 
     override fun getTheme(): Int {
         return R.style.NoBackgroundDialogTheme

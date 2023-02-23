@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.customview.CustomSpinnerAdapter
@@ -60,7 +61,7 @@ class ProfileFragment : Fragment() {
     private var isUserAction = false
     private val arrLanguage = arrayOf("IN","EN","ID")
     private val arrFlag = intArrayOf(R.drawable.united_nations, R.drawable.united_states, R.drawable.indonesia)
-
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
     private val binding get() = _binding!!
 
     @SuppressLint("ClickableViewAccessibility")
@@ -87,16 +88,28 @@ class ProfileFragment : Fragment() {
             .into(binding.ivPhotoProfile)
 
         binding.cvChangePassword.setOnClickListener {
+            //GA Slide 27 onClickChangePassword
+            firebaseAnalytics.onClickButton(
+                "Profile",
+                "Change Password"
+            )
             val intent = Intent(requireContext(), ChangePasswordActivity::class.java)
             startActivity(intent)
         }
 
         binding.btnChangeImage.setOnClickListener {
+            //GA Slide 27 onClickCameraICon
+            firebaseAnalytics.onClickButton("Profile", "Icon Photo")
             selectImageFrom()
         }
 
 
         binding.cvLogout.setOnClickListener {
+            //GAS Slide 27 onClickLogout
+            firebaseAnalytics.onClickButton(
+                "Profile",
+                "Logout"
+            )
             AlertDialog.Builder(requireContext())
                 .setTitle("Are you sure?")
                 .setMessage("Do you want to Logout")
@@ -123,10 +136,22 @@ class ProfileFragment : Fragment() {
                 if (isUserAction) {
                     if (position == 2) {
                         setLocate("in")
+                        //GA SLide 27 onChangeLanguage
+                        firebaseAnalytics.onChangeLanguage(
+                            "Profile",
+                            "Change Language",
+                            "ID"
+                        )
                         Log.d("language", position.toString())
                         preferences.putLocale(position.toString())
                         activity!!.recreate()
                     } else if (position == 1){
+                        //GA SLide 27 onChangeLanguage
+                        firebaseAnalytics.onChangeLanguage(
+                            "Profile",
+                            "Change Language",
+                            "EN"
+                        )
                         setLocate("en")
                         Log.d("language", position.toString())
                         preferences.putLocale(position.toString())
@@ -166,6 +191,11 @@ class ProfileFragment : Fragment() {
 
             getFile = myFile
 
+            //GA Slide 27 onChangeImagae
+            firebaseAnalytics.onChangeProfileImage(
+                "Profile",
+                "gallery"
+            )
             changeImage()
 
         }
@@ -195,6 +225,11 @@ class ProfileFragment : Fragment() {
 
             getFile = myFile
 
+            //GA Slide 27 onChangeImagae
+            firebaseAnalytics.onChangeProfileImage(
+                "Profile",
+                "camera"
+            )
             changeImage()
         }
     }
@@ -338,5 +373,11 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //GA Slide 27 onLoadScreen
+        firebaseAnalytics.onLoadScreen("Profile", this.javaClass.simpleName)
     }
 }

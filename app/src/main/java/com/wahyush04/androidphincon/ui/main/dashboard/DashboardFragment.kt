@@ -15,10 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.FragmentDashboardBinding
-import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.androidphincon.ui.adapter.ProductFavoriteListAdapter
+import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
 import com.wahyush04.core.data.product.DataListProduct
@@ -42,6 +43,7 @@ class DashboardFragment : Fragment() {
     private var searchJob: Job? = null
     private var febJob: Job? = null
     private var query: String? = null
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -71,6 +73,8 @@ class DashboardFragment : Fragment() {
                     if (it.isEmpty()) {
                         getData(null, null)
                     } else {
+                        //GA Slide 11 OnSearch
+                        firebaseAnalytics.onSearch("Favorite", text.toString())
                         query = text.toString()
                         getData(text.toString(), null)
                     }
@@ -100,7 +104,15 @@ class DashboardFragment : Fragment() {
 
         adapter.setOnItemClickCallback(object : ProductFavoriteListAdapter.OnItemClickCallback{
             override fun onItemClicked(data: DataListProduct) {
-                val intent = Intent(getActivity(), DetailProductActivity::class.java)
+                //GA Slide 11 onCLickProduct
+                firebaseAnalytics.onClickProduct(
+                    "Favorite",
+                    data.name_product,
+                    data.harga.toDouble(),
+                    data.rate,
+                    data.id
+                )
+                val intent = Intent(requireContext(), DetailProductActivity::class.java)
                 intent.putExtra("id", data.id)
                 startActivity(intent)
             }
@@ -197,8 +209,16 @@ class DashboardFragment : Fragment() {
             }
             .setPositiveButton("OK"){_,_ ->
                 when (selectedOption){
-                    "From A to Z" -> getData(query,"From A to Z")
-                    "From Z to A" -> getData(query,"From Z to A")
+                    "From A to Z" -> {
+                        //GA Slide 11 onCLickSortBy
+                        firebaseAnalytics.onClickSortBy("Favorite", "a to z")
+                        getData(query,"From A to Z")
+                    }
+                    "From Z to A" -> {
+                        //GA Slide 11 onCLickSortBy
+                        firebaseAnalytics.onClickSortBy("Favorite", "z to a")
+                        getData(query,"From Z to A")
+                    }
                 }
 
             }
@@ -226,6 +246,8 @@ class DashboardFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        //GA Slide 11 OnLoadScreen
+        firebaseAnalytics.onLoadScreen("Favorite", this.javaClass.simpleName)
         getData(null, null)
     }
 

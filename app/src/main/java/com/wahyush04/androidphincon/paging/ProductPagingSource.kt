@@ -3,6 +3,7 @@ package com.wahyush04.androidphincon.paging
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.api.ApiService
 import com.wahyush04.core.data.product.DataListProductPaging
 
@@ -11,6 +12,8 @@ class ProductPagingSource(
     private val apiService: ApiService
     ) : PagingSource<Int, DataListProductPaging>() {
 
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
+
     private companion object {
         const val INITIAL_PAGE_INDEX = 0
     }
@@ -18,13 +21,15 @@ class ProductPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DataListProductPaging> {
         Log.d("paging", "loadPagingsource")
         return try {
-            val position = params.key ?: INITIAL_PAGE_INDEX
-            val responseData = apiService.getProductPaging(search, position)
+            val offset = params.key ?: INITIAL_PAGE_INDEX
+            //GA Slide 9 onPagingScroll
+            firebaseAnalytics.onPagingScroll("Home", offset)
+            val responseData = apiService.getProductPaging(search, offset)
             Log.d("paging", "loadPagingsource")
             LoadResult.Page(
                 data = responseData.success!!.data,
-                prevKey = if (position == INITIAL_PAGE_INDEX) null else position - 1,
-                nextKey = if (responseData.success!!.data.isEmpty()) null else position + 5
+                prevKey = if (offset == INITIAL_PAGE_INDEX) null else offset - 1,
+                nextKey = if (responseData.success!!.data.isEmpty()) null else offset + 5
             )
         } catch (e: Exception) {
             return LoadResult.Error(e)

@@ -162,6 +162,10 @@ class Repository @Inject constructor(
     override fun countNotif(): Int =
         localDataSource.countNotif()
 
+    override fun countCheckedNotif(): Int =
+        localDataSource.countCheckedNotif()
+
+
     override fun deleteCheckedNotif() =
         localDataSource.deleteCheckedNotif()
 

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityChangePasswordBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
@@ -26,6 +27,7 @@ class ChangePasswordActivity : AppCompatActivity() {
     @Inject
     lateinit var preferences: PreferenceHelper
     private lateinit var loadingDialog: LoadingDialog
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +37,17 @@ class ChangePasswordActivity : AppCompatActivity() {
         
         setAppBar()
         binding.ivBack.setOnClickListener {
+            //GA Slide 29 onCLickBackIcon
+            firebaseAnalytics.onClickButton(
+                "Change Password",
+                "Back Icon"
+            )
             this@ChangePasswordActivity.onBackPressed()
         }
 
         binding.btnSaveNewPassword.setOnClickListener {
             val id = preferences.getPreference(Constant.ID).toString()
             val accessToken = preferences.getPreference(Constant.TOKEN).toString()
-            Log.d("cekToken", "tokencpwactivity : $accessToken")
 
             val password = binding.edtOldPassword.text.toString()
             val newPassword = binding.edtNewPassword.text.toString()
@@ -66,6 +72,12 @@ class ChangePasswordActivity : AppCompatActivity() {
                 changePassword(id, password, newPassword, confirmPassword)
                 }
             }
+
+            //GA Slide 29 onClickSaveButton
+            firebaseAnalytics.onClickButton(
+                "Change Password",
+                "Save"
+            )
         }
     }
 
@@ -128,8 +140,16 @@ class ChangePasswordActivity : AppCompatActivity() {
             }
     }
 
-
     private fun setAppBar(){
         supportActionBar?.hide()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //GA slide 29 onLoadScreen
+        firebaseAnalytics.onLoadScreen(
+            "Change Password",
+            this.javaClass.simpleName
+        )
     }
 }

@@ -19,6 +19,9 @@ interface NotificationDao {
     @Query("SELECT COUNT(*) FROM tbl_notification WHERE status = 0")
     fun countItems(): Int
 
+    @Query("SELECT COUNT(*) FROM tbl_notification WHERE isCheck = 1")
+    fun countItemsChecked(): Int
+
     @Query("UPDATE tbl_notification SET isCheck = :state WHERE id = :id")
     fun updateCheck(id: Int, state : Int): Int
 

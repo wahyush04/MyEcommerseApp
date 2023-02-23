@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityCartBinding
@@ -38,6 +39,7 @@ class CartActivity : AppCompatActivity() {
     private lateinit var id : MutableList<Int>
     private lateinit var loadingDialog : LoadingDialog
     private var paymentMethod : DataItem? = null
+    private val firebaseAnalytics = BaseFirebaseAnalytics()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCartBinding.inflate(layoutInflater)
@@ -53,7 +55,14 @@ class CartActivity : AppCompatActivity() {
         doActionClicked()
 
         binding.btnBack.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            //GA Slide 22 OnClickBackIcon
+            firebaseAnalytics.onClickButton(
+                "Trolley",
+                "Back Icon"
+            )
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
         }
 
         binding.checkboxSelectAll.isChecked = preferences.getIsCheck(Constant.ISCHECK)
@@ -129,6 +138,8 @@ class CartActivity : AppCompatActivity() {
         if (paymentMethod != null){
             binding.ivPaymentMethod.visibility = View.VISIBLE
             binding.sectionPaymentMethod.setOnClickListener {
+                //GA Slide 23 onCLickIconBank
+                firebaseAnalytics.onClickButton("Trolley", binding.tvPaymentMethod.text.toString())
                 val intent = Intent(this, PaymentMethodActivity::class.java)
                 intent.putExtra("isFrom", "trolley")
                 startActivity(intent)
@@ -155,6 +166,11 @@ class CartActivity : AppCompatActivity() {
             }
         }else{
             binding.btnBuy.setOnClickListener {
+                //GA SLide 22 onClickBuyButton
+                firebaseAnalytics.onClickButton(
+                    "Trolley",
+                    "Buy"
+                )
                 val intent = Intent(this, PaymentMethodActivity::class.java)
                 intent.putExtra("isFrom", "trolley")
                 startActivity(intent)
@@ -169,12 +185,26 @@ class CartActivity : AppCompatActivity() {
 
     private fun doActionClicked() {
         adapter = CartListAdapter(
-            { cartViewModel.deleteCart(it)
+            {
+                //GA Slide 22 onClickDelete
+                firebaseAnalytics.onCLickDeleteTrolley(
+                    "Trolley",
+                    "Delete Icon",
+                    it.id,
+                    it.name_product,
+                )
+                cartViewModel.deleteCart(it)
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
                 cekCheckBox()
             },
             {
+                //GA Slide 22 onSelectCheckBox
+                firebaseAnalytics.onSelectCheckBox(
+                    "Trolley",
+                    it.id,
+                    it.name_product
+                )
                 val id = it.id
                 cartViewModel.updateCheck(id, 1)
                 val result = cartViewModel.getTotalHarga()
@@ -199,6 +229,14 @@ class CartActivity : AppCompatActivity() {
                 }else{
                     cartViewModel.updateQuantity((quantity + 1), id,newTotalHarga)
                 }
+                //GA Slide 22 onClickPlusMinus
+                firebaseAnalytics.onClickPlusMinus(
+                    "Trolley",
+                    "+",
+                    quantity,
+                    id,
+                    it.name_product
+                )
 
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
@@ -212,6 +250,14 @@ class CartActivity : AppCompatActivity() {
                 }else{
                     cartViewModel.updateQuantity((quantity - 1), id, newTotalHarga)
                 }
+                //GA Slide 22 onClickPlusMinus
+                firebaseAnalytics.onClickPlusMinus(
+                    "Trolley",
+                    "-",
+                    quantity,
+                    id,
+                    it.name_product
+                )
                 val result = cartViewModel.getTotalHarga()
                 binding.tvTotalPrice.text = result.toString().formatterIdr()
             },
@@ -238,6 +284,14 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun buyProduct(requestBody : UpdateStockRequestBody) {
+        val totalHarga = cartViewModel.getTotalHarga()
+        //GA Slide 23 onClickBuy Button
+        firebaseAnalytics.onClickBuyTrolley(
+            "Trolley",
+            "Buy",
+            totalHarga.toDouble(),
+            paymentMethod?.name.toString()
+        )
         if (requestBody.data_stock.isEmpty()) {
             Toast.makeText(this, "Sialahkan Centang Produk terlebih dahulu", Toast.LENGTH_SHORT)
                 .show()
@@ -305,4 +359,9 @@ class CartActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        //GA SLide 22 onLoadScreen
+        firebaseAnalytics.onLoadScreen("Trolley", this.javaClass.simpleName)
+    }
 }

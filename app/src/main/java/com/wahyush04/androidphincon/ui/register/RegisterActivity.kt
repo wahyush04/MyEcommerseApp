@@ -49,7 +49,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var currentPhotoPath: String
     private lateinit var loadingDialog: LoadingDialog
     private val firebaseAnalytics = BaseFirebaseAnalytics()
-    var isFrom : String? = null
+    var isFrom: String? = null
 
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
@@ -95,7 +95,11 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnAddImage.setOnClickListener {
-            firebaseAnalytics.onClickCameraIcon()
+            //GA Slide 7 OnClickCameraIcon
+            firebaseAnalytics.onClickCameraIcon(
+                "Sign Up",
+                "Icon Photo"
+            )
             selectImageFrom()
         }
 
@@ -137,7 +141,11 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnToLogin.setOnClickListener {
-            firebaseAnalytics.onClickToLogin()
+            //GA Slide 7 onClickButtonLogin
+            firebaseAnalytics.onClickToLogin(
+                "Sign Up",
+                "Login"
+            )
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
@@ -194,17 +202,14 @@ class RegisterActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == RESULT_OK) {
-
             val myFile = File(currentPhotoPath)
-
             getFile = reduceFileImage(myFile)
-
-            Log.e("IntentCamera", getFile.toString())
 
             val result = BitmapFactory.decodeFile(myFile.path)
 
             val rotatedimage = rotateBitmap(result)
             isFrom = "camera"
+            //GA Slide 7 onChangeImage
             firebaseAnalytics.onChangeImage("camera")
             binding.ivPhotoProfile.setImageBitmap(rotatedimage)
         }
@@ -239,7 +244,6 @@ class RegisterActivity : AppCompatActivity() {
 
 
     private fun register() {
-
         if (getFile != null) {
             val file = getFile as File
             val requestImageFile = file.asRequestBody("image/jpg".toMediaTypeOrNull())
@@ -249,103 +253,90 @@ class RegisterActivity : AppCompatActivity() {
                 requestImageFile
             )
         }
-
         val name = binding.edtName.text.toString().toRequestBody()
         val email = binding.edtEmail.text.toString().toRequestBody()
         val password = binding.edtPassword.text.toString()
-        val confirmPassword = binding.edtPasswordConfirm.text.toString()
         val phone = binding.edtPhone.text.toString().toRequestBody()
         val genderId = if (binding.rbMale.isChecked) {
             0
         } else {
             1
         }
+        val gender: String = if (genderId == 0) {
+            "male"
+        } else {
+            "female"
+        }
+        isFrom?.let {
+            //GA Slide 7 onClickButtonSignUp
+            firebaseAnalytics.onClickButtonSignUp(
+                it,
+                binding.edtEmail.text.toString(),
+                binding.edtName.text.toString(),
+                binding.edtPhone.text.toString(),
+                gender
+            )
+        }
+        registerViewModel.register(
+            name,
+            email,
+            password.toRequestBody(),
+            phone,
+            genderId,
+            imageMultipart
+        ).observe(this@RegisterActivity) {
+            when (it) {
+                is Resource.Loading -> {
+                    loadingDialog.startLoading()
+                }
+                is Resource.Success -> {
+                    loadingDialog.stopLoading()
+                    val dataMessages = it.data?.success?.message
+                    AlertDialog.Builder(this@RegisterActivity)
+                        .setTitle("Register Success")
+                        .setMessage(dataMessages)
+                        .setPositiveButton("Ok") { _, _ ->
+                            Toast.makeText(
+                                this,
+                                getString(R.string.register_success),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            startActivity(Intent(this, LoginActivity::class.java))
+                            finish()
+                        }
+                        .show()
 
-        if (password == confirmPassword) {
-            var gender : String? = null
-            gender = if (genderId == 0){
-                "male"
-            } else {
-                "female"
-            }
-            isFrom?.let {
-                firebaseAnalytics.onClickButtonSignUp(
-                    it,
-                    email.toString(),
-                    name.toString(),
-                    phone.toString(),
-                    gender.toString())
-            }
-            firebaseAnalytics.onClickButtonSignUp()
-            registerViewModel.register(
-                name,
-                email,
-                password.toRequestBody(),
-                phone,
-                genderId,
-                imageMultipart
-            ).observe(this@RegisterActivity) {
-                when (it) {
-                    is Resource.Loading -> {
-                        loadingDialog.startLoading()
-                    }
-                    is Resource.Success -> {
-                        loadingDialog.stopLoading()
-                        val dataMessages = it.data?.success?.message
-                        AlertDialog.Builder(this@RegisterActivity)
-                            .setTitle("Register Success")
-                            .setMessage(dataMessages)
-                            .setPositiveButton("Ok") { _, _ ->
-                                Toast.makeText(
-                                    this,
-                                    getString(R.string.register_success),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                startActivity(Intent(this, LoginActivity::class.java))
-                                finish()
-                            }
-                            .show()
+                }
+                is Resource.Error -> {
+                    loadingDialog.stopLoading()
+                    val err =
+                        it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
+                    val gson = Gson()
+                    val jsonObject = gson.fromJson(err, JsonObject::class.java)
+                    val errorResponse = gson.fromJson(jsonObject, ErrorResponse::class.java)
+                    val messageErr = errorResponse.error.message
+                    AlertDialog.Builder(this@RegisterActivity)
+                        .setTitle("Gagal")
+                        .setMessage(messageErr)
+                        .setPositiveButton("Ok") { _, _ ->
+                        }
+                        .show()
+                    val errCode = it.errorCode
+                    Log.d("errorCode", "$errCode")
+                }
+                is Resource.Empty -> {
+                    Log.d("Empty Data", "Empty")
+                }
+                else -> {
 
-                    }
-                    is Resource.Error -> {
-                        loadingDialog.stopLoading()
-                        val err =
-                            it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
-                        val gson = Gson()
-                        val jsonObject = gson.fromJson(err, JsonObject::class.java)
-                        val errorResponse = gson.fromJson(jsonObject, ErrorResponse::class.java)
-                        val messageErr = errorResponse.error.message
-                        AlertDialog.Builder(this@RegisterActivity)
-                            .setTitle("Gagal")
-                            .setMessage(messageErr)
-                            .setPositiveButton("Ok") { _, _ ->
-                            }
-                            .show()
-                        val errCode = it.errorCode
-                        Log.d("errorCode", "$errCode")
-                    }
-                    is Resource.Empty -> {
-                        Log.d("Empty Data", "Empty")
-                    }
-                    else -> {
-
-                    }
                 }
             }
-        } else {
-            loadingDialog.stopLoading()
-            binding.passwordedtlayout.error = getString(R.string.password_not_match)
-            binding.passwordconfirmedtlayout.error = getString(R.string.password_not_match)
-            Toast.makeText(
-                applicationContext,
-                getString(R.string.password_not_match),
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 
     override fun onResume() {
         super.onResume()
+        //GA SLide 7 OnLoadScreen
         firebaseAnalytics.onLoadScreen("Sign Up", this.javaClass.simpleName)
     }
 

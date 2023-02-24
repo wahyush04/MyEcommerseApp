@@ -315,6 +315,7 @@ class RemoteDataSource @Inject constructor(
                     emit(Resource.Success(response))
                 } catch (t: HttpException) {
                     when (t.code()) {
+                        400 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
                         401 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
                         429 -> emit(Resource.Error(true, t.code(), t.response()?.errorBody()))
                     }

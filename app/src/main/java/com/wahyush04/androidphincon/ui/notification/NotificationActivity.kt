@@ -132,7 +132,6 @@ class NotificationActivity : AppCompatActivity() {
             }
             ivReadAllNotif.setOnClickListener {
                 val checkedNotif = notificationViewModel.countCheckedNotif()
-                Toast.makeText(this@NotificationActivity, "All Checked Notif readed", Toast.LENGTH_SHORT).show()
                 //GA Slide 14 OnClickReadIcon
                 firebaseAnalytics.onClickReadIcon(
                     "Multiple Select",

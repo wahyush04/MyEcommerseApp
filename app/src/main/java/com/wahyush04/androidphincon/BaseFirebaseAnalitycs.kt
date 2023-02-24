@@ -122,7 +122,10 @@ open class BaseFirebaseAnalytics {
         firebaseAnalytics.logEvent(Constant.SELECT_ITEM, bundle)
     }
 
-    fun onClickDeleteIcon(screen_name : String, button_name : String, total_select_item : Int){
+    fun onClickDeleteIcon(
+        screen_name : String,
+        button_name : String,
+        total_select_item : Int){
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, screen_name)
         bundle.putString(Constant.BUTTON_NAME, button_name)

@@ -191,7 +191,7 @@ class ProfileFragment : Fragment() {
 
             getFile = myFile
 
-            //GA Slide 27 onChangeImagae
+            //GA Slide 27 onChangeImage
             firebaseAnalytics.onChangeProfileImage(
                 "Profile",
                 "gallery"
@@ -225,7 +225,7 @@ class ProfileFragment : Fragment() {
 
             getFile = myFile
 
-            //GA Slide 27 onChangeImagae
+            //GA Slide 27 onChangeImage
             firebaseAnalytics.onChangeProfileImage(
                 "Profile",
                 "camera"
@@ -378,6 +378,9 @@ class ProfileFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         //GA Slide 27 onLoadScreen
-        firebaseAnalytics.onLoadScreen("Profile", this.javaClass.simpleName)
+        firebaseAnalytics.onLoadScreen(
+            "Profile",
+            this.javaClass.simpleName
+        )
     }
 }

@@ -46,7 +46,6 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
     private var paymentMethod : DataItem? = null
     private val firebaseAnalytics = BaseFirebaseAnalytics()
 
-
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -204,7 +203,10 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
 
                         binding.btnTrolley.setOnClickListener {
                             //GA Slide 16 onCLickButton+Trolley
-                            firebaseAnalytics.onClickButton("Detail Product", "+ Trolley")
+                            firebaseAnalytics.onClickButton(
+                                "Detail Product",
+                                "+ Trolley"
+                            )
                             data.data?.let { it1 -> BottomSheetTrolley(it1) }
                                 ?.show(supportFragmentManager, "bottomSheet")
 
@@ -373,7 +375,10 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
     override fun onResume() {
         super.onResume()
         //GA Slide 16 onLoadScreen
-        firebaseAnalytics.onLoadScreen("Detail Product", this.javaClass.simpleName)
+        firebaseAnalytics.onLoadScreen(
+            "Detail Product",
+            this.javaClass.simpleName
+        )
     }
 
     override fun onClick(image: String) {

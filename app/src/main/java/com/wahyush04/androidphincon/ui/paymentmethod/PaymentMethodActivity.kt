@@ -37,7 +37,10 @@ class PaymentMethodActivity : AppCompatActivity() {
 
         binding.ivBack.setOnClickListener {
             //GA Slide 20 onClickBackIcon
-            firebaseAnalytics.onClickButton("Pilih Metode Pembayaran", "Back Icon")
+            firebaseAnalytics.onClickButton(
+                "Pilih Metode Pembayaran",
+                "Back Icon"
+            )
             onBackPressed()
         }
 
@@ -103,6 +106,9 @@ class PaymentMethodActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         //GA Slide 20 onLoad Screen
-        firebaseAnalytics.onLoadScreen("Pilih Metode Pembayaran", this.javaClass.simpleName)
+        firebaseAnalytics.onLoadScreen(
+            "Pilih Metode Pembayaran",
+            this.javaClass.simpleName
+        )
     }
 }

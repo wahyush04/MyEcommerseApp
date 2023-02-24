@@ -205,7 +205,8 @@ class LoginActivity : AppCompatActivity() {
                     val jsonObject = gson.fromJson(err, JsonObject::class.java)
                     val errorResponse = gson.fromJson(jsonObject, ErrorResponse::class.java)
                     val messageErr = errorResponse.error.message
-                    Toast.makeText(this@LoginActivity, messageErr, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, messageErr, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "messageErr", Toast.LENGTH_SHORT).show()
                 }
                 is Resource.Empty -> {
                     loadingDialog.stopLoading()

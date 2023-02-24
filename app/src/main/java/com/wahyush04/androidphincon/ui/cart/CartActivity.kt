@@ -139,7 +139,10 @@ class CartActivity : AppCompatActivity() {
             binding.ivPaymentMethod.visibility = View.VISIBLE
             binding.sectionPaymentMethod.setOnClickListener {
                 //GA Slide 23 onCLickIconBank
-                firebaseAnalytics.onClickButton("Trolley", binding.tvPaymentMethod.text.toString())
+                firebaseAnalytics.onClickButton(
+                    "Trolley",
+                    binding.tvPaymentMethod.text.toString()
+                )
                 val intent = Intent(this, PaymentMethodActivity::class.java)
                 intent.putExtra("isFrom", "trolley")
                 startActivity(intent)
@@ -362,6 +365,9 @@ class CartActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         //GA SLide 22 onLoadScreen
-        firebaseAnalytics.onLoadScreen("Trolley", this.javaClass.simpleName)
+        firebaseAnalytics.onLoadScreen(
+            "Trolley",
+            this.javaClass.simpleName
+        )
     }
 }

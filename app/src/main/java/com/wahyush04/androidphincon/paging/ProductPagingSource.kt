@@ -1,6 +1,5 @@
 package com.wahyush04.androidphincon.paging
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wahyush04.androidphincon.BaseFirebaseAnalytics
@@ -19,13 +18,11 @@ class ProductPagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DataListProductPaging> {
-        Log.d("paging", "loadPagingsource")
         return try {
             val offset = params.key ?: INITIAL_PAGE_INDEX
             //GA Slide 9 onPagingScroll
             firebaseAnalytics.onPagingScroll("Home", offset)
             val responseData = apiService.getProductPaging(search, offset)
-            Log.d("paging", "loadPagingsource")
             LoadResult.Page(
                 data = responseData.success!!.data,
                 prevKey = if (offset == INITIAL_PAGE_INDEX) null else offset - 1,

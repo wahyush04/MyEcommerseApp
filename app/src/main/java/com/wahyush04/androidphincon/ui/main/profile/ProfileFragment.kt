@@ -89,7 +89,7 @@ class ProfileFragment : Fragment() {
 
         binding.cvChangePassword.setOnClickListener {
             //GA Slide 27 onClickChangePassword
-            firebaseAnalytics.onClickButton(
+            firebaseAnalytics.onClickSelectItem(
                 "Profile",
                 "Change Password"
             )
@@ -106,7 +106,7 @@ class ProfileFragment : Fragment() {
 
         binding.cvLogout.setOnClickListener {
             //GAS Slide 27 onClickLogout
-            firebaseAnalytics.onClickButton(
+            firebaseAnalytics.onClickSelectItem(
                 "Profile",
                 "Logout"
             )

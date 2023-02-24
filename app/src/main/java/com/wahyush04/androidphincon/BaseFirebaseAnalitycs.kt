@@ -107,6 +107,13 @@ open class BaseFirebaseAnalytics {
         firebaseAnalytics.logEvent(Constant.BUTTON_CLICK, bundle)
     }
 
+    fun onClickSelectItem(screen_name : String, item_name : String){
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, screen_name)
+        bundle.putString(Constant.ITEM_NAME, item_name)
+        firebaseAnalytics.logEvent(Constant.SELECT_ITEM, bundle)
+    }
+
     fun onClickSortBy(screen_name : String, sort_by : String){
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, screen_name)

@@ -63,6 +63,14 @@
     <string name="sort_by">Sort By</string>
     <string name="image_view">Image View</string>
     <string name="retry">Retry</string>
-    <string name="id">ID</string>
+    <string name="id" translatable="false">ID</string>
     <string name="notification">Notification</string>
+    <!--    Firebase-->
+    <string name="default_web_client_id" translatable="false">1037486014292-ugjuav872pt9tp2a70nl0k0bjce3pio9.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">1037486014292</string>
+    <string name="google_api_key" translatable="false">AIzaSyD5F91jl0oBRMHAVUeCoPwXlleCsgv-rAg</string>
+    <string name="google_app_id" translatable="false">1:1037486014292:android:8d26778c5e020ac73dd2c1</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyD5F91jl0oBRMHAVUeCoPwXlleCsgv-rAg</string>
+    <string name="google_storage_bucket" translatable="false">trainingphincon.appspot.com</string>
+    <string name="project_id" translatable="false">trainingphincon</string>
 </resources>

@@ -1,7 +1,7 @@
 package com.wahyush04.androidphincon.ui.main
 
 import androidx.lifecycle.ViewModel
-import com.wahyush04.androidphincon.core.repository.IRepository
+import com.wahyush04.core.data.source.repository.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

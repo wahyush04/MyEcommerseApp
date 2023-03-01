@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wahyush04.androidphincon.databinding.ListProductBinding
-import com.wahyush04.core.data.product.DataListProductPaging
+import com.wahyush04.core.data.source.remote.response.product.DataListProductPaging
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*

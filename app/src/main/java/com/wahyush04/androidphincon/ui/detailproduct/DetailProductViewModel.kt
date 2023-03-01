@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.wahyush04.androidphincon.core.data.source.Resource
-import com.wahyush04.androidphincon.core.data.source.local.entity.ProductEntity
-import com.wahyush04.androidphincon.core.repository.IRepository
-import com.wahyush04.core.data.detailproduct.DetailProductResponse
-import com.wahyush04.core.data.favorite.AddRemoveFavResponse
-import com.wahyush04.core.data.product.ProductResponse
-import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
-import com.wahyush04.core.data.updatestock.UpdateStockResponse
+import com.wahyush04.core.data.Result
+import com.wahyush04.core.data.source.local.entity.ProductEntity
+import com.wahyush04.core.data.source.remote.response.detailproduct.DetailProductResponse
+import com.wahyush04.core.data.source.remote.response.favorite.AddRemoveFavResponse
+import com.wahyush04.core.data.source.remote.response.product.ProductResponse
+import com.wahyush04.core.data.source.remote.response.updatestock.UpdateStockRequestBody
+import com.wahyush04.core.data.source.remote.response.updatestock.UpdateStockResponse
+import com.wahyush04.core.data.source.repository.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -23,37 +23,38 @@ class DetailProductViewModel @Inject constructor(
     fun detailProduct(
         idProduk: Int,
         idUser: Int
-    ): LiveData<Resource<DetailProductResponse>> =
+    ): LiveData<Result<DetailProductResponse>> =
         repository.detailProduct(idProduk, idUser).asLiveData()
 
     fun addFavorite(
         idProduk: Int,
         idUser: Int
-    ): LiveData<Resource<AddRemoveFavResponse>> =
+    ): LiveData<Result<AddRemoveFavResponse>> =
         repository.addFavorite(idProduk, idUser).asLiveData()
 
     fun removeFavorite(
         idProduk: Int,
         idUser: Int
-    ): LiveData<Resource<AddRemoveFavResponse>> =
+    ): LiveData<Result<AddRemoveFavResponse>> =
         repository.removeFavorite(idProduk, idUser).asLiveData()
     fun getOtherProduk(
         idUser: Int
-    ): LiveData<Resource<ProductResponse>> =
+    ): LiveData<Result<ProductResponse>> =
         repository.getOtherProduk(idUser).asLiveData()
 
     fun getHistoryProduk(
         idUser: Int
-    ): LiveData<Resource<ProductResponse>> =
+    ): LiveData<Result<ProductResponse>> =
         repository.getHistoryProduk(idUser).asLiveData()
 
     fun buyProduct(
         requestBody: UpdateStockRequestBody
-    ) : LiveData<Resource<UpdateStockResponse>> =
+    ) : LiveData<Result<UpdateStockResponse>> =
         repository.buyProduct(requestBody).asLiveData()
 
     fun insertTrolley(
-        data : ProductEntity) =
+        data : ProductEntity
+    ) =
         repository.insertTrolley(data)
     fun isTrolley(id : Int): Int {
         return repository.isTrolley(id)

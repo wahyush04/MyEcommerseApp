@@ -26,16 +26,16 @@ import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.customview.CustomSpinnerAdapter
 import com.wahyush04.androidphincon.databinding.FragmentProfileBinding
 import com.wahyush04.androidphincon.ui.changepassword.ChangePasswordActivity
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.login.LoginActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.core.data.Result
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.uriToFile
@@ -320,13 +320,13 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.changeImage(id, imageMultipart!!).observe(viewLifecycleOwner){
             when (it) {
-                is Resource.Loading -> {
+                is Result.Loading -> {
                     loadingDialog.startLoading()
                 }
-                is Resource.Success -> {
+                is Result.Success -> {
                     loadingDialog.stopLoading()
-                    it.data?.success?.let { it1 -> preferences.changeImage(it1.path) }
-                    val dataMessages = it.data?.success?.message
+                    it.data.success.let { it1 -> preferences.changeImage(it1.path) }
+                    val dataMessages = it.data.success.message
                     AlertDialog.Builder(requireActivity())
                         .setTitle("Change Image Success")
                         .setMessage(dataMessages)
@@ -335,12 +335,12 @@ class ProfileFragment : Fragment() {
                         .show()
 
                     Glide.with(this)
-                        .load(it.data?.success?.path)
+                        .load(it.data.success.path)
                         .centerCrop()
                         .placeholder(R.drawable.ic_baseline_person_24)
                         .into(binding.ivPhotoProfile)
                 }
-                is Resource.Error -> {
+                is Result.Error -> {
                     loadingDialog.stopLoading()
                     try {
                         val err = it.errorBody?.string()
@@ -362,10 +362,6 @@ class ProfileFragment : Fragment() {
                         Log.d("ErrorCode", "$err")
                     }
 
-                }
-                is Resource.Empty -> {
-                    loadingDialog.stopLoading()
-                    Log.d("Empty Data", "Empty")
                 }
                 else -> {
                     loadingDialog.stopLoading()

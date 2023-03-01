@@ -9,9 +9,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.databinding.ActivityNotificationBinding
 import com.wahyush04.androidphincon.ui.main.MainActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 

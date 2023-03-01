@@ -7,7 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wahyush04.androidphincon.databinding.ListProductBinding
-import com.wahyush04.core.data.product.DataListProduct
+import com.wahyush04.core.data.source.remote.response.product.DataListProduct
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*

@@ -3,9 +3,9 @@ package com.wahyush04.androidphincon.ui.successpage
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.wahyush04.androidphincon.core.data.source.Resource
-import com.wahyush04.androidphincon.core.repository.IRepository
-import com.wahyush04.core.data.updaterating.UpdateRatingResponse
+import com.wahyush04.core.data.Result
+import com.wahyush04.core.data.source.remote.response.updaterating.UpdateRatingResponse
+import com.wahyush04.core.data.source.repository.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ class SuccessPageViewModel @Inject constructor(
     fun updateRating(
         id: Int,
         rate: String
-    ) : LiveData<Resource<UpdateRatingResponse>> =
+    ) : LiveData<Result<UpdateRatingResponse>> =
         repository.updateRating(id, rate).asLiveData()
 
     fun deleteTrolleyChecked(): Int {

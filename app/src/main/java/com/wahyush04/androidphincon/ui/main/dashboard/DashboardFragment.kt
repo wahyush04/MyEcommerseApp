@@ -15,14 +15,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.FragmentDashboardBinding
 import com.wahyush04.androidphincon.ui.adapter.ProductFavoriteListAdapter
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
-import com.wahyush04.core.data.product.DataListProduct
+import com.wahyush04.core.data.Result
+import com.wahyush04.core.data.source.remote.response.product.DataListProduct
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -126,13 +126,13 @@ class DashboardFragment : Fragment() {
         val idUser = preferences.getPreference(Constant.ID)
         dashboardViewModel.getFavProduct(idUser!!.toInt(), search).observe(viewLifecycleOwner) { data ->
             when (data) {
-                is Resource.Loading -> {
+                is Result.Loading -> {
                     showEmpty(false)
                     binding.shimmerList.visibility = View.VISIBLE
                     binding.shimmerList.startShimmer()
                 }
-                is Resource.Success -> {
-                    if (data.data?.success?.data?.isNotEmpty() == true) {
+                is Result.Success -> {
+                    if (data.data.success.data.isNotEmpty()) {
                         binding.shimmerList.visibility = View.GONE
                         binding.shimmerList.stopShimmer()
                         showEmpty(false)
@@ -156,7 +156,7 @@ class DashboardFragment : Fragment() {
                         binding.febSort.visibility = View.GONE
                     }
                 }
-                is Resource.Error -> {
+                is Result.Error -> {
                     showEmpty(false)
                     binding.shimmerList.visibility = View.GONE
                     binding.shimmerList.stopShimmer()
@@ -174,14 +174,6 @@ class DashboardFragment : Fragment() {
                         val err = data.errorCode
                         Log.d("ErrorCode", "$err")
                     }
-                }
-                is Resource.Empty -> {
-                    binding.apply {
-                        showEmpty(true)
-                    }
-                    binding.rvProductList.visibility = View.GONE
-                    binding.shimmerList.visibility = View.GONE
-                    binding.shimmerList.stopShimmer()
                 }
             }
         }

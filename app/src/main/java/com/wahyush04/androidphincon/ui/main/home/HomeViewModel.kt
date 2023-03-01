@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.wahyush04.androidphincon.core.repository.IRepository
-import com.wahyush04.core.data.product.DataListProductPaging
+import com.wahyush04.core.data.source.remote.response.product.DataListProductPaging
+import com.wahyush04.core.data.source.repository.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

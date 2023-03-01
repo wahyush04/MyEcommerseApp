@@ -11,11 +11,11 @@ import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.databinding.ActivityPaymentMethodBinding
 import com.wahyush04.androidphincon.ui.cart.CartActivity
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
-import com.wahyush04.core.data.remoteconfig.PaymentMethod
+import com.wahyush04.core.BaseFirebaseAnalytics
+import com.wahyush04.core.data.source.remote.response.remoteconfig.PaymentMethod
 
 class PaymentMethodActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPaymentMethodBinding

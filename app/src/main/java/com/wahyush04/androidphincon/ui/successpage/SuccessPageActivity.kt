@@ -7,12 +7,12 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivitySuccessPageBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.main.MainActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
+import com.wahyush04.core.data.Result
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat
@@ -116,10 +116,10 @@ class SuccessPageActivity : AppCompatActivity() {
                     Log.d("idSuccessItem", id.toString())
                     successPageViewModel.updateRating(item, rating.toString()).observe(this@SuccessPageActivity){
                         when (it) {
-                            is Resource.Loading -> {
+                            is Result.Loading -> {
                                 loadingDialog.startLoading()
                             }
-                            is Resource.Success -> {
+                            is Result.Success -> {
                                 loadingDialog.stopLoading()
                                 if (index == idList!!.lastIndex) {
                                     val intent = Intent(this, MainActivity::class.java)
@@ -127,7 +127,7 @@ class SuccessPageActivity : AppCompatActivity() {
                                     startActivity(intent)
                                 }
                             }
-                            is Resource.Error -> {
+                            is Result.Error -> {
                                 loadingDialog.stopLoading()
                                 Toast.makeText(this@SuccessPageActivity, "Oops, Something when wrong", Toast.LENGTH_SHORT).show()
                             }

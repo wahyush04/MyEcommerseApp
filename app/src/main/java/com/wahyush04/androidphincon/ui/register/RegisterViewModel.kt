@@ -3,12 +3,11 @@ package com.wahyush04.androidphincon.ui.register
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.wahyush04.androidphincon.core.data.source.Resource
-import com.wahyush04.androidphincon.core.repository.IRepository
-import com.wahyush04.core.data.register.RegisterResponse
+import com.wahyush04.core.data.Result
+import com.wahyush04.core.data.source.remote.response.register.RegisterResponse
+import com.wahyush04.core.data.source.repository.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,13 +16,20 @@ class RegisterViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun register(
-        name: RequestBody,
-        email: RequestBody,
-        password: RequestBody,
-        phone: RequestBody,
+        name: String,
+        email: String,
+        password: String,
+        phone: String,
         gender: Int,
         image: MultipartBody.Part?,
-    ): LiveData<Resource<RegisterResponse>> =
-        repository.register(image, email, password, name, phone, gender).asLiveData()
+    ): LiveData<Result<RegisterResponse>> =
+        repository.register(
+            name,
+            email,
+            password,
+            phone,
+            gender,
+            image
+        ).asLiveData()
 
 }

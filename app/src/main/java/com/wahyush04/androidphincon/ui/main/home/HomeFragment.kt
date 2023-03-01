@@ -11,12 +11,12 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.databinding.FragmentHomeBinding
-import com.wahyush04.androidphincon.paging.LoadingStateAdapter
 import com.wahyush04.androidphincon.ui.adapter.ProductListAdapter
 import com.wahyush04.androidphincon.ui.detailproduct.DetailProductActivity
-import com.wahyush04.core.data.product.DataListProductPaging
+import com.wahyush04.core.BaseFirebaseAnalytics
+import com.wahyush04.core.data.source.remote.response.product.DataListProductPaging
+import com.wahyush04.core.paging.LoadingStateAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 

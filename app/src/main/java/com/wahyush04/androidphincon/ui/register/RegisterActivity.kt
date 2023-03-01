@@ -21,13 +21,13 @@ import androidx.core.widget.doOnTextChanged
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityRegisterBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.login.LoginActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.core.data.Result
 import com.wahyush04.core.helper.reduceFileImage
 import com.wahyush04.core.helper.rotateBitmap
 import com.wahyush04.core.helper.uriToFile
@@ -35,7 +35,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.File
 
@@ -253,10 +252,10 @@ class RegisterActivity : AppCompatActivity() {
                 requestImageFile
             )
         }
-        val name = binding.edtName.text.toString().toRequestBody()
-        val email = binding.edtEmail.text.toString().toRequestBody()
+        val name = binding.edtName.text.toString()
+        val email = binding.edtEmail.text.toString()
         val password = binding.edtPassword.text.toString()
-        val phone = binding.edtPhone.text.toString().toRequestBody()
+        val phone = binding.edtPhone.text.toString()
         val genderId = if (binding.rbMale.isChecked) {
             0
         } else {
@@ -280,18 +279,18 @@ class RegisterActivity : AppCompatActivity() {
         registerViewModel.register(
             name,
             email,
-            password.toRequestBody(),
+            password,
             phone,
             genderId,
             imageMultipart
         ).observe(this@RegisterActivity) {
             when (it) {
-                is Resource.Loading -> {
+                is Result.Loading -> {
                     loadingDialog.startLoading()
                 }
-                is Resource.Success -> {
+                is Result.Success -> {
                     loadingDialog.stopLoading()
-                    val dataMessages = it.data?.success?.message
+                    val dataMessages = it.data.registerSuccess.message
                     AlertDialog.Builder(this@RegisterActivity)
                         .setTitle("Register Success")
                         .setMessage(dataMessages)
@@ -307,7 +306,7 @@ class RegisterActivity : AppCompatActivity() {
                         .show()
 
                 }
-                is Resource.Error -> {
+                is Result.Error -> {
                     loadingDialog.stopLoading()
                     val err =
                         it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
@@ -323,9 +322,6 @@ class RegisterActivity : AppCompatActivity() {
                         .show()
                     val errCode = it.errorCode
                     Log.d("errorCode", "$errCode")
-                }
-                is Resource.Empty -> {
-                    Log.d("Empty Data", "Empty")
                 }
                 else -> {
 

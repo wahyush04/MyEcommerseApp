@@ -2,7 +2,7 @@ package com.wahyush04.androidphincon.ui.main.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.wahyush04.androidphincon.core.repository.IRepository
+import com.wahyush04.core.data.source.repository.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import okhttp3.MultipartBody
 import javax.inject.Inject

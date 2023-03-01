@@ -8,13 +8,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityChangePasswordBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.main.MainActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.core.data.Result
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
@@ -89,12 +89,12 @@ class ChangePasswordActivity : AppCompatActivity() {
             confirmPassword)
             .observe(this){
                 when (it){
-                    is Resource.Loading -> {
+                    is Result.Loading -> {
                         loadingDialog.startLoading()
                     }
-                    is Resource.Success -> {
+                    is Result.Success -> {
                         loadingDialog.stopLoading()
-                        val data = it.data?.success?.message
+                        val data = it.data.registerSuccess.message
                         AlertDialog.Builder(this)
                             .setTitle("Change Password Success")
                             .setMessage(data)
@@ -107,7 +107,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                             }
                             .show()
                     }
-                    is Resource.Error -> {
+                    is Result.Error -> {
                         loadingDialog.stopLoading()
                         try {
                             val err = it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }

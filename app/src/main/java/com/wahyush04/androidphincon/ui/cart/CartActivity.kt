@@ -11,19 +11,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityCartBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.ui.paymentmethod.PaymentMethodActivity
 import com.wahyush04.androidphincon.ui.successpage.SuccessPageActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
-import com.wahyush04.core.data.remoteconfig.DataItem
-import com.wahyush04.core.data.updatestock.DataStockItem
-import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
+import com.wahyush04.core.data.Result
+import com.wahyush04.core.data.source.remote.response.remoteconfig.DataItem
+import com.wahyush04.core.data.source.remote.response.updatestock.DataStockItem
+import com.wahyush04.core.data.source.remote.response.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.formatterIdr
 import dagger.hilt.android.AndroidEntryPoint
@@ -236,7 +236,7 @@ class CartActivity : AppCompatActivity() {
                 firebaseAnalytics.onClickPlusMinus(
                     "Trolley",
                     "+",
-                    quantity,
+                    quantity-1,
                     id,
                     it.name_product
                 )
@@ -257,7 +257,7 @@ class CartActivity : AppCompatActivity() {
                 firebaseAnalytics.onClickPlusMinus(
                     "Trolley",
                     "-",
-                    quantity,
+                    quantity+1,
                     id,
                     it.name_product
                 )
@@ -302,10 +302,10 @@ class CartActivity : AppCompatActivity() {
             val idList = id.toIntArray()
             cartViewModel.buyProduct(requestBody).observe(this@CartActivity) {
                 when (it) {
-                    is Resource.Loading -> {
+                    is Result.Loading -> {
                         loadingDialog.startLoading()
                     }
-                    is Resource.Success -> {
+                    is Result.Success -> {
                         loadingDialog.stopLoading()
                         val totalHarga = cartViewModel.getTotalHarga()
                         val intent = Intent(this, SuccessPageActivity::class.java)
@@ -316,7 +316,7 @@ class CartActivity : AppCompatActivity() {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
                     }
-                    is Resource.Error -> {
+                    is Result.Error -> {
                         loadingDialog.stopLoading()
                         val err = it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
                         val gson = Gson()

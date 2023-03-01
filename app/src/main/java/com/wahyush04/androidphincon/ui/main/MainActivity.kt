@@ -16,11 +16,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.ActivityMainBinding
 import com.wahyush04.androidphincon.ui.cart.CartActivity
 import com.wahyush04.androidphincon.ui.notification.NotificationActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.Constant
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint

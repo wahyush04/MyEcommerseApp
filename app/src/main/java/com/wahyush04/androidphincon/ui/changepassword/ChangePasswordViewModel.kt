@@ -2,7 +2,7 @@ package com.wahyush04.androidphincon.ui.changepassword
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.wahyush04.androidphincon.core.repository.IRepository
+import com.wahyush04.core.data.source.repository.IRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

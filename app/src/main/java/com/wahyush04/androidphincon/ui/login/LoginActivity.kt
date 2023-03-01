@@ -15,14 +15,14 @@ import androidx.core.widget.doOnTextChanged
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityLoginBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.main.MainActivity
 import com.wahyush04.androidphincon.ui.register.RegisterActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
+import com.wahyush04.core.data.Result
 import com.wahyush04.core.helper.PreferenceHelper
 import com.wahyush04.core.helper.isInternetConnectionAvailable
 import dagger.hilt.android.AndroidEntryPoint
@@ -165,16 +165,16 @@ class LoginActivity : AppCompatActivity() {
     private fun login(email: String, password: String, tokenFcm: String) {
         loginViewModel.login(email, password, tokenFcm).observe(this) {
             when (it) {
-                is Resource.Loading -> {
+                is Result.Loading -> {
                     loadingDialog.startLoading()
                 }
-                is Resource.Success -> {
+                is Result.Success -> {
                     loadingDialog.stopLoading()
-                    val status = it.data?.success?.status
-                    val accessToken = it.data?.success?.access_token
-                    val refreshToken = it.data?.success?.refresh_token
-                    val id = it.data?.success?.data_user?.id
-                    val name = it.data?.success?.data_user?.name
+                    val status = it.data.success.status
+                    val accessToken = it.data.success.access_token
+                    val refreshToken = it.data.success.refresh_token
+                    val id = it.data.success.data_user.id
+                    val name = it.data.success.data_user?.name
                     val emailUser = it.data?.success?.data_user?.email
                     val phone = it.data?.success?.data_user?.phone
                     val gender = it.data?.success?.data_user?.gender
@@ -198,7 +198,7 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
-                is Resource.Error -> {
+                is Result.Error -> {
                     loadingDialog.stopLoading()
                     val err = it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
                     val gson = Gson()
@@ -207,10 +207,6 @@ class LoginActivity : AppCompatActivity() {
                     val messageErr = errorResponse.error.message
                     Toast.makeText(this, messageErr, Toast.LENGTH_SHORT).show()
                     Toast.makeText(this, "messageErr", Toast.LENGTH_SHORT).show()
-                }
-                is Resource.Empty -> {
-                    loadingDialog.stopLoading()
-                    Log.d("Empty Data", "Empty")
                 }
                 else -> {
                     loadingDialog.stopLoading()

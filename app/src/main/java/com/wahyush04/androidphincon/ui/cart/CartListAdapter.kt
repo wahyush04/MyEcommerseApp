@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.core.data.source.local.entity.ProductEntity
 import com.wahyush04.androidphincon.databinding.CartItemBinding
+import com.wahyush04.core.data.source.local.entity.ProductEntity
 import com.wahyush04.core.helper.formatRupiah
 
 @Suppress("DEPRECATION")

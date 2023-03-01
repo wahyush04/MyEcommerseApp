@@ -14,9 +14,9 @@ import com.bumptech.glide.Glide
 import com.wahyush04.androidphincon.R
 import com.wahyush04.androidphincon.databinding.PaymentMethodBinding
 import com.wahyush04.androidphincon.databinding.PaymentMethodListBinding
-import com.wahyush04.core.data.remoteconfig.BankType
-import com.wahyush04.core.data.remoteconfig.DataItem
-import com.wahyush04.core.data.remoteconfig.PaymentMethod
+import com.wahyush04.core.data.source.remote.response.remoteconfig.BankType
+import com.wahyush04.core.data.source.remote.response.remoteconfig.DataItem
+import com.wahyush04.core.data.source.remote.response.remoteconfig.PaymentMethod
 import java.util.*
 
 class PaymentMethodAdapter(

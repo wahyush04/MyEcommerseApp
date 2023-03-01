@@ -10,8 +10,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.core.data.source.local.entity.NotificationEntity
 import com.wahyush04.androidphincon.databinding.ListNotificationBinding
+import com.wahyush04.core.data.source.local.entity.NotificationEntity
 import java.text.SimpleDateFormat
 import java.util.*
 

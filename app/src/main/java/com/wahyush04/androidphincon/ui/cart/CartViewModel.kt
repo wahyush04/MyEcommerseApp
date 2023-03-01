@@ -3,12 +3,12 @@ package com.wahyush04.androidphincon.ui.cart
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.wahyush04.androidphincon.core.data.source.Resource
-import com.wahyush04.androidphincon.core.data.source.local.entity.DataTrolley
-import com.wahyush04.androidphincon.core.data.source.local.entity.ProductEntity
-import com.wahyush04.androidphincon.core.repository.Repository
-import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
-import com.wahyush04.core.data.updatestock.UpdateStockResponse
+import com.wahyush04.core.data.Result
+import com.wahyush04.core.data.source.local.entity.DataTrolley
+import com.wahyush04.core.data.source.local.entity.ProductEntity
+import com.wahyush04.core.data.source.remote.response.updatestock.UpdateStockRequestBody
+import com.wahyush04.core.data.source.remote.response.updatestock.UpdateStockResponse
+import com.wahyush04.core.data.source.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -61,8 +61,8 @@ class CartViewModel @Inject constructor(
     fun deleteCart(data : ProductEntity) = repository.deleteTrolley(data)
 
     fun buyProduct(
-        requestBody: UpdateStockRequestBody)
-    : LiveData<Resource<UpdateStockResponse>> =
+        requestBody: UpdateStockRequestBody
+    ): LiveData<Result<UpdateStockResponse>> =
         repository.buyProduct(requestBody).asLiveData()
 
 

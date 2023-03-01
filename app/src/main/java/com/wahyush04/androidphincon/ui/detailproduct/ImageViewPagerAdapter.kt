@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.wahyush04.androidphincon.R
-import com.wahyush04.core.data.detailproduct.ImageProductItem
+import com.wahyush04.core.data.source.remote.response.detailproduct.ImageProductItem
 
 class ImageViewPagerAdapter(private val images: List<ImageProductItem>?, private val listener: OnPageClickListener) : PagerAdapter() {
 

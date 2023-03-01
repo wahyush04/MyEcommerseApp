@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
     id 'kotlin-kapt'
-    id 'com.google.gms.google-services'
+//    id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'com.google.dagger.hilt.android'
 }
@@ -69,13 +69,7 @@ dependencies {
 
     implementation 'com.github.didikk:sticky-nestedscrollview:1.0.1'
 
-    //firebase
-    implementation platform('com.google.firebase:firebase-bom:31.2.2')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-config-ktx'
-    implementation 'com.google.firebase:firebase-messaging-ktx'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+
 
 
 }

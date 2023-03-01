@@ -9,11 +9,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.core.data.source.local.entity.ProductEntity
 import com.wahyush04.androidphincon.databinding.BottomSheetBuyBinding
-import com.wahyush04.core.data.detailproduct.DetailProductResponse
+import com.wahyush04.core.BaseFirebaseAnalytics
+import com.wahyush04.core.data.source.local.entity.ProductEntity
+import com.wahyush04.core.data.source.remote.response.detailproduct.DetailProductResponse
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DecimalFormat

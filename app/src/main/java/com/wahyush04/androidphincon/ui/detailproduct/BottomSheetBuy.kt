@@ -18,20 +18,20 @@ import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
 import com.wahyush04.androidphincon.R
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.BottomSheetBuyBinding
 import com.wahyush04.androidphincon.ui.loading.LoadingDialog
 import com.wahyush04.androidphincon.ui.paymentmethod.PaymentMethodActivity
 import com.wahyush04.androidphincon.ui.successpage.SuccessPageActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.Constant
 import com.wahyush04.core.data.ErrorResponse
-import com.wahyush04.core.data.detailproduct.DetailProductResponse
-import com.wahyush04.core.data.remoteconfig.DataItem
-import com.wahyush04.core.data.remoteconfig.PaymentMethod
-import com.wahyush04.core.data.updatestock.DataStockItem
-import com.wahyush04.core.data.updatestock.UpdateStockRequestBody
+import com.wahyush04.core.data.Result
+import com.wahyush04.core.data.source.remote.response.detailproduct.DetailProductResponse
+import com.wahyush04.core.data.source.remote.response.remoteconfig.DataItem
+import com.wahyush04.core.data.source.remote.response.remoteconfig.PaymentMethod
+import com.wahyush04.core.data.source.remote.response.updatestock.DataStockItem
+import com.wahyush04.core.data.source.remote.response.updatestock.UpdateStockRequestBody
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
@@ -244,10 +244,10 @@ class BottomSheetBuy(private val data: DetailProductResponse?, private val payme
         val requestBody = UpdateStockRequestBody(idUser!!,listOf(DataStockItem(id[0].toString(), stock)))
         viewModel.buyProduct(requestBody).observe(viewLifecycleOwner){
             when (it){
-                is Resource.Loading -> {
+                is Result.Loading -> {
                     loadingDialog.startLoading()
                 }
-                is Resource.Success -> {
+                is Result.Success -> {
                     loadingDialog.stopLoading()
                     val intent = Intent(requireContext(), SuccessPageActivity::class.java)
                     Log.d("idProduk", id.toString())
@@ -259,7 +259,7 @@ class BottomSheetBuy(private val data: DetailProductResponse?, private val payme
                     startActivity(intent)
                     dismiss()
                 }
-                is Resource.Error -> {
+                is Result.Error -> {
                     loadingDialog.stopLoading()
                     val err = it.errorBody?.string()?.let { it1 -> JSONObject(it1).toString() }
                     val gson = Gson()

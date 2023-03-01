@@ -13,14 +13,14 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.squareup.picasso.Picasso
-import com.wahyush04.androidphincon.BaseFirebaseAnalytics
-import com.wahyush04.androidphincon.core.data.source.Resource
 import com.wahyush04.androidphincon.databinding.ActivityDetailProductBinding
 import com.wahyush04.androidphincon.ui.adapter.OtherProductAdapter
 import com.wahyush04.androidphincon.ui.main.MainActivity
+import com.wahyush04.core.BaseFirebaseAnalytics
 import com.wahyush04.core.Constant
-import com.wahyush04.core.data.product.DataListProduct
-import com.wahyush04.core.data.remoteconfig.DataItem
+import com.wahyush04.core.data.Result
+import com.wahyush04.core.data.source.remote.response.product.DataListProduct
+import com.wahyush04.core.data.source.remote.response.remoteconfig.DataItem
 import com.wahyush04.core.helper.PreferenceHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -134,23 +134,23 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
         idProduct?.let { it ->
             detailProductViewModel.detailProduct(it, idUser).observe(this){ data ->
                 when (data){
-                    is Resource.Loading -> {
+                    is Result.Loading -> {
                         showShimmer(true)
                     }
-                    is Resource.Success -> {
+                    is Result.Success -> {
                         showShimmer(false)
-                        val id = data.data?.success?.data?.id?.toInt()
-                        val productName =  data.data?.success?.data?.name_product.toString()
-                        product_name =  data.data?.success?.data?.name_product.toString()
-                        val stock =  data.data?.success?.data?.stock
-                        val weight : String? =  data.data?.success?.data?.weight
-                        val type : String? =  data.data?.success?.data?.type
-                        val size : String? =  data.data?.success?.data?.size
-                        val rating : Int? =  data.data?.success?.data?.rate
-                        val description : String? =  data.data?.success?.data?.desc
-                        val price = data.data?.success?.data?.harga?.toInt()
-                        val image = data.data?.success?.data?.image.toString()
-                        val imageListProduk = data.data?.success?.data?.image_product
+                        val id = data.data.success?.data?.id?.toInt()
+                        val productName =  data.data.success?.data?.name_product.toString()
+                        product_name =  data.data.success?.data?.name_product.toString()
+                        val stock =  data.data.success?.data?.stock
+                        val weight : String? =  data.data.success?.data?.weight
+                        val type : String? =  data.data.success?.data?.type
+                        val size : String? =  data.data.success?.data?.size
+                        val rating : Int? =  data.data.success?.data?.rate
+                        val description : String? =  data.data.success?.data?.desc
+                        val price = data.data.success?.data?.harga?.toInt()
+                        val image = data.data.success?.data?.image.toString()
+                        val imageListProduk = data.data.success?.data?.image_product
 
                         binding.apply {
                             tvProductTitle.text = productName
@@ -177,7 +177,7 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                         CoroutineScope(Dispatchers.IO).launch {
                             withContext(Dispatchers.Main){
                                 if (data.data!!.success?.data?.isFavorite != null){
-                                    if (data.data.success?.data?.isFavorite == true){
+                                    if (data.data!!.success?.data?.isFavorite == true){
                                         binding.tbFav.isChecked = true
                                         isChecked = true
                                     }else{
@@ -255,10 +255,10 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                     )
                     detailProductViewModel.addFavorite(it1, idUser).observe(this){ data ->
                         when (data) {
-                            is Resource.Success -> {
+                            is Result.Success -> {
                                 Toast.makeText(this, "Produk Berhasil Ditambahkan ke Favorite", Toast.LENGTH_SHORT).show()
                             }
-                            is Resource.Error -> {
+                            is Result.Error -> {
                                 Toast.makeText(this, "Oops, Something when wrong", Toast.LENGTH_SHORT).show()
                             }
                             else -> {
@@ -279,10 +279,10 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                     )
                     detailProductViewModel.removeFavorite(it1, idUser).observe(this){ data ->
                         when (data) {
-                            is Resource.Success -> {
+                            is Result.Success -> {
                                 Toast.makeText(this, "Produk Berhasil dihapus dari Favorite", Toast.LENGTH_SHORT).show()
                             }
-                            is Resource.Error -> {
+                            is Result.Error -> {
                                 Toast.makeText(this, "Oops, Something when wrong", Toast.LENGTH_SHORT).show()
                             }
                             else -> {
@@ -335,14 +335,20 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
     private fun setOtherProduct(){
         val idUser : Int = preferences.getPreference(Constant.ID)!!.toInt()
         detailProductViewModel.getOtherProduk(idUser).observe(this){data ->
-            if (data != null){
-                data.data?.success?.let { adapterOtherProduct.setList(it.data) }
-                if (adapterOtherProduct.itemCount < 1){
-                    binding.sectionOtherProductHeader.visibility = View.GONE
-                    binding.sectionLine1.visibility = View.GONE
+            when (data) {
+                is Result.Success -> {
+                    data.data.success.let { adapterOtherProduct.setList(it.data) }
+                    if (adapterOtherProduct.itemCount < 1){
+                        binding.sectionOtherProductHeader.visibility = View.GONE
+                        binding.sectionLine1.visibility = View.GONE
+                    }
                 }
-            }else{
-                Toast.makeText(this, "No Other Data Product", Toast.LENGTH_SHORT).show()
+                is Result.Error -> {
+                    Toast.makeText(this, "No Other Data Product", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+
+                }
             }
         }
     }
@@ -350,14 +356,20 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
     private fun setHistoryProduct(){
         val idUser : Int = preferences.getPreference(Constant.ID)!!.toInt()
         detailProductViewModel.getHistoryProduk(idUser).observe(this){data ->
-            if (data != null){
-                data.data?.success?.let { adapterHistoryProduct.setList(it.data) }
-                if (adapterOtherProduct.itemCount < 1){
-                    binding.sectionOtherProductHeader.visibility = View.GONE
-                    binding.sectionLine1.visibility = View.GONE
+            when (data) {
+                is Result.Success -> {
+                    data.data.success.let { adapterHistoryProduct.setList(it.data) }
+                    if (adapterOtherProduct.itemCount < 1){
+                        binding.sectionOtherProductHeader.visibility = View.GONE
+                        binding.sectionLine1.visibility = View.GONE
+                    }
                 }
-            }else{
-                Toast.makeText(this, "No History Data Product", Toast.LENGTH_SHORT).show()
+                is Result.Error -> {
+                    Toast.makeText(this, "No History Data Product", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+
+                }
             }
         }
     }

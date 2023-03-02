@@ -1,9 +1,15 @@
 package com.wahyush04.core.data.source.remote
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.AsyncPagingDataDiffer
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
+import androidx.recyclerview.widget.ListUpdateCallback
 import app.cash.turbine.test
+import com.wahyush04.androidphincon.ui.adapter.ProductListAdapter
 import com.wahyush04.core.api.ApiService
 import com.wahyush04.core.data.*
 import com.wahyush04.core.data.source.remote.response.login.LoginResponse
@@ -12,7 +18,11 @@ import com.wahyush04.core.data.source.remote.response.updatestock.DataStockItem
 import com.wahyush04.core.data.source.remote.response.updatestock.UpdateStockRequestBody
 import com.wahyush04.utils.DataDummy
 import com.wahyush04.utils.MainDispatcherRule
+import com.wahyush04.utils.getOrAwaitValue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -59,13 +69,13 @@ class RemoteDataSourceTest {
     @Test
     fun `when Login Success `() = runTest {
         // Arrange
-            `when`(
-                apiService.userLogin(
-                    email = ArgumentMatchers.anyString(),
-                    password = ArgumentMatchers.anyString(),
-                    token_fcm = ArgumentMatchers.anyString()
-                )
+        `when`(
+            apiService.userLogin(
+                email = ArgumentMatchers.anyString(),
+                password = ArgumentMatchers.anyString(),
+                token_fcm = ArgumentMatchers.anyString()
             )
+        )
             .thenReturn(DataDummy.generateLoginResponse())
 
         // Act
@@ -117,14 +127,13 @@ class RemoteDataSourceTest {
     fun `when Login is Error 429`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
-        Mockito.`when`(
+        `when`(
             apiService.userLogin(
                 email = ArgumentMatchers.anyString(),
                 password = ArgumentMatchers.anyString(),
                 token_fcm = ArgumentMatchers.anyString()
             )
-        )
-            .thenThrow(HttpException(response))
+        ).thenThrow(HttpException(response))
 
 
         // Act
@@ -182,18 +191,16 @@ class RemoteDataSourceTest {
         val phoneDummy = "phoneDummy".toRequestBody()
         val genderDummy = 0
 
-        Mockito
-            .`when`(
-                apiService.userRegister(
-                    nameDummy,
-                    emailDummy,
-                    passwordDummy,
-                    phoneDummy,
-                    genderDummy,
-                    imageDummy
-                )
+        `when`(
+            apiService.userRegister(
+                nameDummy,
+                emailDummy,
+                passwordDummy,
+                phoneDummy,
+                genderDummy,
+                imageDummy
             )
-            .thenReturn(dataDummy)
+        ).thenReturn(dataDummy)
 
         // Act
         val resultFlow = remoteDataSource.register(
@@ -218,7 +225,6 @@ class RemoteDataSourceTest {
     fun `when Register is Error 400`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(400, "".toResponseBody(null))
-        val dataDummy = DataDummy.generateRegisterResponse()
         val imageDummy = MultipartBody.Part.create("text".toRequestBody())
         val emailDummy = "emailDummy@gmail.com".toRequestBody()
         val passwordDummy = "passwordDummy".toRequestBody()
@@ -227,16 +233,16 @@ class RemoteDataSourceTest {
         val genderDummy = 0
 
 
-            `when`(
-                apiService.userRegister(
-                    nameDummy,
-                    emailDummy,
-                    passwordDummy,
-                    phoneDummy,
-                    genderDummy,
-                    imageDummy
-                )
+        `when`(
+            apiService.userRegister(
+                nameDummy,
+                emailDummy,
+                passwordDummy,
+                phoneDummy,
+                genderDummy,
+                imageDummy
             )
+        )
             .thenThrow(HttpException(response))
 
         // Act
@@ -261,7 +267,6 @@ class RemoteDataSourceTest {
     fun `when Register is Error 429`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
-        val dataDummy = DataDummy.generateRegisterResponse()
         val imageDummy = MultipartBody.Part.create("text".toRequestBody())
         val emailDummy = "emailDummy@gmail.com".toRequestBody()
         val passwordDummy = "passwordDummy".toRequestBody()
@@ -269,16 +274,15 @@ class RemoteDataSourceTest {
         val phoneDummy = "phoneDummy".toRequestBody()
         val genderDummy = 0
         `when`(
-                apiService.userRegister(
-                    nameDummy,
-                    emailDummy,
-                    passwordDummy,
-                    phoneDummy,
-                    genderDummy,
-                    imageDummy
-                )
+            apiService.userRegister(
+                nameDummy,
+                emailDummy,
+                passwordDummy,
+                phoneDummy,
+                genderDummy,
+                imageDummy
             )
-            .thenThrow(HttpException(response))
+        ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.register(
@@ -302,7 +306,6 @@ class RemoteDataSourceTest {
     fun `when Register is Error 500`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(500, "".toResponseBody(null))
-        val dataDummy = DataDummy.generateRegisterResponse()
         val imageDummy = MultipartBody.Part.create("text".toRequestBody())
         val emailDummy = "emailDummy@gmail.com".toRequestBody()
         val passwordDummy = "passwordDummy".toRequestBody()
@@ -310,18 +313,16 @@ class RemoteDataSourceTest {
         val phoneDummy = "phoneDummy".toRequestBody()
         val genderDummy = 0
 
-        Mockito
-            .`when`(
-                apiService.userRegister(
-                    nameDummy,
-                    emailDummy,
-                    passwordDummy,
-                    phoneDummy,
-                    genderDummy,
-                    imageDummy
-                )
+        `when`(
+            apiService.userRegister(
+                nameDummy,
+                emailDummy,
+                passwordDummy,
+                phoneDummy,
+                genderDummy,
+                imageDummy
             )
-            .thenThrow(HttpException(response))
+        ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.register(
@@ -345,14 +346,12 @@ class RemoteDataSourceTest {
     @Test
     fun `when get Favorite Product Success`() = runTest {
         // Arrange
-        Mockito
-            .`when`(
-                apiService.getFavorite(
-                    search = "",
-                    id_user = 0
-                )
+        `when`(
+            apiService.getFavorite(
+                search = "",
+                id_user = 0
             )
-            .thenReturn(DataDummy.generateProductListResponse())
+        ).thenReturn(DataDummy.generateProductListResponse())
 
         // Act
         val resultFlow = remoteDataSource.getFavoriteProduct(
@@ -363,7 +362,6 @@ class RemoteDataSourceTest {
         // Assert
         resultFlow.test {
             assertTrue(awaitItem() is Result.Loading)
-//            assertTrue(awaitItem() is Result.Success)
             val data = awaitItem() as Result.Success
             assertEquals(DataDummy.generateProductListResponse(), data.data)
             awaitComplete()
@@ -374,13 +372,12 @@ class RemoteDataSourceTest {
     fun `when get Favorite is Error 400`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(400, "".toResponseBody(null))
-        Mockito
-            .`when`(
-                apiService.getFavorite(
-                    search = "",
-                    id_user = 0
-                )
+        `when`(
+            apiService.getFavorite(
+                search = "",
+                id_user = 0
             )
+        )
             .thenThrow(HttpException(response))
 
         // Act
@@ -401,13 +398,12 @@ class RemoteDataSourceTest {
     fun `when get Favorite is Error 429`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
-        Mockito
-            .`when`(
-                apiService.getFavorite(
-                    search = "",
-                    id_user = 0
-                )
+        `when`(
+            apiService.getFavorite(
+                search = "",
+                id_user = 0
             )
+        )
             .thenThrow(HttpException(response))
 
         // Act
@@ -428,14 +424,12 @@ class RemoteDataSourceTest {
     fun `when get Favorite is Error 500`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(500, "".toResponseBody(null))
-        Mockito
-            .`when`(
-                apiService.getFavorite(
-                    search = "",
-                    id_user = 0
-                )
+        `when`(
+            apiService.getFavorite(
+                search = "",
+                id_user = 0
             )
-            .thenThrow(HttpException(response))
+        ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.getFavoriteProduct(
@@ -454,17 +448,15 @@ class RemoteDataSourceTest {
     @Test
     fun `when change password Success`() = runTest {
         // Arrange
-        Mockito
-            .`when`(
-                apiService.userChangePassword(
-                    id = "1",
-                    password = "password",
-                    new_Password = "new_password",
-                    confirm_password = "confirm_passwrod"
+        `when`(
+            apiService.userChangePassword(
+                id = "1",
+                password = "password",
+                new_Password = "new_password",
+                confirm_password = "confirm_passwrod"
 
-                )
             )
-            .thenReturn(DataDummy.generateChangePasswordResponse())
+        ).thenReturn(DataDummy.generateChangePasswordResponse())
 
         // Act
         val resultFlow = remoteDataSource.changePassword(
@@ -488,15 +480,14 @@ class RemoteDataSourceTest {
         // Arrange
         val response = Response.error<LoginResponse>(400, "".toResponseBody(null))
         `when`(
-                apiService.userChangePassword(
-                    id = "1",
-                    password = "password",
-                    new_Password = "new_password",
-                    confirm_password = "confirm_passwrod"
+            apiService.userChangePassword(
+                id = "1",
+                password = "password",
+                new_Password = "new_password",
+                confirm_password = "confirm_passwrod"
 
-                )
             )
-            .thenThrow(HttpException(response))
+        ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.changePassword(
@@ -519,15 +510,14 @@ class RemoteDataSourceTest {
         // Arrange
         val response = Response.error<LoginResponse>(401, "".toResponseBody(null))
         `when`(
-                apiService.userChangePassword(
-                    id = "1",
-                    password = "password",
-                    new_Password = "new_password",
-                    confirm_password = "confirm_passwrod"
+            apiService.userChangePassword(
+                id = "1",
+                password = "password",
+                new_Password = "new_password",
+                confirm_password = "confirm_passwrod"
 
-                )
             )
-            .thenThrow(HttpException(response))
+        ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.changePassword(
@@ -550,15 +540,14 @@ class RemoteDataSourceTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
         `when`(
-                apiService.userChangePassword(
-                    id = "1",
-                    password = "password",
-                    new_Password = "new_password",
-                    confirm_password = "confirm_passwrod"
+            apiService.userChangePassword(
+                id = "1",
+                password = "password",
+                new_Password = "new_password",
+                confirm_password = "confirm_passwrod"
 
-                )
             )
-            .thenThrow(HttpException(response))
+        ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.changePassword(
@@ -581,15 +570,14 @@ class RemoteDataSourceTest {
         // Arrange
         val response = Response.error<LoginResponse>(404, "".toResponseBody(null))
         `when`(
-                apiService.userChangePassword(
-                    id = "1",
-                    password = "password",
-                    new_Password = "new_password",
-                    confirm_password = "confirm_passwrod"
+            apiService.userChangePassword(
+                id = "1",
+                password = "password",
+                new_Password = "new_password",
+                confirm_password = "confirm_passwrod"
 
-                )
             )
-            .thenThrow(HttpException(response))
+        ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.changePassword(
@@ -614,14 +602,12 @@ class RemoteDataSourceTest {
         val fileContent = "Hello, world!".toByteArray()
         val fileRequestBody = fileContent.toRequestBody("multipart/form-data".toMediaType())
         val filePart = MultipartBody.Part.createFormData("file", "test.txt", fileRequestBody)
-        Mockito
-            .`when`(
-                apiService.changeImage(
-                    id,
-                    filePart
-                )
+        `when`(
+            apiService.changeImage(
+                id,
+                filePart
             )
-            .thenReturn(DataDummy.generateChangeImageResponse())
+        ).thenReturn(DataDummy.generateChangeImageResponse())
 
         // Act
         val resultFlow = remoteDataSource.changeImage(
@@ -646,14 +632,12 @@ class RemoteDataSourceTest {
         val fileContent = "Hello, world!".toByteArray()
         val fileRequestBody = fileContent.toRequestBody("multipart/form-data".toMediaType())
         val filePart = MultipartBody.Part.createFormData("file", "test.txt", fileRequestBody)
-        Mockito
-            .`when`(
+        `when`(
                 apiService.changeImage(
                     id,
                     filePart
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.changeImage(
@@ -677,14 +661,12 @@ class RemoteDataSourceTest {
         val fileContent = "Hello, world!".toByteArray()
         val fileRequestBody = fileContent.toRequestBody("multipart/form-data".toMediaType())
         val filePart = MultipartBody.Part.createFormData("file", "test.txt", fileRequestBody)
-        Mockito
-            .`when`(
+        `when`(
                 apiService.changeImage(
                     id,
                     filePart
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.changeImage(
@@ -708,14 +690,12 @@ class RemoteDataSourceTest {
         val fileContent = "Hello, world!".toByteArray()
         val fileRequestBody = fileContent.toRequestBody("multipart/form-data".toMediaType())
         val filePart = MultipartBody.Part.createFormData("file", "test.txt", fileRequestBody)
-        Mockito
-            .`when`(
+        `when`(
                 apiService.changeImage(
                     id,
                     filePart
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.changeImage(
@@ -734,8 +714,7 @@ class RemoteDataSourceTest {
     @Test
     fun `when get detail product data Success`() = runTest {
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getDetailProduct(
                     1,
                     1
@@ -762,14 +741,12 @@ class RemoteDataSourceTest {
     fun `when get detail product data is Error 401`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(401, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getDetailProduct(
                     1,
                     1
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.detailProduct(
@@ -789,14 +766,12 @@ class RemoteDataSourceTest {
     fun `when get detail product data is Error 429`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getDetailProduct(
                     1,
                     1
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.detailProduct(
@@ -816,14 +791,12 @@ class RemoteDataSourceTest {
     fun `when get detail product data is Error 400`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(400, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getDetailProduct(
                     1,
                     1
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.detailProduct(
@@ -842,14 +815,12 @@ class RemoteDataSourceTest {
     @Test
     fun `when add favorite success`() = runTest {
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.addFavorite(
                     1,
                     1
                 )
-            )
-            .thenReturn(DataDummy.generateAddFavoriteResponse())
+            ).thenReturn(DataDummy.generateAddFavoriteResponse())
 
         // Act
         val resultFlow = remoteDataSource.addFavorite(
@@ -870,14 +841,12 @@ class RemoteDataSourceTest {
     fun `when add favorite is 401`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(401, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.addFavorite(
                     1,
                     1
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.addFavorite(
@@ -897,14 +866,12 @@ class RemoteDataSourceTest {
     fun `when add favorite is 429`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.addFavorite(
                     1,
                     1
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.addFavorite(
@@ -924,14 +891,12 @@ class RemoteDataSourceTest {
     fun `when add favorite is 400`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(400, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.addFavorite(
                     1,
                     1
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.addFavorite(
@@ -951,14 +916,12 @@ class RemoteDataSourceTest {
     @Test
     fun `when remove favorite success`() = runTest {
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.removeFavorite(
                     1,
                     1
                 )
-            )
-            .thenReturn(DataDummy.generateAddFavoriteResponse())
+            ).thenReturn(DataDummy.generateAddFavoriteResponse())
 
         // Act
         val resultFlow = remoteDataSource.removeFavorite(
@@ -979,14 +942,12 @@ class RemoteDataSourceTest {
     fun `when remove favorite is Error 401`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(401, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.removeFavorite(
                     1,
                     1
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.removeFavorite(
@@ -1006,14 +967,12 @@ class RemoteDataSourceTest {
     fun `when remove favorite is Error 429`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.removeFavorite(
                     1,
                     1
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.removeFavorite(
@@ -1033,14 +992,12 @@ class RemoteDataSourceTest {
     fun `when remove favorite is Error 400`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(400, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.removeFavorite(
                     1,
                     1
                 )
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.removeFavorite(
@@ -1060,11 +1017,9 @@ class RemoteDataSourceTest {
     fun `when get Other Product Response Success`() = runTest {
         // Arrange
 
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getOtherProducts(1)
-            )
-            .thenReturn(DataDummy.generateProductListResponse())
+            ).thenReturn(DataDummy.generateProductListResponse())
 
         // Act
         val resultFlow = remoteDataSource.getOtherProduk(1)
@@ -1083,11 +1038,10 @@ class RemoteDataSourceTest {
     fun `when get Other Product Response is Error 401`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(401, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getOtherProducts(1)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
+
         // Act
         val resultFlow = remoteDataSource.getOtherProduk(1)
 
@@ -1103,11 +1057,10 @@ class RemoteDataSourceTest {
     fun `when get Other Product Response is Error 429`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getOtherProducts(1)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
+
         // Act
         val resultFlow = remoteDataSource.getOtherProduk(1)
 
@@ -1123,11 +1076,10 @@ class RemoteDataSourceTest {
     fun `when get Other Product Response is Error 400`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(400, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getOtherProducts(1)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
+
         // Act
         val resultFlow = remoteDataSource.getOtherProduk(1)
 
@@ -1142,11 +1094,9 @@ class RemoteDataSourceTest {
     @Test
     fun `when get History Product Response Success`() = runTest {
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getProductSearchHistory(1)
-            )
-            .thenReturn(DataDummy.generateProductListResponse())
+            ).thenReturn(DataDummy.generateProductListResponse())
 
         // Act
         val resultFlow = remoteDataSource.getHistoryProduk(1)
@@ -1164,11 +1114,9 @@ class RemoteDataSourceTest {
     fun `when get History Product Response is Error 401`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(401, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getProductSearchHistory(1)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.getHistoryProduk(1)
@@ -1185,11 +1133,9 @@ class RemoteDataSourceTest {
     fun `when get History Product Response is Error 429`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getProductSearchHistory(1)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.getHistoryProduk(1)
@@ -1206,11 +1152,9 @@ class RemoteDataSourceTest {
     fun `when get History Product Response is Error 400`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(400, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getProductSearchHistory(1)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.getHistoryProduk(1)
@@ -1227,11 +1171,9 @@ class RemoteDataSourceTest {
     fun `when get History Product Response is Error 500`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(500, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.getProductSearchHistory(1)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.getHistoryProduk(1)
@@ -1254,11 +1196,9 @@ class RemoteDataSourceTest {
             )
         )
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.buyProduct(requestBody)
-            )
-            .thenReturn(DataDummy.generateUpdateStockResponse())
+            ).thenReturn(DataDummy.generateUpdateStockResponse())
 
         // Act
         val resultFlow = remoteDataSource.buyProduct(requestBody)
@@ -1266,7 +1206,6 @@ class RemoteDataSourceTest {
         // Assert
         resultFlow.test {
             assertTrue(awaitItem() is Result.Loading)
-//            assertTrue(awaitItem() is Result.Success)
             val data = awaitItem() as Result.Success
             assertEquals(DataDummy.generateUpdateStockResponse(), data.data)
             awaitComplete()
@@ -1284,11 +1223,9 @@ class RemoteDataSourceTest {
             )
         )
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.buyProduct(requestBody)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.buyProduct(requestBody)
@@ -1312,11 +1249,9 @@ class RemoteDataSourceTest {
             )
         )
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.buyProduct(requestBody)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.buyProduct(requestBody)
@@ -1340,11 +1275,9 @@ class RemoteDataSourceTest {
             )
         )
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.buyProduct(requestBody)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.buyProduct(requestBody)
@@ -1368,11 +1301,9 @@ class RemoteDataSourceTest {
             )
         )
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.buyProduct(requestBody)
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.buyProduct(requestBody)
@@ -1388,11 +1319,9 @@ class RemoteDataSourceTest {
     @Test
     fun `when rating product Success`() = runTest {
         // Arrange
-        Mockito
-            .`when`(
+        `when`(
                 apiService.updateRating(1, "4.5")
-            )
-            .thenReturn(DataDummy.generateUpdateRatingResponse())
+            ).thenReturn(DataDummy.generateUpdateRatingResponse())
 
         // Act
         val resultFlow = remoteDataSource.updateRating(1, "4.5")
@@ -1410,11 +1339,9 @@ class RemoteDataSourceTest {
     fun `when rating product is Error 401`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(401, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.updateRating(1, "4.5")
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.updateRating(1, "4.5")
@@ -1431,11 +1358,9 @@ class RemoteDataSourceTest {
     fun `when rating product is Error 429`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(429, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.updateRating(1, "4.5")
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.updateRating(1, "4.5")
@@ -1452,11 +1377,9 @@ class RemoteDataSourceTest {
     fun `when rating product is Error 400`() = runTest {
         // Arrange
         val response = Response.error<LoginResponse>(400, "".toResponseBody(null))
-        Mockito
-            .`when`(
+        `when`(
                 apiService.updateRating(1, "4.5")
-            )
-            .thenThrow(HttpException(response))
+            ).thenThrow(HttpException(response))
 
         // Act
         val resultFlow = remoteDataSource.updateRating(1, "4.5")
@@ -1470,90 +1393,46 @@ class RemoteDataSourceTest {
     }
 
     @Test
-    fun `Product Paging`() = runTest {
-        val items = listOf(
-            DataListProductPaging(
-                "date",
-                "image",
-                "name_product",
-                "harga",
-                "size",
-                5,
-                "weight",
-                1,
-                2,
-                "type",
-                "desc"
+    fun `when getProductList Paging isSuccess`() = runTest {
+        val data = ProductPagingSource.snapshot(DataDummy.generateDataListProductPaging())
+        val expectedProduct = MutableLiveData<PagingData<DataListProductPaging>>()
+        expectedProduct.value = data
 
-            ),
-            DataListProductPaging(
-                "date",
-                "image",
-                "name_product",
-                "harga",
-                "size",
-                5,
-                "weight",
-                1,
-                2,
-                "type",
-                "desc"
-
-            ),
-            DataListProductPaging(
-                "date",
-                "image",
-                "name_product",
-                "harga",
-                "size",
-                5,
-                "weight",
-                1,
-                2,
-                "type",
-                "desc"
-
-            ),
-
-        )
-        val key = 2 // The next key
-        val loadResult: PagingSource.LoadResult<Int, DataListProductPaging> =
-            PagingSource.LoadResult.Page(
-                data = items,
-                prevKey = null,
-                nextKey = key
+        CoroutineScope(Dispatchers.IO).launch {
+            val actualData: PagingData<DataListProductPaging> = remoteDataSource.getProduct("").getOrAwaitValue()
+            val differ = AsyncPagingDataDiffer(
+                diffCallback = ProductListAdapter.DIFF_CALLBACK,
+                updateCallback = noopListUpdateCallback,
+                workerDispatcher = Dispatchers.Main
             )
+            differ.submitData(actualData)
 
-        val loadParam: PagingSource.LoadParams<Int> =
-            PagingSource.LoadParams.Append(
-                1,
-                2,
-                true
-            )
-
-        // Step 2: Create a mock DataListProductPaging object
-        val dataListProductPaging = mock(DataListProductPaging::class.java)
-
-        // Step 3: Create a mock PagingData object that contains the mock DataListProductPaging object
-        val pagingData = PagingData.from(listOf(dataListProductPaging))
-
-        // Step 5: Create a mock Pager object that uses the mock PagingSource object
-        val pagingSourceList = DataDummy.generateDataListProductPaging()
-
-        val pagingSource = mock(ProductPagingSource::class.java)
-        val result = PagingSource.LoadResult.Page(
-            data = pagingSourceList,
-            prevKey = null,
-            nextKey = 2
-        )
-
-        `when`(pagingSource.load(loadParam)).thenReturn(result)
-        // Step 6: Set up the mock ApiService to return the mock PagingData object when the search parameter matches a predefined value
-        `when`(apiService.getProductPaging(any(), any())).thenReturn(DataDummy.generateProductResponsePaging())
-
-        // Step 7: Call the getProduct method with the predefined search value and verify that it returns the expected LiveData object
-        val liveData = remoteDataSource.getProduct("search")
-        assertNotNull(liveData)
+            assertNotNull(differ.snapshot())
+            assertEquals(DataDummy.generateDataListProductPaging().size, differ.snapshot().size)
+            assertEquals(DataDummy.generateDataListProductPaging()[0].nameProduct, differ.snapshot()[0]?.nameProduct)
+        }
     }
 
+    class ProductPagingSource : PagingSource<Int, LiveData<List<DataListProductPaging>>>() {
+        companion object {
+            fun snapshot(items: List<DataListProductPaging>): PagingData<DataListProductPaging> {
+                return PagingData.from(items)
+            }
+        }
+        override fun getRefreshKey(state: PagingState<Int, LiveData<List<DataListProductPaging>>>): Int? {
+            return 0
+        }
+
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LiveData<List<DataListProductPaging>>> {
+            return PagingSource.LoadResult.Page(emptyList(), 0, 1)
+        }
+
+    }
+
+    private val noopListUpdateCallback = object : ListUpdateCallback {
+        override fun onInserted(position: Int, count: Int) {}
+        override fun onRemoved(position: Int, count: Int) {}
+        override fun onMoved(fromPosition: Int, toPosition: Int) {}
+        override fun onChanged(position: Int, count: Int, payload: Any?) {}
+    }
 }

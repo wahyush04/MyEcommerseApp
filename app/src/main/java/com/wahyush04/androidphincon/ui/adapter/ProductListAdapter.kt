@@ -85,7 +85,7 @@ class ProductListAdapter : PagingDataAdapter<DataListProductPaging, ProductListA
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<DataListProductPaging>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<DataListProductPaging>() {
             override fun areItemsTheSame(oldItem: DataListProductPaging, newItem: DataListProductPaging): Boolean {
                 return oldItem == newItem
             }

@@ -77,7 +77,7 @@
                 app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_password"
+                    android:id="@+id/edt_password_login"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -109,15 +109,16 @@
                     android:id="@+id/btn_to_signup"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="match_parent"
-                    android:layout_height="110dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center|bottom"
                     android:layout_marginTop="40dp"
                     android:gravity="top|center"
                     android:paddingTop="15dp"
+                    android:background="@drawable/rounded_frame_layout"
                     android:text="@string/sign_up"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:translationY="50dp"
+
                     app:cornerRadius="30dp" />
             </FrameLayout>
         </LinearLayout>

@@ -90,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLogin.setOnClickListener {
             if (isInternetConnectionAvailable(this@LoginActivity)) {
                 val email = binding.edtEmail.text.toString()
-                val password = binding.edtPassword.text.toString()
+                val password = binding.edtPasswordLogin.text.toString()
                 val tokenFcm = preferences.getPreference(Constant.TOKEN_FCM)
                 when {
                     email.isEmpty() -> {

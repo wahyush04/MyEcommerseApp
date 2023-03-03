@@ -168,65 +168,6 @@ object DataDummy {
         )
     }
 
-    fun generateProductResponsePaging(): ProductResponsePaging {
-        val listProduct = ArrayList<DataListProductPaging>()
-        listProduct.add(
-            DataListProductPaging(
-                "date",
-                "Image",
-                "name_product",
-                "harga",
-                "size",
-                5,
-                "weight",
-                100,
-                20,
-                "type",
-                "desc"
-            )
-        )
-        listProduct.add(
-            DataListProductPaging(
-                "date",
-                "Image",
-                "name_product",
-                "harga",
-                "size",
-                5,
-                "weight",
-                100,
-                20,
-                "type",
-                "desc"
-            )
-        )
-        listProduct.add(
-            DataListProductPaging(
-                "date",
-                "Image",
-                "name_product",
-                "harga",
-                "size",
-                5,
-                "weight",
-                100,
-                20,
-                "type",
-                "desc"
-            )
-        )
-
-        return ProductResponsePaging(
-            com.wahyush04.core.data.source.remote.response.product
-                .SuccessPaging(
-                5,
-                    listProduct,
-                    "message",
-                    200
-                )
-        )
-    }
-
     fun generateDataListProductPaging() : List<DataListProductPaging>{
         val dataList = mutableListOf<DataListProductPaging>()
         for (i in 1..5) {

@@ -110,15 +110,16 @@ class ProfileFragment : Fragment() {
                 "Profile",
                 "Logout"
             )
-            AlertDialog.Builder(requireContext())
-                .setTitle("Are you sure?")
-                .setMessage("Do you want to Logout")
-                .setPositiveButton("Ya") { _, _ ->
-                    logout()
-                }
-                .setNegativeButton("No") { _, _ ->
-                }
-                .show()
+//            AlertDialog.Builder(requireContext())
+//                .setTitle("Are you sure?")
+//                .setMessage("Do you want to Logout")
+//                .setPositiveButton("Ya") { _, _ ->
+//                    logout()
+//                }
+//                .setNegativeButton("No") { _, _ ->
+//                }
+//                .show()
+            logout()
         }
 
         val customSpinnerAdapter = CustomSpinnerAdapter(requireContext(), arrFlag, arrLanguage)

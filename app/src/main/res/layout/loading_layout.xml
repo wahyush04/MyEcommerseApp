@@ -40,13 +40,11 @@
                 android:layout_marginTop="22dp"
                 android:fontFamily="@font/poppins"
                 android:text="@string/loading"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="@+id/progress_bar"
                 app:layout_constraintStart_toStartOf="@+id/progress_bar"
                 app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
 
         </LinearLayout>
-
     </com.google.android.material.card.MaterialCardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

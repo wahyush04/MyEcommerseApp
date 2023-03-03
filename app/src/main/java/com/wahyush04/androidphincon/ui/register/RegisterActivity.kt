@@ -291,19 +291,20 @@ class RegisterActivity : AppCompatActivity() {
                 is Result.Success -> {
                     loadingDialog.stopLoading()
                     val dataMessages = it.data.registerSuccess.message
-                    AlertDialog.Builder(this@RegisterActivity)
-                        .setTitle("Register Success")
-                        .setMessage(dataMessages)
-                        .setPositiveButton("Ok") { _, _ ->
-                            Toast.makeText(
-                                this,
-                                getString(R.string.register_success),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            startActivity(Intent(this, LoginActivity::class.java))
-                            finish()
-                        }
-                        .show()
+//                    AlertDialog.Builder(this@RegisterActivity)
+//                        .setTitle("Register Success")
+//                        .setMessage(dataMessages)
+//                        .setPositiveButton("Ok") { _, _ ->
+//                            Toast.makeText(
+//                                this,
+//                                getString(R.string.register_success),
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                            startActivity(Intent(this, LoginActivity::class.java))
+//                            finish()
+//                        }
+//                        .show()
+                    startActivity(Intent(this, LoginActivity::class.java))
 
                 }
                 is Result.Error -> {

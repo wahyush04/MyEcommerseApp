@@ -41,7 +41,7 @@ class HomeFragment : Fragment() {
 
         adapter = ProductListAdapter()
 
-        binding.rvProductList.adapter = adapter
+        binding.rvProductListHome.adapter = adapter
 
         getData(null)
 
@@ -85,9 +85,9 @@ class HomeFragment : Fragment() {
         if (state){
             binding.shimmerList.startShimmer()
             binding.shimmerList.visibility = View.VISIBLE
-            binding.rvProductList.visibility = View.GONE
+            binding.rvProductListHome.visibility = View.GONE
         }else{
-            binding.rvProductList.visibility = View.VISIBLE
+            binding.rvProductListHome.visibility = View.VISIBLE
             binding.shimmerList.visibility = View.GONE
             binding.shimmerList.stopShimmer()
         }
@@ -121,7 +121,7 @@ class HomeFragment : Fragment() {
 
     private fun getData(search : String?) {
         val adapter = ProductListAdapter()
-        binding.rvProductList.adapter = adapter.withLoadStateFooter(
+        binding.rvProductListHome.adapter = adapter.withLoadStateFooter(
             footer = LoadingStateAdapter {
                 adapter.retry()
             }

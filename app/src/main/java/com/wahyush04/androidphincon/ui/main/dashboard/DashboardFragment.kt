@@ -56,8 +56,8 @@ class DashboardFragment : Fragment() {
 
         adapter = ProductFavoriteListAdapter()
         adapter.notifyDataSetChanged()
-        binding.rvProductList.setHasFixedSize(true)
-        binding.rvProductList.adapter = adapter
+        binding.rvProductList?.setHasFixedSize(true)
+        binding.rvProductList?.adapter = adapter
         binding.febSort.visibility = View.GONE
 
         getData(null, null)
@@ -82,7 +82,7 @@ class DashboardFragment : Fragment() {
             }
         }
 
-        binding.rvProductList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvProductList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 binding.febSort.hide()
@@ -137,22 +137,22 @@ class DashboardFragment : Fragment() {
                         binding.shimmerList.stopShimmer()
                         showEmpty(false)
                         adapter.setList(data.data.success.data)
-                        binding.rvProductList.visibility = View.VISIBLE
+                        binding.rvProductList?.visibility = View.VISIBLE
                         when (sort) {
                             "From A to Z" -> {
                                 data.data.success.data.sortedBy { it.name_product }.let { adapter.setList(it.toList()) }
-                                binding.rvProductList.visibility = View.VISIBLE
+                                binding.rvProductList?.visibility = View.VISIBLE
                             }
                             "From Z to A" -> {
                                 data.data.success.data.sortedByDescending { it.name_product }.let { adapter.setList(it.toList()) }
-                                binding.rvProductList.visibility = View.VISIBLE
+                                binding.rvProductList?.visibility = View.VISIBLE
                             }
                         }
                     } else {
                         binding.shimmerList.visibility = View.GONE
                         binding.shimmerList.stopShimmer()
                         showEmpty(true)
-                        binding.rvProductList.visibility = View.GONE
+                        binding.rvProductList?.visibility = View.GONE
                         binding.febSort.visibility = View.GONE
                     }
                 }
@@ -181,11 +181,11 @@ class DashboardFragment : Fragment() {
 
     private fun showShimmer(state : Boolean){
         if (state){
-            binding.rvProductList.visibility = View.GONE
+            binding.rvProductList?.visibility = View.GONE
             binding.shimmerList.visibility = View.VISIBLE
             binding.shimmerList.startShimmer()
         }else{
-            binding.rvProductList.visibility = View.VISIBLE
+            binding.rvProductList?.visibility = View.VISIBLE
             binding.shimmerList.visibility = View.GONE
             binding.shimmerList.stopShimmer()
         }

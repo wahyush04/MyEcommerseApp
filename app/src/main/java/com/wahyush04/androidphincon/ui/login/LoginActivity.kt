@@ -83,13 +83,13 @@ class LoginActivity : AppCompatActivity() {
             )
         }
 
-        binding.edtEmail.doOnTextChanged { _, _, _, _ ->
+        binding.edtEmailLogin.doOnTextChanged { _, _, _, _ ->
             setEmailEditText()
         }
 
         binding.btnLogin.setOnClickListener {
             if (isInternetConnectionAvailable(this@LoginActivity)) {
-                val email = binding.edtEmail.text.toString()
+                val email = binding.edtEmailLogin.text.toString()
                 val password = binding.edtPasswordLogin.text.toString()
                 val tokenFcm = preferences.getPreference(Constant.TOKEN_FCM)
                 when {
@@ -133,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
 
 
     private fun setEmailEditText() {
-        val email = binding.edtEmail.text.toString()
+        val email = binding.edtEmailLogin.text.toString()
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.emailedtlayout.error = "Wrong Email Format"
         } else {
@@ -174,12 +174,12 @@ class LoginActivity : AppCompatActivity() {
                     val accessToken = it.data.success.access_token
                     val refreshToken = it.data.success.refresh_token
                     val id = it.data.success.data_user.id
-                    val name = it.data.success.data_user?.name
-                    val emailUser = it.data?.success?.data_user?.email
-                    val phone = it.data?.success?.data_user?.phone
-                    val gender = it.data?.success?.data_user?.gender
-                    val image = it.data?.success?.data_user?.path
-                    val successMessage = it.data?.success?.message
+                    val name = it.data.success.data_user.name
+                    val emailUser = it.data.success.data_user.email
+                    val phone = it.data.success.data_user.phone
+                    val gender = it.data.success.data_user.gender
+                    val image = it.data.success.data_user.path
+                    val successMessage = it.data.success.message
                     if (status == 200) {
                         preferences.put(
                             accessToken,
@@ -206,7 +206,6 @@ class LoginActivity : AppCompatActivity() {
                     val errorResponse = gson.fromJson(jsonObject, ErrorResponse::class.java)
                     val messageErr = errorResponse.error.message
                     Toast.makeText(this, messageErr, Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this, "messageErr", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     loadingDialog.stopLoading()

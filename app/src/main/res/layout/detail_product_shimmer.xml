@@ -100,8 +100,8 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/tv_detail_product"
+                android:layout_marginStart="10dp"
+                android:id="@+id/tv_detail_product_shimmer"
                 android:layout_width="82dp"
                 android:layout_height="20dp"
                 app:cardCornerRadius="50dp"
@@ -118,7 +118,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@android:color/darker_gray"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_detail_product" />
+                app:layout_constraintTop_toBottomOf="@id/tv_detail_product_shimmer" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/tv_stock"

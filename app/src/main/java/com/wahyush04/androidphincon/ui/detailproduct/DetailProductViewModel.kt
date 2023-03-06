@@ -82,10 +82,10 @@ class DetailProductViewModel @Inject constructor(
         }
     }
 
-    fun updateQuantity(
-        quantity: Int,
-        id: Int,
-        newTotalHarga : Int): Int =
-        repository.updateQuantityTrolley(quantity,id, newTotalHarga)
+//    fun updateQuantity(
+//        quantity: Int,
+//        id: Int,
+//        newTotalHarga : Int): Int =
+//        repository.updateQuantityTrolley(quantity,id, newTotalHarga)
 
 }

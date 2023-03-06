@@ -102,6 +102,7 @@ class SuccessPageActivity : AppCompatActivity() {
         }
 
         binding.btnSubmitRating.setOnClickListener {
+            loadingDialog.startLoading()
             val rating =  binding.ratingBar.rating
             //GA Slide 25 onClickButtonSubmit
             firebaseAnalytics.onClickButtonSubmit(
@@ -116,11 +117,7 @@ class SuccessPageActivity : AppCompatActivity() {
                     Log.d("idSuccessItem", id.toString())
                     successPageViewModel.updateRating(item, rating.toString()).observe(this@SuccessPageActivity){
                         when (it) {
-                            is Result.Loading -> {
-                                loadingDialog.startLoading()
-                            }
                             is Result.Success -> {
-                                loadingDialog.stopLoading()
                                 if (index == idList!!.lastIndex) {
                                     val intent = Intent(this, MainActivity::class.java)
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -128,12 +125,10 @@ class SuccessPageActivity : AppCompatActivity() {
                                 }
                             }
                             is Result.Error -> {
-                                loadingDialog.stopLoading()
                                 Toast.makeText(this@SuccessPageActivity, "Oops, Something when wrong", Toast.LENGTH_SHORT).show()
                             }
                             else -> {
-                                loadingDialog.stopLoading()
-                                Toast.makeText(this@SuccessPageActivity, "Oops, Something when wrong", Toast.LENGTH_SHORT).show()
+                                return@observe
                             }
                         }
                     }
@@ -141,6 +136,7 @@ class SuccessPageActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this@SuccessPageActivity, "No data", Toast.LENGTH_SHORT).show()
             }
+            loadingDialog.stopLoading()
         }
         successPageViewModel.deleteTrolleyChecked()
     }

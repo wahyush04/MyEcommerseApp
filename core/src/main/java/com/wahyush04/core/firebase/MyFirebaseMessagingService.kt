@@ -41,7 +41,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val data = NotificationEntity(0, title, messageBody,timestamp.toString(), 0, 0)
         notificationDao.insert(data)
 
-        val contentIntent = Intent(applicationContext, Class.forName("com.wahyusho4.androidphincon.ui.main.MainActivit"))
+        val contentIntent = Intent(applicationContext, Class.forName("com.wahyush04.androidphincon.ui.main.MainActivity"))
         val contentPendingIntent = PendingIntent.getActivity(
             applicationContext,
             NOTIFICATION_ID,

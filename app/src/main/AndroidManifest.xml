@@ -134,7 +134,7 @@
         </provider>
 
         <service
-            android:name="com.wahyush04.androidphincon.com.wahyush04.core.firebase.MyFirebaseMessagingService"
+            android:name="com.wahyush04.core.firebase.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

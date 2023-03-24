@@ -68,7 +68,7 @@ class PaymentMethodActivity : AppCompatActivity() {
                 }
             },
             {
-                Toast.makeText(this@PaymentMethodActivity, it.type.toString()+" Collpased", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@PaymentMethodActivity, it.type.toString()+" Collpased", Toast.LENGTH_SHORT).show()
             },
             this@PaymentMethodActivity
         )

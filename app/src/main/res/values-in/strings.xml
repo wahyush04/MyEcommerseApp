@@ -53,10 +53,10 @@
     <string name="decrease_product_value">decrease product value</string>
     <string name="remove_product_from_trolley">remove product from trolley</string>
     <string name="empty_image">empty image</string>
-    <string name="empty_data">Empty Data</string>
-    <string name="search">Search</string>
-    <string name="sort_by">Sort By</string>
+    <string name="empty_data">Data Kosong</string>
+    <string name="search">Cari</string>
+    <string name="sort_by">Urutkan</string>
     <string name="image_view">Image View</string>
-    <string name="retry">Retry</string>
-    <string name="notification">Notification</string>
+    <string name="retry">Coba Lagi</string>
+    <string name="notification">Notifikasi</string>
 </resources>

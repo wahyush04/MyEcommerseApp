@@ -59,7 +59,7 @@ class ProfileFragment : Fragment() {
     private lateinit var loadingDialog: LoadingDialog
     private val profileViewModel: ProfileViewModel by viewModels()
     private var isUserAction = false
-    private val arrLanguage = arrayOf("IN","EN","ID")
+    private val arrLanguage = arrayOf("-","EN","ID")
     private val arrFlag = intArrayOf(R.drawable.united_nations, R.drawable.united_states, R.drawable.indonesia)
     private val firebaseAnalytics = BaseFirebaseAnalytics()
     private val binding get() = _binding!!

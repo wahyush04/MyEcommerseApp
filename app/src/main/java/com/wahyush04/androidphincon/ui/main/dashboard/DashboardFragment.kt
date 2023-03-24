@@ -59,6 +59,7 @@ class DashboardFragment : Fragment() {
         binding.rvProductList?.setHasFixedSize(true)
         binding.rvProductList?.adapter = adapter
         binding.febSort.visibility = View.GONE
+        binding.svSearch.clearFocus()
 
         getData(null, null)
         binding.febSort.setOnClickListener {
@@ -96,8 +97,10 @@ class DashboardFragment : Fragment() {
 
         val swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
+            query = null
             getData(null, null)
             binding.svSearch.text = null
+            binding.svSearch.clearFocus()
             binding.swipeRefreshLayout.isRefreshing = false
             searchJob?.cancel()
         }
@@ -179,17 +182,6 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    private fun showShimmer(state : Boolean){
-        if (state){
-            binding.rvProductList?.visibility = View.GONE
-            binding.shimmerList.visibility = View.VISIBLE
-            binding.shimmerList.startShimmer()
-        }else{
-            binding.rvProductList?.visibility = View.VISIBLE
-            binding.shimmerList.visibility = View.GONE
-            binding.shimmerList.stopShimmer()
-        }
-    }
 
     private fun selectSorting() {
         val items = arrayOf("From A to Z", "From Z to A")
@@ -212,7 +204,6 @@ class DashboardFragment : Fragment() {
                         getData(query,"From Z to A")
                     }
                 }
-
             }
             .setNegativeButton("Cancel"){ dialog, _ ->
                 dialog.dismiss()

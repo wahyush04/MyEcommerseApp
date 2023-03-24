@@ -8,9 +8,14 @@
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
-                  <entry key="Duration" value="90" />
+                  <entry key="Duration" value="208" />
+                  <entry key="Nexus_7_API_29" value="120" />
+                  <entry key="Pixel_4_API_29" value="120" />
                   <entry key="Pixel_4_API_30_PlayStore" value="120" />
-                  <entry key="Tests" value="360" />
+                  <entry key="Pixel_4_API_33" value="120" />
+                  <entry key="Tests" value="478" />
+                  <entry key="Xiaomi&#10; Mi 9T" value="238" />
+                  <entry key="af9bd5c0" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>
@@ -22,6 +27,7 @@
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
+                  <entry key="Pixel_4_API_29" value="120" />
                   <entry key="Pixel_4_API_30_PlayStore" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
@@ -87,6 +93,7 @@
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
+                  <entry key="Pixel_4_API_29" value="120" />
                   <entry key="Pixel_4_API_30_PlayStore" value="120" />
                   <entry key="Tests" value="360" />
                 </map>

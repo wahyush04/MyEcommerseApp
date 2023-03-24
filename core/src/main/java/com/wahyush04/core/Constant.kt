@@ -18,6 +18,9 @@ class Constant {
         const val PREFKEY = "TuIBt77u7tZHi8n7WqUC"
         const val BASE_URL = "https://portlan.id/"
         const val ISCHECK = "is_check"
+        const val A_TO_Z = "From A to Z"
+        const val Z_TO_A = "From Z to A"
+
 
         //Firebase Param Key
         const val FK_EMAIL = "email"

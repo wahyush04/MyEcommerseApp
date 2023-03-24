@@ -65,6 +65,7 @@ class HomeFragment : Fragment() {
         swipeRefreshLayout.setOnRefreshListener {
             getData(null)
             binding.svSearch.text = null
+            binding.svSearch.clearFocus()
             searchJob?.cancel()
             swipeRefreshLayout.isRefreshing = false
         }
@@ -77,7 +78,6 @@ class HomeFragment : Fragment() {
                 startActivity(intent)
             }
         })
-
         return root
     }
 
@@ -137,7 +137,6 @@ class HomeFragment : Fragment() {
         }
 
         homeViewModel.productListPaging(search).observe(viewLifecycleOwner) {
-            Log.d("showEmpty", it.toString())
             adapter.submitData(lifecycle, it)
             adapter.setOnItemClickCallback(object : ProductListAdapter.OnItemClickCallback {
                 override fun onItemClicked(data: DataListProductPaging) {
@@ -156,6 +155,7 @@ class HomeFragment : Fragment() {
                 }
             })
         }
+        binding.svSearch.clearFocus()
     }
 
 }

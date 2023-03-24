@@ -176,8 +176,8 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
 
                         CoroutineScope(Dispatchers.IO).launch {
                             withContext(Dispatchers.Main){
-                                if (data.data!!.success?.data?.isFavorite != null){
-                                    if (data.data!!.success?.data?.isFavorite == true){
+                                if (data.data.success?.data?.isFavorite != null){
+                                    if (data.data.success?.data?.isFavorite == true){
                                         binding.tbFav.isChecked = true
                                         isChecked = true
                                     }else{
@@ -207,8 +207,8 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                                 "Detail Product",
                                 "+ Trolley"
                             )
-                            data.data?.let { it1 -> BottomSheetTrolley(it1) }
-                                ?.show(supportFragmentManager, "bottomSheet")
+                            BottomSheetTrolley(data.data)
+                                .show(supportFragmentManager, "bottomSheet")
 
                         }
 
@@ -341,6 +341,9 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                     if (adapterOtherProduct.itemCount < 1){
                         binding.sectionOtherProductHeader.visibility = View.GONE
                         binding.sectionLine1.visibility = View.GONE
+                    }else{
+                        binding.sectionOtherProductHeader.visibility = View.VISIBLE
+                        binding.sectionLine1.visibility = View.VISIBLE
                     }
                 }
                 is Result.Error -> {
@@ -360,8 +363,11 @@ class DetailProductActivity : AppCompatActivity(), ImageViewPagerAdapter.OnPageC
                 is Result.Success -> {
                     data.data.success.let { adapterHistoryProduct.setList(it.data) }
                     if (adapterOtherProduct.itemCount < 1){
-                        binding.sectionOtherProductHeader.visibility = View.GONE
+                        binding.sectionHistoryProductHeader.visibility = View.GONE
                         binding.sectionLine1.visibility = View.GONE
+                    }else{
+                        binding.sectionHistoryProductHeader.visibility = View.VISIBLE
+                        binding.sectionLine1.visibility = View.VISIBLE
                     }
                 }
                 is Result.Error -> {

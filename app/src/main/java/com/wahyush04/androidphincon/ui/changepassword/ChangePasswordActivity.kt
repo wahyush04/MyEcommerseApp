@@ -60,14 +60,14 @@ class ChangePasswordActivity : AppCompatActivity() {
                     binding.oldpasswordedtlayout.error = "Old Password is Empty"
                 }
                 newPassword.isEmpty() -> {
-                    binding.newpasswordedtlayout.error = "Old Password is Empty"
+                    binding.newpasswordedtlayout.error = "New Password is Empty"
                 }
                 confirmPassword.isEmpty() -> {
-                    binding.confirmpasswordedtlayout.error = "Old Password is Empty"
+                    binding.confirmpasswordedtlayout.error = "Confirm Password is Empty"
                 }
                 newPassword != confirmPassword -> {
-                    binding.oldpasswordedtlayout.error = "Old Password is Empty"
-                    binding.confirmpasswordedtlayout.error = "Old Password is Empty"
+                    binding.newpasswordedtlayout.error = "Password not match"
+                    binding.confirmpasswordedtlayout.error = "Password not match"
                 }else ->{
                 changePassword(id, password, newPassword, confirmPassword)
                 }

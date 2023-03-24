@@ -304,7 +304,14 @@ class RegisterActivity : AppCompatActivity() {
 //                            finish()
 //                        }
 //                        .show()
+
+                    //UI Test
                     startActivity(Intent(this, LoginActivity::class.java))
+                    Toast.makeText(
+                        this,
+                        getString(R.string.register_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                 }
                 is Result.Error -> {
